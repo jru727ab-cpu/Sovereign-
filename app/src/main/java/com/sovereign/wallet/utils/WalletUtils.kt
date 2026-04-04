@@ -2,7 +2,6 @@ package com.sovereign.wallet.utils
 
 import java.security.MessageDigest
 import java.security.SecureRandom
-import kotlin.math.abs
 
 /**
  * Wallet generation and restoration utilities.
@@ -259,13 +258,18 @@ object WalletUtils {
      * For production: integrate a full BIP39 library with checksum validation.
      */
     fun generateMnemonic(): String {
-        val words = (1..12).map { WORD_LIST[abs(secureRandom.nextInt()) % WORD_LIST.size] }
+        // Use nextInt(bound) directly to avoid modulo bias in word selection
+        val words = (1..12).map { WORD_LIST[secureRandom.nextInt(WORD_LIST.size)] }
         return words.joinToString(" ")
     }
 
     /**
      * Derive a deterministic wallet address from a mnemonic.
-     * For production: use proper BIP44 HD derivation with secp256k1 or ed25519.
+     *
+     * WARNING: This is a DEMO derivation for the offline MVP only.
+     * It is NOT BIP39/BIP44 compliant and MUST NOT be used with real cryptocurrency.
+     * For production: replace with proper PBKDF2 + secp256k1/ed25519 HD key derivation
+     * (e.g., web3j or bitcoinj libraries).
      */
     fun mnemonicToAddress(mnemonic: String): String {
         val digest = MessageDigest.getInstance("SHA-256")
@@ -275,6 +279,11 @@ object WalletUtils {
 
     /**
      * Validate that a mnemonic phrase has the expected word count and all words are in the word list.
+     * NOTE: Full BIP39 checksum validation requires the complete 2048-word list and entropy byte
+     * extraction — integrate a BIP39 library before handling real assets.
+     *
+     * Accepts both 12-word (128-bit entropy) and 24-word (256-bit entropy) phrases to support
+     * restoration of wallets created by BIP39-compliant apps. This app generates 12-word phrases.
      */
     fun isValidMnemonic(mnemonic: String): Boolean {
         val words = mnemonic.trim().lowercase().split("\\s+".toRegex())

@@ -23,17 +23,40 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import com.sovereign.wallet.viewmodels.WalletViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
+private const val MAX_PIN_ATTEMPTS = 5
+private const val LOCKOUT_DURATION_MS = 30_000L // 30 seconds
 
 @Composable
 fun LockScreen(viewModel: WalletViewModel) {
     val isPinEnabled by viewModel.isPinEnabled.collectAsState()
     val isBiometricEnabled by viewModel.isBiometricEnabled.collectAsState()
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
     var pinInput by remember { mutableStateOf("") }
     var showPin by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var attempts by remember { mutableStateOf(0) }
+    var isLockedOut by remember { mutableStateOf(false) }
+    var lockoutSecondsRemaining by remember { mutableStateOf(0) }
+
+    fun startLockout() {
+        isLockedOut = true
+        lockoutSecondsRemaining = (LOCKOUT_DURATION_MS / 1000).toInt()
+        errorMessage = null
+        coroutineScope.launch {
+            while (lockoutSecondsRemaining > 0) {
+                delay(1000L)
+                lockoutSecondsRemaining--
+            }
+            isLockedOut = false
+            attempts = 0
+            errorMessage = null
+        }
+    }
 
     fun tryBiometric() {
         val activity = context as? FragmentActivity ?: return
@@ -123,50 +146,70 @@ fun LockScreen(viewModel: WalletViewModel) {
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Column(Modifier.padding(20.dp)) {
-                        OutlinedTextField(
-                            value = pinInput,
-                            onValueChange = {
-                                if (it.length <= 8) {
-                                    pinInput = it
-                                    errorMessage = null
-                                }
-                            },
-                            label = { Text("Enter PIN") },
-                            visualTransformation = if (showPin) VisualTransformation.None else PasswordVisualTransformation(),
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
-                            singleLine = true,
-                            modifier = Modifier.fillMaxWidth(),
-                            isError = errorMessage != null,
-                            supportingText = errorMessage?.let { { Text(it, color = MaterialTheme.colorScheme.error) } },
-                            trailingIcon = {
-                                IconButton(onClick = { showPin = !showPin }) {
-                                    Icon(
-                                        if (showPin) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(18.dp)
-                                    )
-                                }
+                        if (isLockedOut) {
+                            // Show lockout countdown
+                            Surface(
+                                shape = RoundedCornerShape(8.dp),
+                                color = MaterialTheme.colorScheme.error.copy(alpha = 0.12f),
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(
+                                    text = "🔒 Too many failed attempts. Try again in ${lockoutSecondsRemaining}s.",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.error,
+                                    modifier = Modifier.padding(12.dp)
+                                )
                             }
-                        )
-
-                        Spacer(Modifier.height(12.dp))
-
-                        Button(
-                            onClick = {
-                                if (viewModel.verifyPin(pinInput)) {
-                                    viewModel.unlock()
-                                } else {
-                                    attempts++
-                                    errorMessage = if (attempts >= 3)
-                                        "Too many attempts. Check your backup phrase."
-                                    else
-                                        "Incorrect PIN. ${3 - attempts} attempt(s) remaining."
-                                    pinInput = ""
+                        } else {
+                            OutlinedTextField(
+                                value = pinInput,
+                                onValueChange = {
+                                    if (it.length <= 8) {
+                                        pinInput = it
+                                        errorMessage = null
+                                    }
+                                },
+                                label = { Text("Enter PIN") },
+                                visualTransformation = if (showPin) VisualTransformation.None else PasswordVisualTransformation(),
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+                                singleLine = true,
+                                modifier = Modifier.fillMaxWidth(),
+                                isError = errorMessage != null,
+                                supportingText = errorMessage?.let { msg ->
+                                    { Text(msg, color = MaterialTheme.colorScheme.error) }
+                                },
+                                trailingIcon = {
+                                    IconButton(onClick = { showPin = !showPin }) {
+                                        Icon(
+                                            if (showPin) Icons.Filled.VisibilityOff else Icons.Filled.Visibility,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(18.dp)
+                                        )
+                                    }
                                 }
-                            },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text("Unlock", fontWeight = FontWeight.Bold)
+                            )
+
+                            Spacer(Modifier.height(12.dp))
+
+                            Button(
+                                onClick = {
+                                    if (viewModel.verifyPin(pinInput)) {
+                                        viewModel.unlock()
+                                    } else {
+                                        attempts++
+                                        if (attempts >= MAX_PIN_ATTEMPTS) {
+                                            startLockout()
+                                        } else {
+                                            val remaining = MAX_PIN_ATTEMPTS - attempts
+                                            errorMessage = "Incorrect PIN. $remaining attempt(s) remaining."
+                                        }
+                                        pinInput = ""
+                                    }
+                                },
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text("Unlock", fontWeight = FontWeight.Bold)
+                            }
                         }
                     }
                 }

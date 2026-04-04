@@ -1,6 +1,7 @@
 package com.sovereign.wallet
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.padding
@@ -24,6 +25,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
+        // Prevent screenshots and screen recording of sensitive wallet data
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
         setContent {
             val walletViewModel: WalletViewModel = viewModel()
             val isDarkMode by walletViewModel.isDarkMode.collectAsState()
