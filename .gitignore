@@ -1,0 +1,26 @@
+# Android build artifacts
+.gradle/
+build/
+app/build/
+*.apk
+*.aab
+*.aar
+*.class
+*.dex
+
+# Local configuration
+local.properties
+*.keystore
+*.jks
+
+# IDE files
+.idea/
+*.iml
+.DS_Store
+*.swp
+
+# Gradle wrapper (keep properties but exclude jars)
+gradle/wrapper/gradle-wrapper.jar
+
+# Captured screenshots
+captures/

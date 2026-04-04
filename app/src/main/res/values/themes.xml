@@ -1,0 +1,8 @@
+<resources>
+    <style name="Theme.Sovereign" parent="android:Theme.Material.Light.NoActionBar"/>
+    <style name="Theme.Sovereign.SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@android:color/black</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="postSplashScreenTheme">@style/Theme.Sovereign</item>
+    </style>
+</resources>

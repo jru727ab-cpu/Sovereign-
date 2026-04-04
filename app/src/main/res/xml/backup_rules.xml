@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <!-- Exclude wallet prefs from backup to prevent key leaks -->
+    <exclude domain="sharedpref" path="wallet_prefs.xml"/>
+    <exclude domain="file" path="."/>
+</full-backup-content>
