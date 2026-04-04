@@ -508,7 +508,7 @@ function secretCardHTML(s) {
   const actionBtn = isUnlocked ? ''
     : isPending ? `<button class="btn-sm btn-muted" disabled>Decrypting&hellip;</button>`
     : s.purchasable
-      ? `<button class="btn-sm btn-purple" onclick="purchaseSecret('${escAttr(s.id)}')">Purchase ${escHtml(s.price)}</button>`
+      ? `<button class="btn-sm btn-purple js-purchase" data-secret-id="${escAttr(s.id)}">Purchase ${escHtml(s.price)}</button>`
       : `<button class="btn-sm btn-muted" disabled>Earn via ${escHtml(s.earn)}</button>`;
 
   return `
@@ -554,7 +554,7 @@ function renderStore() {
       <div class="secret-hint">${escHtml(s.hint)}</div>
       <div style="font-size:0.75rem; color:var(--green); margin:6px 0;">&#9889; ${escHtml(s.effect)}</div>
       <div style="font-size:0.7rem; color:var(--muted); margin-bottom:8px;">Free earn path: ${escHtml(s.earn)}</div>
-      <button class="btn-sm btn-gold" onclick="purchaseSecret('${escAttr(s.id)}')">Unlock Now &mdash; ${escHtml(s.price)}</button>
+      <button class="btn-sm btn-gold js-purchase" data-secret-id="${escAttr(s.id)}">Unlock Now &mdash; ${escHtml(s.price)}</button>
     </div>`;
   }).join('');
 }
@@ -592,7 +592,7 @@ function sendExpedition() {
   }, 2000);
 }
 
-// ── Toast ──
+// ── Toast — uses textContent (not innerHTML), so rendered text is always safe ──
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -610,6 +610,14 @@ function escHtml(str) {
 function escAttr(str) {
   return String(str).replace(/[^a-zA-Z0-9_-]/g, '');
 }
+
+// ── Event delegation: purchase buttons (data-secret-id attribute, no inline JS) ──
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('.js-purchase');
+  if (!btn) return;
+  const id = btn.getAttribute('data-secret-id');
+  if (id) purchaseSecret(id);
+});
 
 // ── Init ──
 renderSecrets();

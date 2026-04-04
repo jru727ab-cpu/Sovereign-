@@ -67,7 +67,27 @@ class SecretsViewModel(
     private val _forecastStage = MutableStateFlow(ForecastStage.SILENCE)
     val forecastStage: StateFlow<ForecastStage> = _forecastStage.asStateFlow()
 
+    // Track daily unlock pacing: store the calendar date string ("yyyy-MM-dd") of the last reset.
+    private var lastResetDate: String = todayDateString()
     private var unlockedTodayCount = 0
+
+    /** Returns today's date as a simple "yyyy-MM-dd" string for day-boundary detection. */
+    private fun todayDateString(): String {
+        val cal = java.util.Calendar.getInstance()
+        val year  = cal.get(java.util.Calendar.YEAR)
+        val month = cal.get(java.util.Calendar.MONTH) + 1          // MONTH is 0-based
+        val day   = cal.get(java.util.Calendar.DAY_OF_MONTH)
+        return "$year-${month.toString().padStart(2,'0')}-${day.toString().padStart(2,'0')}"
+    }
+
+    /** Reset daily counter if the calendar day has changed since the last call. */
+    private fun maybeResetDailyCount() {
+        val today = todayDateString()
+        if (today != lastResetDate) {
+            unlockedTodayCount = 0
+            lastResetDate = today
+        }
+    }
 
     // ------------------------------------------------------------------
     // Evaluate which secrets a player has earned (call on login / resume)
@@ -113,6 +133,7 @@ class SecretsViewModel(
     // ------------------------------------------------------------------
 
     private fun beginUnlock(state: SecretState): SecretState {
+        maybeResetDailyCount()
         if (unlockedTodayCount >= dailyUnlockLimit) return state  // pacing limit
 
         val delayMs = state.secret.unlockDelayHours * 3_600_000L
@@ -132,12 +153,15 @@ class SecretsViewModel(
     // ------------------------------------------------------------------
 
     fun tick() {
+        maybeResetDailyCount()
         val now = clock()
         _secretStates.value = _secretStates.value.map { state ->
             if (state.status == UnlockStatus.PENDING_UNLOCK &&
                 state.pendingUnlockAtEpoch != null &&
                 now >= state.pendingUnlockAtEpoch
             ) {
+                // Count this delayed unlock against the daily limit when it actually resolves.
+                unlockedTodayCount++
                 state.copy(status = UnlockStatus.UNLOCKED, pendingUnlockAtEpoch = null)
             } else {
                 state
