@@ -1,0 +1,20 @@
+# Android build artifacts
+.gradle/
+build/
+app/build/
+local.properties
+*.apk
+*.aab
+*.aar
+
+# IDE
+.idea/
+*.iml
+.DS_Store
+
+# Keystore
+*.jks
+*.keystore
+
+# Gradle wrapper jar (binary — committed separately if needed)
+# gradle/wrapper/gradle-wrapper.jar

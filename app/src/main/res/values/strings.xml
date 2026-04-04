@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">CIVILTAS</string>
+    <string name="secrets_library_title">Secrets Library</string>
+    <string name="store_title">Continuity Store</string>
+    <string name="locked">LOCKED</string>
+    <string name="unlocked">UNLOCKED</string>
+    <string name="obtain_secret">Obtain Secret</string>
+    <string name="earn_label">Earn</string>
+    <string name="purchase_label">Purchase</string>
+    <string name="forecast_label">Forecast Confidence</string>
+</resources>
