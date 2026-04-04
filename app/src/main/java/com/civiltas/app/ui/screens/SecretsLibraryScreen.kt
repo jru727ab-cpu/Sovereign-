@@ -297,7 +297,7 @@ fun CategoryFilterRow(
     selected: SecretCategory?,
     onSelect: (SecretCategory?) -> Unit
 ) {
-    val categories = listOf(null) + SecretCategory.values().toList()
+    val categories = listOf(null) + SecretCategory.entries
     Row(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.fillMaxWidth()
