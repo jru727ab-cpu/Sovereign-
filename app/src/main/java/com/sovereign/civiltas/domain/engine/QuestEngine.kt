@@ -28,10 +28,11 @@ object QuestEngine {
 
     fun claimQuest(quest: Quest, state: GameState): GameState {
         if (!checkQuestCompletion(quest, state)) return state
+        // Quests track cumulative production milestones — resources are not consumed on claim,
+        // only rewards are granted.
         return state.copy(
-            ore = state.ore + quest.rewardOre - quest.requireOre,
-            stone = state.stone + quest.rewardStone - quest.requireStone,
-            knowledge = state.knowledge,
+            ore = state.ore + quest.rewardOre,
+            stone = state.stone + quest.rewardStone,
             xp = state.xp + quest.rewardXp,
             skillPoints = state.skillPoints + quest.rewardSkillPoints,
             completedQuestIds = state.completedQuestIds + quest.id

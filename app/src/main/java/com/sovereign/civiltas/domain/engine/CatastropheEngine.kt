@@ -4,12 +4,14 @@ import com.sovereign.civiltas.domain.model.GameState
 
 object CatastropheEngine {
     const val SEASON_DURATION_SECONDS = 7 * 24 * 3600 // 7 days per season
+    private const val DAYS_PER_SEASON = 7
+    private const val SECONDS_PER_DAY = 86400
 
     fun tick(state: GameState, deltaSeconds: Double): GameState {
         val increment = (deltaSeconds / SEASON_DURATION_SECONDS).toFloat()
         val newProgress = (state.catastropheProgress + increment).coerceIn(0f, 1f)
-        val newDay = (state.catastropheSeasonDay + (deltaSeconds / 86400).toInt())
-            .coerceAtMost(7)
+        val newDay = (state.catastropheSeasonDay + (deltaSeconds / SECONDS_PER_DAY).toInt())
+            .coerceAtMost(DAYS_PER_SEASON)
 
         return if (newProgress >= 1f) {
             // Season rollover - catastrophe event triggered

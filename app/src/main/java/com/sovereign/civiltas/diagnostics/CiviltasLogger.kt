@@ -4,7 +4,8 @@ import android.util.Log
 
 object CiviltasLogger {
     private const val TAG = "CIVILTAS"
-    private val buffer = ArrayDeque<String>(200)
+    private const val MAX_LOG_ENTRIES = 200
+    private val buffer = ArrayDeque<String>(MAX_LOG_ENTRIES)
 
     fun d(msg: String) { log("D", msg) }
     fun i(msg: String) { log("I", msg) }
@@ -16,7 +17,7 @@ object CiviltasLogger {
 
     private fun log(level: String, msg: String) {
         val entry = "[$level] ${System.currentTimeMillis()} $msg"
-        if (buffer.size >= 200) buffer.removeFirst()
+        if (buffer.size >= MAX_LOG_ENTRIES) buffer.removeFirst()
         buffer.addLast(entry)
         Log.d(TAG, msg)
     }

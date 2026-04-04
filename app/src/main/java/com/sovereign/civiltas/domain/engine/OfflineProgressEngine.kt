@@ -4,6 +4,8 @@ import com.sovereign.civiltas.domain.model.GameState
 import kotlin.math.min
 
 object OfflineProgressEngine {
+    private const val XP_PER_SECOND = 0.5
+    private const val MIN_ELAPSED_MS = 0L
 
     fun computeOfflineGains(state: GameState, nowEpoch: Long): OfflineGains {
         val elapsedMs = nowEpoch - state.lastSeenEpoch
@@ -15,7 +17,7 @@ object OfflineProgressEngine {
         val oreGained = state.orePerSecond * cappedSec
         val stoneGained = state.stonePerSecond * cappedSec
         val knowledgeGained = state.knowledgePerSecond * cappedSec
-        val xpGained = (cappedSec * 0.5).toLong()
+        val xpGained = (cappedSec * XP_PER_SECOND).toLong()
 
         return OfflineGains(
             elapsedSeconds = cappedSec,

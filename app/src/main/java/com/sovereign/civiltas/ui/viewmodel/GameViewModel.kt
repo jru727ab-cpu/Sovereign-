@@ -31,7 +31,7 @@ class GameViewModel @Inject constructor(
             val saved = repo.getGameState()
             val now = System.currentTimeMillis()
             val gains = OfflineProgressEngine.computeOfflineGains(saved, now)
-            if (gains.oreGained > 0.01 || gains.stoneGained > 0.01) {
+            if (gains.oreGained > MIN_OFFLINE_GAIN_THRESHOLD || gains.stoneGained > MIN_OFFLINE_GAIN_THRESHOLD) {
                 _offlineGains.value = gains
             }
             val updated = OfflineProgressEngine.applyGains(saved, gains, now)
@@ -63,7 +63,7 @@ class GameViewModel @Inject constructor(
         val newOre = s.ore + s.orePerSecond
         val newStone = s.stone + s.stonePerSecond
         val newKnowledge = s.knowledge + s.knowledgePerSecond
-        val newXp = s.xp + 1L
+        val newXp = s.xp + ONLINE_XP_PER_TICK
         val newLevel = ResourceEngine.levelFromXp(newXp)
         val newSkillPoints = if (newLevel > s.level) s.skillPoints + 1 else s.skillPoints
         val afterCatastrophe = CatastropheEngine.tick(
@@ -162,6 +162,12 @@ class GameViewModel @Inject constructor(
         viewModelScope.launch {
             repo.saveGameState(_state.value.copy(lastSeenEpoch = System.currentTimeMillis()))
         }
+    }
+
+    companion object {
+        private const val MIN_OFFLINE_GAIN_THRESHOLD = 0.01
+        // Online tick awards 1 XP/s; offline tick awards 0.5 XP/s to reward active play
+        private const val ONLINE_XP_PER_TICK = 1L
     }
 
     override fun onCleared() {

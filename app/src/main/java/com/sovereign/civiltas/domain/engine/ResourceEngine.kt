@@ -4,13 +4,21 @@ import com.sovereign.civiltas.domain.model.GameState
 import com.sovereign.civiltas.domain.model.ALL_SKILLS
 
 object ResourceEngine {
+    private const val BASE_OFFLINE_CAP_SECONDS = 3600.0
+    private const val OFFLINE_CAP_PER_ENERGY_LEVEL = 1800.0
+    private const val BASE_ORE_RATE = 0.1
+    private const val ORE_RATE_PER_LEVEL = 0.05
+    private const val BASE_STONE_RATE = 0.05
+    private const val STONE_RATE_PER_LEVEL = 0.03
+    private const val BASE_KNOWLEDGE_RATE = 0.01
+    private const val KNOWLEDGE_RATE_PER_GNOSIS = 0.005
 
     fun computeRates(state: GameState): Rates {
         val unlockedSkills = ALL_SKILLS.filter { it.id in state.unlockedSkillIds }
         var oreMulti = 1.0
         var stoneMulti = 1.0
         var knowledgeMulti = 1.0
-        var offlineCap = 3600.0 + (state.energyUpgradeLevel * 1800.0)
+        var offlineCap = BASE_OFFLINE_CAP_SECONDS + (state.energyUpgradeLevel * OFFLINE_CAP_PER_ENERGY_LEVEL)
 
         for (skill in unlockedSkills) {
             oreMulti *= skill.effect.oreMultiplier
@@ -19,9 +27,9 @@ object ResourceEngine {
             offlineCap += skill.effect.offlineCapBonus
         }
 
-        val baseOre = 0.1 + (state.oreUpgradeLevel * 0.05)
-        val baseStone = 0.05 + (state.stoneUpgradeLevel * 0.03)
-        val baseKnowledge = 0.01 + (state.gnosisLevel * 0.005)
+        val baseOre = BASE_ORE_RATE + (state.oreUpgradeLevel * ORE_RATE_PER_LEVEL)
+        val baseStone = BASE_STONE_RATE + (state.stoneUpgradeLevel * STONE_RATE_PER_LEVEL)
+        val baseKnowledge = BASE_KNOWLEDGE_RATE + (state.gnosisLevel * KNOWLEDGE_RATE_PER_GNOSIS)
 
         return Rates(
             orePerSecond = baseOre * oreMulti,
