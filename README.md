@@ -4,7 +4,7 @@
 
 You are a survivor of a catastrophic event. Mine metals, gold, and oil. Gather knowledge.
 Unlock secrets from a hidden society that knows the *next* catastrophe is coming.
-The choice is yours: build for today, or horde for tomorrow.
+The choice is yours: build for today, or hoard for tomorrow.
 
 ---
 

@@ -85,7 +85,9 @@ class GameEngine(private val storage: StorageBackend) {
 
         // Level-up (single level at a time for simplicity)
         val newLevel = computeLevel(totalXp, s.level)
-        val remainingXp = totalXp % (newLevel * GameState.XP_PER_LEVEL)
+        // Carry excess XP into the new level: subtract the threshold that was just crossed.
+        val remainingXp = if (newLevel > s.level) totalXp - (s.level * GameState.XP_PER_LEVEL)
+                          else totalXp
 
         // Catastrophe countdown decrements with real time (not capped)
         val newCd = (s.catastropheCountdownSec - elapsedSec).coerceAtLeast(0L)

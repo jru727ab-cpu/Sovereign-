@@ -31,7 +31,7 @@ Add them in the order that delivers player value most efficiently.
 | Full building tree (10+ buildings) | Define in a data file (JSON/sealed class); engine already supports building hooks. |
 | Knowledge / research tree | Unlock tech bonuses + story. |
 | Secret Society reveal (story chapters) | Gated behind XP milestones; write lore first. |
-| Catastrophe event mechanics | Resource reset rules, survival bonuses, "horde vs build" decision. |
+| Catastrophe event mechanics | Resource reset rules, survival bonuses, "hoard vs build" decision. |
 | Expedition system | Timed runs for rare resources. |
 | Daily quests + streak system | XP bonuses; use local notifications. |
 

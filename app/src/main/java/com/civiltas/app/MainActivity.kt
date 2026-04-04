@@ -158,7 +158,7 @@ fun CatastropheCard(countdownSec: Long) {
                 fontSize = 14.sp
             )
             Text(
-                "Horde resources or build for now?",
+                "Hoard resources or build for now?",
                 color = Color.Gray,
                 fontSize = 12.sp
             )

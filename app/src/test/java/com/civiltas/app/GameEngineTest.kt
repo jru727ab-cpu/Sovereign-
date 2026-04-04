@@ -57,6 +57,8 @@ class GameEngineTest {
         // Need 100 XP (level 1 threshold): 100 XP = 1000 seconds
         engine.tick(1_000L)
         assertEquals(2, engine.state.level)
+        // Excess XP = 100 - (1 * 100) = 0 (hit threshold exactly)
+        assertEquals(0, engine.state.xp)
     }
 
     @Test
