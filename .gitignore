@@ -1,0 +1,12 @@
+# Add Android build artefacts to gitignore — never commit these
+.gradle/
+build/
+app/build/
+local.properties
+*.apk
+*.aab
+*.keystore
+*.jks
+*.iml
+.idea/
+captures/
