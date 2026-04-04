@@ -1,38 +1,413 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sovereign Command</title>
-    <style>
-        body { background: #020617; color: white; font-family: sans-serif; padding: 20px; }
-        .card { background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 12px; margin-bottom: 10px; }
-        .gold { color: #facc15; }
-        .blue { color: #38bdf8; }
-        .btn { width: 100%; padding: 15px; border-radius: 8px; border: none; font-weight: bold; margin-top: 10px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CIVILTAS</title>
+  <style>
+    /* ── Base ──────────────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #020617;
+      color: #e2e8f0;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── Top nav ────────────────────────────────────────────────────────────── */
+    .top-nav {
+      background: #0f172a;
+      border-bottom: 1px solid #1e293b;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-brand {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #facc15;
+      letter-spacing: 0.05em;
+      padding: 12px 8px 12px 0;
+      flex: 1;
+    }
+    .nav-tab {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      padding: 14px 12px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .nav-tab:hover { color: #e2e8f0; }
+    .nav-tab.active { color: #38bdf8; border-bottom-color: #38bdf8; }
+
+    /* ── Screen container ───────────────────────────────────────────────────── */
+    .screen { display: none; padding: 16px; max-width: 600px; margin: 0 auto; }
+    .screen.active { display: block; }
+
+    /* ── Common card ─────────────────────────────────────────────────────────── */
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+
+    /* ── Buttons ─────────────────────────────────────────────────────────────── */
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn-primary   { background: #38bdf8; color: #020617; }
+    .btn-success   { background: #10b981; color: #fff; }
+    .btn-gold      { background: #facc15; color: #020617; }
+    .btn-outline   { background: transparent; border: 1px solid #38bdf8; color: #38bdf8; }
+    .btn-full      { width: 100%; }
+
+    /* ── Home / Resource screen ──────────────────────────────────────────────── */
+    .resource-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; }
+    .resource-name { color: #94a3b8; font-size: 0.9rem; }
+    .resource-val  { color: #facc15; font-weight: 700; font-size: 1rem; }
+    .section-title { color: #38bdf8; font-size: 1rem; font-weight: 700; margin-bottom: 10px; }
+
+    /* ── Gnosis bar ──────────────────────────────────────────────────────────── */
+    .gnosis-track { margin-bottom: 6px; }
+    .gnosis-label { font-size: 0.8rem; color: #94a3b8; margin-bottom: 4px; }
+    .gnosis-bar-bg { background: #334155; border-radius: 4px; height: 8px; overflow: hidden; }
+    .gnosis-bar-fill { background: #a855f7; height: 100%; border-radius: 4px; transition: width 0.4s; }
+    .gnosis-rank-label { color: #a855f7; font-weight: 700; font-size: 0.85rem; }
+
+    /* ── Secrets Library ─────────────────────────────────────────────────────── */
+    .secrets-header { margin-bottom: 16px; }
+    .secrets-title  { font-size: 1.2rem; font-weight: 700; color: #facc15; margin-bottom: 4px; }
+    .secrets-subtitle { font-size: 0.85rem; color: #94a3b8; }
+
+    .secrets-forecast {
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 20px;
+      border: 1px solid #334155;
+    }
+    .secrets-forecast--blind       { background: #1e293b; }
+    .secrets-forecast--vague       { background: #1c2a1e; border-color: #22c55e44; }
+    .secrets-forecast--approximate { background: #1c2820; border-color: #22c55e88; }
+    .secrets-forecast--precise     { background: #2a1c1c; border-color: #f97316; }
+    .secrets-forecast--pinpoint    { background: #2a1420; border-color: #ef4444; }
+
+    .forecast-label { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; }
+    .forecast-level { font-size: 1.1rem; font-weight: 700; color: #e2e8f0; }
+    .forecast-desc  { font-size: 0.85rem; color: #94a3b8; margin: 4px 0; }
+    .forecast-hint  { font-size: 0.8rem; color: #64748b; margin-top: 6px; }
+
+    .secrets-category-heading {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+    }
+    .secrets-section { margin-bottom: 24px; }
+
+    .secrets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px;
+    }
+
+    .secret-card {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 14px 12px;
+      cursor: pointer;
+      transition: border-color 0.15s, transform 0.1s;
+      user-select: none;
+    }
+    .secret-card:hover { border-color: #38bdf8; transform: translateY(-2px); }
+    .secret-card:focus { outline: 2px solid #38bdf8; outline-offset: 2px; }
+    .secret-card--locked { opacity: 0.6; }
+    .secret-card--unlocked { border-color: #1e3a5f; }
+
+    .secret-card-icon  { font-size: 1.4rem; margin-bottom: 6px; }
+    .secret-card-title { font-size: 0.85rem; font-weight: 600; color: #e2e8f0; margin-bottom: 4px; }
+    .secret-card-teaser { font-size: 0.75rem; color: #64748b; line-height: 1.4; }
+
+    /* ── Secret Detail Panel ─────────────────────────────────────────────────── */
+    .secret-detail-panel {
+      background: #0f172a;
+      border: 1px solid #38bdf8;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 16px;
+      position: relative;
+    }
+    .detail-close {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      cursor: pointer;
+      color: #64748b;
+      font-size: 1rem;
+      padding: 4px;
+    }
+    .detail-close:hover { color: #e2e8f0; }
+    .detail-category { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+    .detail-title    { font-size: 1.1rem; font-weight: 700; color: #facc15; margin-bottom: 12px; }
+    .detail-body     { font-size: 0.85rem; color: #cbd5e1; line-height: 1.65; margin-bottom: 12px; white-space: pre-line; }
+    .detail-teaser   { font-size: 0.9rem; color: #94a3b8; font-style: italic; margin-bottom: 12px; line-height: 1.5; }
+    .detail-earn     { font-size: 0.8rem; color: #64748b; margin-bottom: 12px; }
+    .detail-effects  { font-size: 0.8rem; color: #a3e635; margin-bottom: 12px; }
+    .detail-effects ul { padding-left: 16px; margin-top: 4px; }
+    .detail-effects li { margin-bottom: 3px; }
+    .detail-purchase { border-top: 1px solid #1e293b; padding-top: 12px; }
+    .purchase-note   { font-size: 0.8rem; color: #64748b; margin-bottom: 8px; }
+    .detail-buy-btn  { background: #facc15; color: #020617; }
+
+    /* ── Toast notification ──────────────────────────────────────────────────── */
+    .secrets-toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      z-index: 999;
+      animation: fadeIn 0.2s ease;
+    }
+    .secrets-toast--info  { background: #1e40af; color: #fff; }
+    .secrets-toast--error { background: #7f1d1d; color: #fca5a5; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateX(-50%) translateY(8px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+  </style>
 </head>
 <body>
-    <h1>Sovereign Command</h1>
+
+  <!-- ── Navigation ──────────────────────────────────────────────────────── -->
+  <nav class="top-nav">
+    <div class="nav-brand">CIVILTAS</div>
+    <button class="nav-tab active" data-screen="home">🏗️ Base</button>
+    <button class="nav-tab" data-screen="secrets">🔒 Secrets</button>
+  </nav>
+
+  <!-- ── Home / Base Screen ──────────────────────────────────────────────── -->
+  <main id="screen-home" class="screen active">
+
+    <!-- Gnosis Track -->
     <div class="card">
-        <h3 class="blue">Admin Status: ONLINE</h3>
-        <p id="genesis">Genesis Nodes: 1/1000</p>
-    </div>
-    
-    <div class="card" style="border-left: 5px solid #10b981;">
-        <h3 class="gold">The Foundry</h3>
-        <p>Gold: <span id="gold-val">0.0000</span></p>
-        <p>Diskon: <span id="diskon-val">0.0000</span></p>
+      <div class="section-title">Gnosis Track</div>
+      <div class="gnosis-rank-label" id="gnosis-rank-label">Rank 0 — Seeker</div>
+      <div style="margin: 6px 0 8px;">
+        <div class="gnosis-label">
+          XP: <span id="gnosis-xp">0</span> /
+          <span id="gnosis-next-threshold">100</span>
+        </div>
+        <div class="gnosis-bar-bg">
+          <div class="gnosis-bar-fill" id="gnosis-bar" style="width:0%"></div>
+        </div>
+      </div>
+      <button class="btn btn-outline" id="btn-study" style="font-size:0.8rem; padding:7px 14px;">
+        📖 Study (+10 Gnosis XP)
+      </button>
     </div>
 
+    <!-- Resources -->
     <div class="card">
-        <h3>Private Vault</h3>
-        <code style="font-size: 0.7rem;">bc1q_SOVEREIGN_WALLET_ADDRESS</code>
-        <button class="btn" style="background:#10b981; color:white;">WITHDRAW PROFITS</button>
+      <div class="section-title">Resources</div>
+      <div class="resource-row">
+        <span class="resource-name">🪨 Stone</span>
+        <span class="resource-val" id="res-stone">0</span>
+      </div>
+      <div class="resource-row">
+        <span class="resource-name">🪵 Wood</span>
+        <span class="resource-val" id="res-wood">0</span>
+      </div>
+      <div class="resource-row">
+        <span class="resource-name">⛏️ Ore</span>
+        <span class="resource-val" id="res-ore">0</span>
+      </div>
+      <div style="display:flex; gap:8px; margin-top: 12px; flex-wrap:wrap;">
+        <button class="btn btn-success" id="btn-mine-stone" style="flex:1; min-width:80px;">Mine Stone</button>
+        <button class="btn btn-success" id="btn-mine-wood"  style="flex:1; min-width:80px;">Chop Wood</button>
+        <button class="btn btn-success" id="btn-mine-ore"   style="flex:1; min-width:80px;">Mine Ore</button>
+      </div>
     </div>
 
-    <div id="navigator" class="card" style="background:#0f172a; border: 1px solid #facc15;">
-        <p class="gold"><b>CEO NAVIGATOR:</b></p>
-        <p style="font-size:0.8rem;">1. Upload this file to GitHub.<br>2. Run 'engine.py' in Termux.<br>3. Watch your wealth grow.</p>
+    <!-- Milestones (demo) -->
+    <div class="card">
+      <div class="section-title">Milestones</div>
+      <p style="font-size:0.82rem; color:#64748b; margin-bottom:10px;">
+        Complete milestones to earn Secrets for free.
+      </p>
+      <button class="btn btn-outline btn-full" id="btn-build-library" style="margin-bottom:6px;">
+        🏛️ Build Library (requires 50 Stone + 30 Wood)
+      </button>
+      <div style="font-size:0.75rem; color:#64748b;" id="milestone-status">
+        Library: not yet built
+      </div>
     </div>
+
+    <!-- Catastrophe Forecast summary (links to Secrets tab) -->
+    <div class="card" id="home-forecast-card">
+      <div class="section-title">🌀 Catastrophe Forecast</div>
+      <div id="home-forecast-level" style="font-size:1rem; font-weight:700; margin-bottom:4px;">BLIND</div>
+      <div id="home-forecast-desc" style="font-size:0.82rem; color:#94a3b8; margin-bottom:10px;"></div>
+      <button class="btn btn-outline" id="btn-go-secrets" style="font-size:0.82rem; padding:7px 14px;">
+        Open Secrets Library →
+      </button>
+    </div>
+
+    <!-- Debug: simulate catastrophe -->
+    <div class="card" style="border-color:#334155;">
+      <div class="section-title" style="color:#ef4444;">⚠️ Debug Panel</div>
+      <button class="btn" style="background:#7f1d1d; color:#fca5a5; margin-right:8px; font-size:0.8rem; padding:7px 14px;" id="btn-catastrophe">
+        Simulate Catastrophe (–30% resources)
+      </button>
+      <button class="btn btn-outline" style="font-size:0.8rem; padding:7px 14px; border-color:#64748b; color:#64748b;" id="btn-reset">
+        Reset Save
+      </button>
+    </div>
+
+  </main>
+
+  <!-- ── Secrets Screen ──────────────────────────────────────────────────── -->
+  <main id="screen-secrets" class="screen">
+    <div id="secrets-library-root"></div>
+  </main>
+
+  <!-- ── App bootstrap ───────────────────────────────────────────────────── -->
+  <script type="module">
+    import {
+      getState, awardGnosisXp, mineResource, completeMilestone,
+      applyCatastropheEvent, getGameSummary,
+    } from './js/game.js';
+    import { renderSecretsLibrary } from './js/secrets/library-ui.js';
+    import { SecretStore }          from './js/secrets/store.js';
+
+    // ── Gnosis rank names ───────────────────────────────────────────────────
+    const RANK_NAMES = ['Seeker', 'Initiate', 'Adept', 'Archivist', 'Elder Scholar', 'Keeper'];
+    const RANK_THRESHOLDS = [0, 100, 300, 700, 1500, 3000];
+
+    // ── Tab navigation ──────────────────────────────────────────────────────
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const screen = tab.dataset.screen;
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(`screen-${screen}`).classList.add('active');
+        if (screen === 'secrets') renderSecretsLibrary(document.getElementById('secrets-library-root'));
+      });
+    });
+
+    // ── Render helpers ──────────────────────────────────────────────────────
+    function refreshUI() {
+      const { state, forecast } = getGameSummary();
+
+      // Resources
+      document.getElementById('res-stone').textContent = Math.floor(state.resources.stone);
+      document.getElementById('res-wood').textContent  = Math.floor(state.resources.wood);
+      document.getElementById('res-ore').textContent   = Math.floor(state.resources.ore);
+
+      // Gnosis
+      const rank      = state.gnosisRank;
+      const xp        = state.gnosisXp;
+      const threshold = RANK_THRESHOLDS[Math.min(rank + 1, RANK_THRESHOLDS.length - 1)];
+      const prevThreshold = RANK_THRESHOLDS[rank];
+      const pct = rank >= RANK_NAMES.length - 1 || threshold === prevThreshold
+        ? 100
+        : Math.min(100, ((xp - prevThreshold) / (threshold - prevThreshold)) * 100);
+
+      document.getElementById('gnosis-rank-label').textContent =
+        `Rank ${rank} — ${RANK_NAMES[rank] ?? 'Master'}`;
+      document.getElementById('gnosis-xp').textContent       = Math.floor(xp);
+      document.getElementById('gnosis-next-threshold').textContent = threshold;
+      document.getElementById('gnosis-bar').style.width       = `${pct}%`;
+
+      // Forecast
+      document.getElementById('home-forecast-level').textContent = forecast.level;
+      document.getElementById('home-forecast-desc').textContent  = forecast.description;
+
+      // Milestone status
+      const libraryBuilt = state.milestones.includes('library_built');
+      document.getElementById('milestone-status').textContent =
+        libraryBuilt ? '✅ Library: built' : 'Library: not yet built';
+      document.getElementById('btn-build-library').disabled = libraryBuilt;
+    }
+
+    // ── Button handlers ─────────────────────────────────────────────────────
+    document.getElementById('btn-study').addEventListener('click', () => {
+      awardGnosisXp(10);
+      refreshUI();
+    });
+
+    ['stone', 'wood', 'ore'].forEach(res => {
+      document.getElementById(`btn-mine-${res}`).addEventListener('click', () => {
+        mineResource(res, 10);
+        refreshUI();
+      });
+    });
+
+    document.getElementById('btn-build-library').addEventListener('click', () => {
+      const s = getState();
+      if (s.resources.stone < 50 || s.resources.wood < 30) {
+        alert('Not enough resources! Need 50 Stone + 30 Wood.');
+        return;
+      }
+      completeMilestone('library_built');
+      refreshUI();
+    });
+
+    document.getElementById('btn-go-secrets').addEventListener('click', () => {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.querySelector('[data-screen="secrets"]').classList.add('active');
+      document.getElementById('screen-secrets').classList.add('active');
+      renderSecretsLibrary(document.getElementById('secrets-library-root'));
+    });
+
+    document.getElementById('btn-catastrophe').addEventListener('click', () => {
+      applyCatastropheEvent(0.30);
+      refreshUI();
+      alert('⚠️ Catastrophe struck! Resources reduced.');
+    });
+
+    document.getElementById('btn-reset').addEventListener('click', () => {
+      if (!confirm('Reset all progress? This cannot be undone.')) return;
+      SecretStore._debugReset();
+      localStorage.removeItem('civiltas_game_state');
+      location.reload();
+    });
+
+    // ── React to secret unlocks ─────────────────────────────────────────────
+    window.addEventListener('secretUnlocked', ({ detail }) => {
+      const id = detail.secretId;
+      // Show a brief notification
+      const toast = document.createElement('div');
+      toast.className = 'secrets-toast secrets-toast--info';
+      toast.textContent = `🔓 Secret unlocked: ${id.replace(/_/g, ' ')}`;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 4000);
+      refreshUI();
+    });
+
+    // ── Initial render ──────────────────────────────────────────────────────
+    refreshUI();
+  </script>
 </body>
 </html>
