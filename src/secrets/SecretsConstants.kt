@@ -52,7 +52,7 @@ object SecretsConstants {
     // ── Forecast Meter ───────────────────────────────────────────────────────
     const val FORECAST_LABEL       = "Catastrophe Forecast"
     const val FORECAST_UNKNOWN     = "Unknown — Collect Order Dossiers to increase confidence"
-    const val FORECAST_FORMAT      = "%d %% confidence"
+    const val FORECAST_FORMAT      = "%d%% confidence"
     const val FORECAST_FULL        = "Forecast resolved — consult the Archon's Mandate"
 
     // ── Sacred Geometry ──────────────────────────────────────────────────────
