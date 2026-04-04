@@ -34,7 +34,7 @@ class WalletViewModel @Inject constructor() : ViewModel() {
             _uiState.update { it.copy(isConnecting = true, connectionStatus = "Connecting…") }
             // TODO: replace with real WalletConnect / deep-link handshake
             Timber.i("WalletViewModel: connecting to $address (stub)")
-            kotlinx.coroutines.delay(1_000)
+            kotlinx.coroutines.delay(CONNECT_STUB_DELAY_MS)
             _uiState.update {
                 it.copy(
                     connectedAddress = address.ifBlank { null },
@@ -52,5 +52,9 @@ class WalletViewModel @Inject constructor() : ViewModel() {
 
     fun setColdWalletAddress(address: String) {
         _uiState.update { it.copy(coldWalletAddress = address) }
+    }
+
+    companion object {
+        private const val CONNECT_STUB_DELAY_MS = 1_000L
     }
 }

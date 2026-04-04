@@ -26,10 +26,13 @@ class CiviltasLogger @Inject constructor(
                     stackTrace = t?.stackTraceToString()
                 )
             )
-            // Prune old logs (keep last 7 days)
-            val cutoff = System.currentTimeMillis() - 7 * 24 * 60 * 60 * 1000L
+            val cutoff = System.currentTimeMillis() - PRUNE_AGE_MILLIS
             diagnosticLogDao.pruneOlderThan(cutoff)
         }
+    }
+
+    companion object {
+        private const val PRUNE_AGE_MILLIS = 7 * 24 * 60 * 60 * 1000L
     }
 
     fun info(tag: String, message: String) {

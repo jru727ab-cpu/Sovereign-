@@ -31,7 +31,7 @@ class GameRepository @Inject constructor(
             buildingDao.upsertAll(BuildingType.entries.map { bt ->
                 BuildingEntity(type = bt.name, isUnlocked = bt == BuildingType.MINE)
             })
-            val tomorrow = System.currentTimeMillis() + 24 * 60 * 60 * 1000L
+            val tomorrow = System.currentTimeMillis() + ONE_DAY_MILLIS
             dailyTaskDao.upsertAll(defaultDailyTasks.map { it.toEntity(tomorrow) })
         }
     }
@@ -53,7 +53,7 @@ class GameRepository @Inject constructor(
     suspend fun applyOfflineEarnings() {
         val player = playerDao.getPlayer() ?: return
         val now = System.currentTimeMillis()
-        val elapsedHours = (now - player.lastActiveTimestamp) / 3_600_000.0
+        val elapsedHours = (now - player.lastActiveTimestamp) / MILLIS_PER_HOUR
         val cappedHours = min(elapsedHours, MAX_OFFLINE_HOURS)
         if (cappedHours < 0.01) return
 
@@ -103,7 +103,7 @@ class GameRepository @Inject constructor(
 
     suspend fun resetExpiredTasks() {
         val now = System.currentTimeMillis()
-        val tomorrow = now + 24 * 60 * 60 * 1000L
+        val tomorrow = now + ONE_DAY_MILLIS
         dailyTaskDao.resetExpiredTasks(now, tomorrow)
     }
 
@@ -111,6 +111,8 @@ class GameRepository @Inject constructor(
         const val MAX_OFFLINE_HOURS = 8.0
         const val XP_PER_HOUR = 20.0
         const val XP_PER_UPGRADE = 50L
+        const val MILLIS_PER_HOUR = 3_600_000.0
+        const val ONE_DAY_MILLIS = 24 * 60 * 60 * 1000L
 
         fun defaultMiningRate(type: ResourceType): Double = when (type) {
             ResourceType.IRON -> 10.0
