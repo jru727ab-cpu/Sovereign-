@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Sovereign Wallet</string>
+    <string name="bug_cleaner_title">Bug Cleaner</string>
+    <string name="bug_cleaner_description">Keep your wallet running smoothly by clearing temporary files and checking app integrity.</string>
+    <string name="clean_now">Clean Now</string>
+    <string name="cleaning_in_progress">Cleaning in progress…</string>
+    <string name="cache_cleared">Cache cleared successfully.</string>
+    <string name="cache_clear_failed">Failed to clear cache.</string>
+    <string name="integrity_ok">File &amp; database integrity: OK</string>
+    <string name="diagnostics_ok">App diagnostics: OK</string>
+    <string name="results_label">Results</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_bug_cleaner">Bug Cleaner</string>
+</resources>

@@ -1,0 +1,16 @@
+# Android build outputs
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+
+# App module build outputs
+app/build/
+
+# Gradle wrapper jar (committed separately if needed, but usually excluded)
+gradle/wrapper/gradle-wrapper.jar
