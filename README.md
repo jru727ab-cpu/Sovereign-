@@ -1,152 +1,185 @@
-# CIVILTAS — Android Idle Mining & Civilization Game
+# Sovereign — Rebuild. Discover. Survive.
 
-> *Mine resources, rebuild civilization, uncover the hidden Gnosis — before the next catastrophe strikes.*
+> **Status: Early Development / Work In Progress**
+
+Sovereign is a mobile-first idle/strategy game where players lead a fledgling civilization that has just survived a world-ending catastrophe. Mine real-earth resources, construct buildings, unearth ancient knowledge — and prepare for the catastrophe that is already on its way.
 
 ---
 
 ## Table of Contents
-- [About](#about)
-- [Core Loop](#core-loop)
-- [Getting Started](#getting-started)
-- [Architecture](#architecture)
-- [Feature Flags](#feature-flags)
-- [Cost Controls](#cost-controls)
-- [Monetization](#monetization)
-- [Contributing](#contributing)
+
+1. [Concept](#concept)
+2. [Core Gameplay Loops](#core-gameplay-loops)
+3. [XP & Progression](#xp--progression)
+4. [Monetization](#monetization)
+5. [Roadmap](#roadmap)
+6. [Development Setup](#development-setup)
+7. [Contributing](#contributing)
 
 ---
 
-## About
+## Concept
 
-CIVILTAS is an Android idle/incremental game where players:
+The world ended. Almost.
 
-1. **Mine earth resources** — metals, gold, oil, rare minerals — through passive idle collection.
-2. **Rebuild civilization** — construct buildings, research technologies, and grow your settlement after a catastrophic collapse.
-3. **Discover hidden Gnosis** — uncover esoteric knowledge held by a secret society that knows the next catastrophe is coming.
-4. **Survive or hoard** — decide whether to build for now or stockpile for the next world-ending event.
+A small group of survivors — your civilization — clawed their way out of the rubble. Resources are scarce. The land must be excavated for metals, crude oil, and precious minerals. Knowledge of the old world must be rediscovered piece by piece.
 
-The game is designed to be **fully playable offline**. Online/cloud features are optional add-ons, never a requirement to enjoy the core experience.
+But a **Secret Society** already knows what comes next. They possess ancient Gnosis: forbidden records of past catastrophes that run in cycles. The next event is not centuries away — it is closer than anyone dares admit.
 
----
+Players face a constant tension:
 
-## Core Loop
+| Build for Now | Prepare for Next |
+|---|---|
+| Expand cities and infrastructure | Stockpile rare resources |
+| Grow your population | Fortify your vaults |
+| Pursue daily comfort | Seek out the Secret Society |
 
-```
-Wake up → Collect idle resources → Spend on buildings/research
-       → Uncover knowledge clues → React to Catastrophe Forecast meter
-       → Sleep → (offline progress continues)
-```
-
-**XP / Progression sources:**
-- Mining runs (idle + active)
-- Building construction & upgrades
-- Research completions
-- Expedition outcomes
-- Daily goals & streaks
-- Secret Society rank advancement
+The choices you make today shape whether your civilization merely survives — or transcends.
 
 ---
 
-## Getting Started
+## Core Gameplay Loops
 
-### Prerequisites
-- Android Studio Hedgehog (2023.1.1) or later
-- Android SDK 26+
-- Java 17 / Kotlin 1.9+
+See [docs/gameplay.md](docs/gameplay.md) for full details.
 
-### Build
+### Resource Mining
+- Tap/idle-mine surface deposits of **iron, copper, gold, silver, crude oil, rare earth elements**, and more.
+- Deeper drills and upgraded rigs unlock rarer materials.
+- Resources are used for construction, research, and trade.
 
-```bash
-# Debug APK (no signing key needed)
-./gradlew assembleDebug
+### Building & Infrastructure
+- Construct Foundries, Refineries, Academies, Vaults, and Sanctuaries.
+- Buildings increase passive resource production and unlock new game content.
+- Balance population needs vs. war-chest hoarding.
 
-# Run unit tests
-./gradlew test
-```
+### Knowledge & Gnosis
+- Research **Tech Trees** to unlock science-based upgrades.
+- Discover hidden **Gnosis Fragments** through exploration events and Secret Society quests.
+- Gnosis unlocks the meta-narrative: the true history of the catastrophe cycle.
 
-The debug APK runs fully offline with no external accounts required.
-
----
-
-## Architecture
-
-CIVILTAS follows an **offline-first** architecture:
-
-```
-UI (Jetpack Compose)
-       │
-ViewModel (StateFlow)
-       │
-Repository
- ├── LocalDataSource  ← Room DB (always active, offline)
- └── RemoteDataSource ← Feature-flagged; disabled by default
-```
-
-The phone is always the **source of truth**. Remote sync is a convenience mirror, never required.
-
-See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the full design.
+### The Catastrophe Cycle
+- Periodic **world events** test your civilization's readiness.
+- Players who stockpiled and built defenses survive with bonuses.
+- Players who ignored warnings face resource penalties and narrative consequences.
+- The cycle resets, raising stakes each time.
 
 ---
 
-## Feature Flags
+## XP & Progression
 
-All optional (potentially paid) services are controlled by a single config file:
+See [docs/progression.md](docs/progression.md) for full details.
 
-**`feature_flags.json`** (repo root; copy to `app/src/main/assets/feature_flags.json` when the Android project is scaffolded)
+| Source | XP Reward |
+|---|---|
+| Mine a resource node | 10–50 XP |
+| Complete a building | 100–500 XP |
+| Finish a quest | 200–1 000 XP |
+| Daily login streak | 50–500 XP (streak bonus) |
+| Survive a catastrophe event | 1 000–5 000 XP |
+| Unlock a Gnosis Fragment | 250 XP |
 
-```json
-{
-  "online_sync_enabled": false,
-  "crash_reporting_enabled": false,
-  "analytics_enabled": false,
-  "ads_enabled": false,
-  "payments_enabled": false,
-  "cloud_backup_enabled": false
-}
-```
+**Offline / Idle Progress**: resources and low-level XP continue to accumulate while the app is closed. Players return to collect their bounty, reinforcing a daily check-in habit.
 
-**Default: everything is `false`.** The game works completely without enabling any flag.
-Enable only what you need, when you need it. See [`docs/COST_CONTROLS.md`](docs/COST_CONTROLS.md) for free-tier options for each service.
-
----
-
-## Cost Controls
-
-Running CIVILTAS with **zero ongoing cost** is fully supported. See the dedicated guide:
-
-📄 **[docs/COST_CONTROLS.md](docs/COST_CONTROLS.md)**
-
-Quick summary:
-| Service | Default | Free Option |
-|---|---|---|
-| Data storage | ✅ Room (local) | Room DB — free forever |
-| Crash reporting | ❌ disabled | Firebase Crashlytics free tier (when enabled) |
-| Analytics | ❌ disabled | Firebase Analytics free tier (when enabled) |
-| Cloud sync | ❌ disabled | Firebase Firestore free tier (when enabled) |
-| Ads | ❌ disabled | AdMob rewarded ads only (when enabled) |
-| Payments | ❌ disabled | Google Play Billing (when enabled) |
-| CI security scan | ✅ CodeQL | GitHub CodeQL — free for public repos |
+**Prestige / Rebirth**: after reaching the level cap, players can "Prestige" — resetting their civilization but carrying permanent bonuses and exclusive cosmetics into the next cycle.
 
 ---
 
 ## Monetization
 
-CIVILTAS uses a **player-friendly** monetization model:
+See [docs/monetization.md](docs/monetization.md) for full details.
 
-1. **Season Pass** — Each "Catastrophe Cycle" is a season with a free + paid reward track. Paid track unlocks cosmetics, story chapters, and convenience (not power).
-2. **One-time IAP bundles** — Starter pack, cosmetic packs, "Remove Ads" permanent purchase.
-3. **Rewarded ads only** — Players *choose* to watch a short ad to double idle collection or skip a small wait. No forced interstitials.
-4. **VIP subscription** — Small daily premium currency, extra offline cap, exclusive skins.
+**Guardrails:** No cryptocurrency. No pay-to-win mechanics that break game balance. All gameplay-affecting items must be earnable through play.
 
-**No pay-to-win.** Core progression is always achievable for free.
+| Category | Examples |
+|---|---|
+| Cosmetics (IAP) | City skins, drill rigs, flag designs, avatar frames |
+| Boost Packs (IAP) | Temporary 2× production boosts (available through gameplay too) |
+| Optional Subscription | "Sovereign Pass" — cosmetics + QoL features, no power advantage |
+| Rewarded Ads | Watch an ad to double a single mining run |
+| Season Pass | Themed content drops tied to the catastrophe cycle narrative |
+
+---
+
+## Roadmap
+
+### MVP (v0.1 — v0.5)
+- [x] Basic HTML prototype shell (`index.html`)
+- [ ] Core resource mining loop (tap + idle)
+- [ ] 5 starting resources (iron, copper, gold, oil, stone)
+- [ ] Basic building system (Foundry, Mine Shaft, Academy)
+- [ ] XP bar and first 20 levels
+- [ ] Daily login streak tracker
+- [ ] Local data persistence (localStorage / SQLite)
+
+### Early Access (v0.6 — v1.0)
+- [ ] Knowledge / Tech Tree (10 initial nodes)
+- [ ] First catastrophe event
+- [ ] Gnosis Fragment system (narrative unlocks)
+- [ ] Secret Society quest chain (5 quests)
+- [ ] Rewarded ads integration
+- [ ] Basic cosmetic shop
+
+### Post-Launch (v1.x+)
+- [ ] Multiplayer / alliances
+- [ ] Expanded catastrophe cycle (3 unique event types)
+- [ ] Prestige / Rebirth system
+- [ ] Sovereign Pass subscription
+- [ ] Season Pass (narrative-driven content drops)
+- [ ] Push notifications for offline progress
+- [ ] Leaderboards
+
+---
+
+## Development Setup
+
+> The project is in early development. There is currently no build pipeline — the prototype runs as a static HTML file.
+
+### Requirements
+- Any modern web browser (Chrome, Firefox, Safari)
+- A local web server (optional but recommended to avoid CORS issues)
+
+### Running Locally
+
+```bash
+# Clone the repository
+git clone https://github.com/jru727ab-cpu/Sovereign-.git
+cd Sovereign-
+
+# Option 1 — open directly in browser
+open index.html
+
+# Option 2 — serve with Python (recommended)
+python3 -m http.server 8080
+# Then open http://localhost:8080 in your browser
+
+# Option 3 — serve with Node.js
+npx serve .
+```
+
+### Repository Structure
+
+```
+Sovereign-/
+├── index.html          # Prototype UI shell
+├── README.md           # This file
+└── docs/
+    ├── gameplay.md     # Detailed gameplay loop design
+    ├── progression.md  # XP & level system design
+    └── monetization.md # Monetization strategy & guardrails
+```
 
 ---
 
 ## Contributing
 
-1. Fork the repository.
-2. Create a feature branch: `git checkout -b feature/my-feature`
-3. Commit your changes: `git commit -m "feat: describe what you did"`
-4. Push and open a Pull Request targeting `main`.
+This project is in active early design. If you have ideas for:
+- Game mechanics
+- Narrative content
+- Art direction
+- Technical architecture
 
-Please keep all optional/paid service integrations behind the feature flag system described in `docs/COST_CONTROLS.md`.
+Please open an Issue or start a Discussion in this repository.
+
+---
+
+*Sovereign — Every civilization thinks it will be the last. Prove them right.*

@@ -1,54 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio Landing Page</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Sovereign — Rebuild. Discover. Survive.</title>
+    <style>
+        body { background: #020617; color: white; font-family: sans-serif; padding: 20px; }
+        .card { background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 12px; margin-bottom: 10px; }
+        .gold { color: #facc15; }
+        .blue { color: #38bdf8; }
+        .green { color: #10b981; }
+        .btn { width: 100%; padding: 15px; border-radius: 8px; border: none; font-weight: bold; margin-top: 10px; cursor: pointer; }
+        .resource-row { display: flex; justify-content: space-between; margin: 4px 0; }
+        .label { color: #94a3b8; font-size: 0.85rem; }
+        .wip-badge { background: #f59e0b; color: #020617; font-size: 0.7rem; font-weight: bold; padding: 2px 8px; border-radius: 99px; vertical-align: middle; margin-left: 8px; }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>My Portfolio</h1>
-        <nav>
-            <ul>
-                <li><a href="#sovereign-command">Sovereign Command</a></li>
-                <li><a href="#analytics-hub">Analytics Hub</a></li>
-                <li><a href="#portfolio-builder">Portfolio Builder</a></li>
-                <li><a href="#task-management">Task Management</a></li>
-                <li><a href="#code-sandbox">Code Sandbox</a></li>
-                <li><a href="#api-management">API Management</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section id="sovereign-command">
-            <h2>Sovereign Command</h2>
-            <p>Description of the Sovereign Command project.</p>
-        </section>
-        <section id="analytics-hub">
-            <h2>Analytics Hub</h2>
-            <p>Description of the Analytics Hub project.</p>
-        </section>
-        <section id="portfolio-builder">
-            <h2>Portfolio Builder</h2>
-            <p>Description of the Portfolio Builder project.</p>
-        </section>
-        <section id="task-management">
-            <h2>Task Management</h2>
-            <p>Description of the Task Management project.</p>
-        </section>
-        <section id="code-sandbox">
-            <h2>Code Sandbox</h2>
-            <p>Description of the Code Sandbox project.</p>
-        </section>
-        <section id="api-management">
-            <h2>API Management</h2>
-            <p>Description of the API Management project.</p>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2026 My Portfolio</p>
-    </footer>
-    <script src="script.js"></script>
+    <h1>Sovereign <span class="wip-badge">WIP</span></h1>
+    <p style="color:#94a3b8; font-size:0.85rem; margin-top:-8px;">Rebuild. Discover. Survive.</p>
+
+    <!-- Civilization Status -->
+    <div class="card">
+        <h3 class="blue">Civilization Status</h3>
+        <div class="resource-row"><span class="label">Survivors</span><span id="pop-val">12</span></div>
+        <div class="resource-row"><span class="label">Territory</span><span id="territory-val">1 km²</span></div>
+        <div class="resource-row"><span class="label">Civilization Level</span><span id="level-val">1</span></div>
+        <div style="margin-top:8px;">
+            <span class="label">XP</span>
+            <div style="background:#0f172a; border-radius:4px; height:8px; margin-top:4px;">
+                <div id="xp-bar" style="background:#38bdf8; width:5%; height:8px; border-radius:4px;"></div>
+            </div>
+            <span style="font-size:0.75rem; color:#94a3b8;">50 / 1,000 XP</span>
+        </div>
+    </div>
+
+    <!-- The Foundry (Resource Mining) -->
+    <div class="card" style="border-left: 5px solid #10b981;">
+        <h3 class="gold">The Foundry</h3>
+        <div class="resource-row"><span class="label">Iron Ore</span><span id="iron-val">0</span></div>
+        <div class="resource-row"><span class="label">Copper</span><span id="copper-val">0</span></div>
+        <div class="resource-row"><span class="label">Gold</span><span id="gold-val">0</span></div>
+        <div class="resource-row"><span class="label">Crude Oil</span><span id="oil-val">0</span></div>
+        <button class="btn" style="background:#10b981; color:white;" onclick="mine()">⛏ Mine Resources</button>
+    </div>
+
+    <!-- Knowledge Vault -->
+    <div class="card" style="border-left: 5px solid #a855f7;">
+        <h3 style="color:#a855f7;">Knowledge Vault</h3>
+        <div class="resource-row"><span class="label">Gnosis Fragments</span><span id="gnosis-val">0</span></div>
+        <div class="resource-row"><span class="label">Tech Nodes Unlocked</span><span id="tech-val">0 / 10</span></div>
+        <p style="font-size:0.8rem; color:#94a3b8; margin-top:8px;">
+            "A secret society watches from the shadows. Seek their knowledge — the next catastrophe is closer than you think."
+        </p>
+    </div>
+
+    <!-- Catastrophe Warning -->
+    <div class="card" style="border-left: 5px solid #ef4444;">
+        <h3 style="color:#ef4444;">⚠ Catastrophe Cycle</h3>
+        <div class="resource-row"><span class="label">Next Event</span><span id="event-val" style="color:#ef4444;">Unknown</span></div>
+        <div class="resource-row"><span class="label">Vault Readiness</span><span id="readiness-val">Low</span></div>
+        <p style="font-size:0.75rem; color:#94a3b8; margin-top:6px;">Build. Stockpile. Or be forgotten.</p>
+    </div>
+
+    <script>
+        // Prototype placeholder — full game logic coming soon
+        var resources = { iron: 0, copper: 0, gold: 0, oil: 0 };
+
+        function mine() {
+            resources.iron  += Math.floor(Math.random() * 5) + 1;
+            resources.copper += Math.floor(Math.random() * 3) + 1;
+            resources.gold  += Math.floor(Math.random() * 2);
+            resources.oil   += Math.floor(Math.random() * 2);
+            document.getElementById('iron-val').textContent   = resources.iron;
+            document.getElementById('copper-val').textContent = resources.copper;
+            document.getElementById('gold-val').textContent   = resources.gold;
+            document.getElementById('oil-val').textContent    = resources.oil;
+        }
+    </script>
 </body>
 </html>
