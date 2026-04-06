@@ -1,24 +1,8 @@
 <resources>
-    <string name="app_name">Sovereign</string>
-
-    <!-- Navigation labels -->
-    <string name="nav_home">Home</string>
-    <string name="nav_mining">Mining</string>
-    <string name="nav_civilization">Civilize</string>
-    <string name="nav_arcanum">Arcanum</string>
-    <string name="nav_vault">Vault</string>
-
-    <!-- Dashboard -->
-    <string name="catastrophe_forecast">Catastrophe Forecast</string>
-    <string name="day_counter">Day %1$d of the Rebuild</string>
-
-    <!-- Mining -->
-    <string name="drill_action">Drill (+25 XP)</string>
-    <string name="surface_layer">Surface Layer — Tier 1</string>
-
-    <!-- Arcanum -->
-    <string name="arcanum_uninitiated">Build a Signal Tower to begin receiving transmissions.</string>
-
-    <!-- Vault -->
-    <string name="vault_tagline">What you vault today may be your only asset tomorrow.</string>
+    <string name="app_name">CIVILTAS</string>
+    <string name="tab_home">Home</string>
+    <string name="tab_mining">Mining</string>
+    <string name="tab_building">Build</string>
+    <string name="tab_tasks">Tasks</string>
+    <string name="tab_wallet">Wallet</string>
 </resources>

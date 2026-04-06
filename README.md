@@ -1,150 +1,225 @@
-# SOVEREIGN — Android Idle Civilization Mining Game
+# CIVILTAS 🌍⛏️✨
 
-> *You are a survivor. Resources fuel your rise. Knowledge is your weapon. A second catastrophe is coming.*
+> *Mine the earth. Rebuild civilization. Uncover ancient secrets.*
 
----
-
-## 📋 Repository Recommendation
-
-**Continue in this repository.** The repo name *Sovereign-* perfectly fits the game's identity. The existing stub files (`index.html`) are just early experiments that can be kept or removed — they carry no weight. Starting fresh in a new repo would only add friction (new clone, broken links, lost CI config). All Android project scaffolding has been added to this repo directly.
+CIVILTAS is an idle mining + civilization-rebuilding game for Android. You wake up as a survivor of a catastrophic event, surrounded by the ruins of the old world. Gather resources, rebuild your base, and decode the hidden knowledge left behind by a secret society—while a second catastrophe ticks closer on the horizon.
 
 ---
 
-## 🎮 Game Concept
+## 🎮 Game Pitch
 
-**SOVEREIGN** is an Android idle/incremental game where players rebuild civilization after a catastrophic world-ending event — while secretly racing against the clock before the *next* one. Unlike crypto-mining clones, you mine the **physical earth** (metals, minerals, oil, rare elements) and, separately, **forbidden knowledge** from a hidden secret society who already knows the truth.
+Humanity survived—but barely. The cataclysm wiped out most of civilization, leaving scattered survivors to start over. You are one of them.
 
-### Core Pillars
+You mine the earth for raw materials (iron, copper, gold, oil, coal, ancient relics…). You rebuild structures. You research lost technologies. And all along, a shadow organization—the **Inner Circle**—watches, feeds you fragments of forbidden knowledge, and hints at what really caused the disaster.
 
-| Pillar | Description |
-|--------|-------------|
-| **Earth Mining** | Idle extraction of 20+ real-world resources across three layers: Surface, Deep Crust, Mantle |
-| **Knowledge Mining** | Decrypt fragments, solve riddles, and unlock Gnosis tiers from the secret society (The Arcanum) |
-| **Civilization Building** | Spend resources to build infrastructure (shelters, forges, research labs, vaults) |
-| **Catastrophe Clock** | A hidden countdown drives tension — hoard for the next event or build for the present? |
-| **Secret Society Ranks** | Progress through 7 Arcanum ranks to unlock lore, bonuses, and hidden game mechanics |
+But here's the twist: **another catastrophe is coming**. The question is whether you build for now (maximize your civilization's output) or hoard for the future (prepare a bunker, stockpile supplies). The choice is yours.
 
 ---
 
-## 🏗️ Project Structure
+## 🔄 Core Gameplay Loop
 
 ```
-Sovereign-/
-├── app/                        # Android application module
-│   ├── build.gradle            # App-level Gradle config
-│   └── src/
-│       └── main/
-│           ├── AndroidManifest.xml
-│           ├── java/com/sovereign/civiltas/
-│           │   └── MainActivity.kt   # Compose entry point
-│           └── res/
-│               ├── values/
-│               │   ├── strings.xml
-│               │   ├── colors.xml
-│               │   └── themes.xml
-│               └── drawable/         # Icons and graphics
-├── build.gradle                # Root Gradle config
-├── settings.gradle             # Module settings
-├── gradle.properties           # JVM / build flags
-├── gradlew / gradlew.bat       # Gradle wrapper scripts
-├── GAME_DESIGN.md              # Full game design document
-└── README.md                   # This file
+Open App
+  → Collect offline earnings (idle mining while away)
+  → Check Daily Tasks (XP + resource rewards)
+  → Upgrade buildings / research tech
+  → Decode relics / advance with the Inner Circle
+  → Decide: BUILD NOW vs PREPARE FOR CATASTROPHE
+  → Close app (mining continues offline)
+```
+
+### Resource Tiers
+
+| Tier | Resources | Notes |
+|------|-----------|-------|
+| Common | Iron, Copper, Coal, Stone, Lumber, Food, Water | Abundant; used for basic building |
+| Rare | Gold, Oil | Slower to mine; used for advanced structures |
+| Legendary | Ancient Relics, Gnosis | Extremely slow; unlock story content and secret society ranks |
+
+---
+
+## 📈 XP & Progression System
+
+XP is earned by:
+- Collecting offline earnings
+- Completing daily check-ins and tasks
+- Upgrading buildings
+- Decoding ancient relics
+- Reaching catastrophe preparation milestones
+
+**Level formula:** `XP required = 100 × level × (level + 1) / 2`
+
+Level unlocks:
+- **Level 5**: First message from the Inner Circle
+- **Level 10**: Vault unlocked (store rare resources safely through catastrophe)
+- **Level 20**: Bunker upgrades available
+- **Level 30**: Catastrophe forecast mechanic revealed
+- **Level 50**: True story ending unlocked
+
+---
+
+## 💥 Catastrophe Cycle
+
+A "Catastrophe Alert" meter (0–10) rises over time. When it hits 10:
+- Players who prepared (bunker built, vault stocked) retain a portion of resources
+- Players who didn't lose a large portion (soft reset)
+- The world rebuilds at a higher tier — new resources and story chapters unlock
+- This cycle creates natural retention hooks and gives meaning to both "build" and "hoard" strategies
+
+---
+
+## 💰 Monetization Plan
+
+**Philosophy: earn player loyalty before earning player money.**
+
+### Free-to-play core
+- All gameplay is completable for free
+- No paywalls blocking story or progression
+
+### Revenue streams
+
+| Stream | Type | Description |
+|--------|------|-------------|
+| **Season Pass** | Subscription / one-time | Extra daily tasks, cosmetic buildings, bonus resource skin |
+| **Resource Bundles** | IAP | Small resource packs (iron/copper starter bundles) — convenience only |
+| **Ad Boost** | Optional video ads | Watch an ad → 2× mining rate for 30 min; max 3/day |
+| **Cosmetic Skins** | IAP | Visual building skins, character portraits, civilization banners |
+| **Skip Timer** | IAP | Skip construction wait (buildings that take hours) |
+| **Gnosis Shards** | Premium currency | Earned slowly for free; purchasable for faster rare-resource unlocks |
+
+### What we DON'T do
+- No energy systems that hard-block play
+- No randomized loot boxes
+- No pay-to-win advantages in core progression
+
+---
+
+## 📡 Offline & Online Modes
+
+### Offline
+- All gameplay runs locally
+- Resources accrue while app is closed (capped at 8 hours)
+- Room DB + DataStore for 100% offline persistence
+
+### Online (optional)
+- Optional account login (stub ready)
+- Local-first sync: all writes go to local DB first
+- Background sync pushes deltas to server when connected
+- Conflict resolution: local data wins unless remote is strictly newer with no local progress since last sync
+
+### DeNet Storage (future / backlog)
+- Roadmap: use [DeNet](https://denet.pro/) decentralized storage
+- Player state stored as encrypted blob at player's own DeNet address
+- No server-side storage costs; players own their data
+- Blocked on: DeNet SDK maturity + compliance review
+
+---
+
+## 🐛 Diagnostics ("Bug Catcher & Destroyer")
+
+- **Timber** for structured logging across all layers
+- **In-app Diagnostics screen**: browse last 500 log entries, filter by severity
+- **Export/share logs**: one-tap bug report via Android Share Sheet
+- **Crash capture**: production ReleaseTree forwards WARN/ERROR to crash reporter (Crashlytics / Sentry integration point ready)
+- Logs auto-pruned after 7 days
+
+---
+
+## 💳 Payments Architecture
+
+### Google Play (primary distribution)
+- **Google Play Billing Library** for all in-app purchases
+- Required when distributing on Google Play Store
+- Covers: resource bundles, season pass, cosmetics, Gnosis Shards
+
+### Direct APK / free app sites (initial distribution)
+- **Stripe SDK** for card payments (not subject to Play Billing requirement)
+- Document: Stripe has its own compliance requirements (PCI-DSS handled by Stripe.js/SDK)
+
+### Crypto payments (roadmap)
+- Approach: generate a payment address per order; verify on-chain confirmation
+- Supported chains (planned): Bitcoin, Ethereum, Polygon
+- Compliance: no custodial handling; player sends from their own wallet
+- **Not yet implemented**; marked as backlog
+
+---
+
+## 💰 Wallet Architecture
+
+- **Connect external wallet**: WalletConnect deep-link (stub in current build)
+- **Cold wallet reference**: display-only; user enters their cold wallet address for reference
+- **Never stores private keys or seed phrases** — hard constraint
+- Disclaimer shown prominently in UI
+
+---
+
+## 🏗️ Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Language | Kotlin |
+| UI | Jetpack Compose + Material3 |
+| DI | Hilt |
+| Local DB | Room |
+| Preferences | DataStore |
+| Navigation | Navigation Compose |
+| Async | Coroutines + Flow |
+| Logging | Timber |
+| Background | WorkManager |
+| Min SDK | 26 (Android 8.0) |
+| Target SDK | 34 (Android 14) |
+
+---
+
+## 📁 Project Structure
+
+```
+app/src/main/java/com/civiltas/app/
+├── CiviltasApplication.kt       # App entry, Timber/Hilt init
+├── MainActivity.kt
+├── data/
+│   ├── local/                   # Room DB, DAOs, entities
+│   ├── repository/              # GameRepository (idle engine)
+│   └── sync/                    # SyncRepository (local-first)
+├── domain/model/                # Domain types: Resource, Player, Building…
+├── diagnostics/                 # CiviltasLogger
+├── ui/
+│   ├── navigation/              # Nav graph + bottom bar
+│   ├── screens/                 # HomeScreen, MiningScreen, BuildingScreen…
+│   ├── theme/                   # Material3 theme (dark earth tones)
+│   └── viewmodel/               # GameViewModel, WalletViewModel…
+└── di/                          # Hilt modules
 ```
 
 ---
 
-## 🚀 Getting Started (Developers)
-
-### Prerequisites
-- Android Studio Hedgehog (2023.1.1) or later
-- JDK 17
-- Android SDK 34 (compile), minSdk 26 (Android 8.0+)
-
-### Build & Run
+## 🚀 Build & Run
 
 ```bash
 # Clone
 git clone https://github.com/jru727ab-cpu/Sovereign-.git
 cd Sovereign-
 
-# Build debug APK
+# Debug APK
 ./gradlew assembleDebug
 
-# Install on connected device / emulator
-./gradlew installDebug
-
-# Run unit tests
+# Unit tests
 ./gradlew test
 ```
 
----
-
-## 📈 XP & Progression System
-
-Players never run out of things to do. XP flows from multiple independent sources:
-
-| Source | XP / tick | Notes |
-|--------|-----------|-------|
-| Passive mining | +1–10 | Auto-runs offline; rate depends on tier |
-| Manual drilling | +25 | Tap action with cooldown |
-| Building construction | +100–500 | One-time per building |
-| Daily login streak | +50 × streak_day | Day 7 gives ×3 bonus |
-| Knowledge fragment decrypted | +200 | Rare, tied to puzzle system |
-| Expedition completed | +150–400 | Timed missions |
-| Catastrophe survived | +1,000+ | Season milestone |
-
-**Level milestones** unlock new biomes, Arcanum rank upgrades, cosmetic titles, and building blueprints.
+Open in Android Studio (Hedgehog or newer). Requires JDK 17.
 
 ---
 
-## 💰 Monetization (Respectful by Design)
+## 📋 Roadmap
 
-No pay-to-win. No intrusive ad walls. Revenue comes from:
-
-| Model | Details |
-|-------|---------|
-| **Arcanum Pass** (seasonal) | $4.99/season (~8 weeks). Cosmetic rewards, +15% offline earnings multiplier, exclusive lore chapters. Does *not* gate gameplay. |
-| **Vault Expansions** | One-time IAP ($0.99–$2.99) to expand resource storage slots. QoL only. |
-| **Cosmetic Packs** | Avatar frames, settlement skins, mine visual themes. $0.99–$1.99 each. |
-| **Rewarded Ads** | *Optional* — player-triggered only. Doubles next harvest (up to 3×/day). Never forced. |
-| **Accelerator Boosts** | Small IAP ($0.49) to skip a 4-hour timer once. Cannot stack infinitely. |
-
-**Philosophy:** A player who never spends a dollar should feel equally welcomed. Spending rewards aesthetics and convenience — never access to story or competitive advantage.
-
----
-
-## 🗓️ Catastrophe Cycle (Season Design)
-
-Each season (~8 weeks) ends with a **Catastrophe Event** that partially resets the world:
-
-- **Prestige Loop**: Players keep permanent bonuses (Arcanum rank, Gnosis points, cosmetics) but lose building levels
-- **Tension builds**: The *Catastrophe Forecast Meter* fills publicly as all players mine — creating a collective countdown
-- **Decision moment**: Hoard resources in the Private Vault (survives reset) or invest in current-cycle buildings for bigger in-cycle rewards?
-- **Post-catastrophe**: New biome layers unlock, new resource types introduced, story chapter released
-
----
-
-## 🔮 Next Steps
-
-- [ ] Implement idle mining engine (Kotlin coroutines + Room database for offline progress)
-- [ ] Design resource DAG (20 resources with crafting chains)
-- [ ] Build knowledge puzzle system (cipher fragments, riddle sequences)
-- [ ] Create Arcanum secret society dialogue + lore tree
-- [ ] Implement Catastrophe Forecast Meter (shared via Firebase Realtime Database)
-- [ ] Set up Google Play Billing Library v6 for IAP
-- [ ] Integrate Firebase Analytics + Remote Config for live balancing
-- [ ] Design UI in Jetpack Compose (dark theme, aged-stone aesthetic)
-- [ ] Accessibility pass (content descriptions, font scaling)
-- [ ] Beta via Google Play Internal Testing track
-
----
-
-## 📖 Full Game Design
-
-See [GAME_DESIGN.md](GAME_DESIGN.md) for the complete design document including resource tables, building blueprints, Arcanum rank details, and technical architecture decisions.
-
----
-
-## 📄 License
-
-All rights reserved — jru727ab-cpu. See `LICENSE` for details.
+- [ ] Full WalletConnect integration
+- [ ] Google Play Billing integration
+- [ ] Stripe payment flow (direct APK)
+- [ ] Online account + sync backend
+- [ ] DeNet decentralized storage
+- [ ] Catastrophe event full implementation
+- [ ] Secret society narrative system
+- [ ] Push notifications for mining timers
+- [ ] Leaderboards
+- [ ] Seasonal events
