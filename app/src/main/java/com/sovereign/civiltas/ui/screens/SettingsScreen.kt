@@ -14,7 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.sovereign.civiltas.BuildConfig
+import com.civiltas.app.BuildConfig
 import com.sovereign.civiltas.diagnostics.BugReporter
 import com.sovereign.civiltas.ui.theme.*
 import com.sovereign.civiltas.ui.viewmodel.GameViewModel

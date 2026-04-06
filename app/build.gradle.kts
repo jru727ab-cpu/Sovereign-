@@ -27,6 +27,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("boolean", "ONLINE_SYNC_ENABLED", "false")
+            buildConfigField("boolean", "ADS_ENABLED", "false")
+        }
+        debug {
+            buildConfigField("boolean", "ONLINE_SYNC_ENABLED", "false")
+            buildConfigField("boolean", "ADS_ENABLED", "false")
         }
     }
     compileOptions {
