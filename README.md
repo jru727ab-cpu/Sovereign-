@@ -1,81 +1,84 @@
 # CIVILTAS
 
-**CIVILTAS** is a hybrid idle/strategy survival game set in the aftermath of a catastrophic collapse. Players rebuild civilization while uncovering the hidden truths held by the **Order of the Compass** — a secret society that preserved forbidden knowledge before the fall.
+**Rebuild. Remember. Survive.**
 
-## Core Concept
+A post-collapse idle strategy game for Android where players mine resources, uncover secrets of the Order of the Compass, and forecast civilizational catastrophe.
 
-> *"The compass does not point north. It points toward what must be preserved."*
+---
 
-The world has suffered a catastrophic event. Another is coming — and only the Order of the Compass knows the signs.
+## MVP Features
 
-Players must choose their path:
+- **Idle Mining Loop** — Ore accumulates automatically per second; manual collect button gives instant bonus
+- **Upgrade System** — Purchase drill upgrades that increase ore-per-second (exponential cost curve)
+- **Offline Progress** — Calculates ore earned since last session (capped at 8 hours)
+- **Secrets Library** — 12 data-driven secrets from the "Order of the Compass", filterable by category
+- **Catastrophe Forecast Meter** — Tension gauge that improves as secrets are unlocked
+- **Bottom Navigation** — Home (Mining), Secrets Library, Store (stub)
+- **Persistence** — SharedPreferences + org.json; no external database dependency
 
-| Path | Focus | Benefit |
-|------|-------|---------|
-| **Archivist** | Knowledge, gnosis, Order ranks | Unlock hidden solutions during catastrophe |
-| **Hoarder** | Resources, storage, supply chains | Survive scarcity, rebuild faster |
-| **Builder** | Expansion, infrastructure, population | High current output (higher risk if unprepared) |
+---
 
-## Gameplay Pillars
+## Tech Stack
 
-1. **Idle Resource Loop** — Mine → Collect → Refine → Build → Unlock → Repeat
-2. **Gnosis / Secrets Track** — Collect Order teachings to unlock new mechanics and buildings
-3. **Catastrophe Forecast** — A meter of uncertainty; the right Secrets increase your confidence
-4. **Daily/Weekly Objectives** — Rotating tasks and streaks to keep the world alive
+| Layer | Technology |
+|-------|-----------|
+| Language | Kotlin |
+| UI | Jetpack Compose + Material3 |
+| Navigation | Compose Navigation |
+| State | ViewModel + StateFlow |
+| Persistence | SharedPreferences + org.json |
+| Min SDK | 24 (Android 7.0) |
+| Target SDK | 34 (Android 14) |
 
-## The Order of the Compass
-
-The Order of the Compass is a clandestine society that survived the first catastrophe by preserving knowledge across three pillars:
-
-- **Sacred Geometry** — blueprints, layouts, and structural formulas lost to history
-- **Survival Intel** — maps of safe corridors, resource strata, and early-warning signs
-- **Lore Dossiers** — accounts of what really happened, who caused it, and what is coming
-
-Players earn **Compass Rank** by collecting Secrets. Higher ranks unlock advanced teachings and exclusive Order ceremonies.
-
-### Compass Ranks
-
-| Rank | Name | Requirement |
-|------|------|-------------|
-| 0 | Seeker | Join the Order |
-| 1 | Initiate | Collect 5 Secrets |
-| 2 | Candidate | Collect 15 Secrets |
-| 3 | Adept | Collect 30 Secrets |
-| 4 | Keeper | Collect 50 Secrets |
-| 5 | Guardian | Collect 75 Secrets + complete Catastrophe Forecast |
-| 6 | Archon | Collect all Secrets |
-
-## Monetization
-
-Monetization is designed to be fair — free players can always progress:
-
-- **Secrets Packs** — lore bundles, sacred geometry sets, survival intel dossiers
-- **Season Pass** — each catastrophe cycle is a season (free + premium tracks)
-- **VIP Subscription** — convenience + cosmetics + extended offline cap
-- **Optional Rewarded Ads** — player-chosen boosts (no forced ads)
-- **One-time "Remove Ads"** — replaces ad prompts with small daily bonuses
+---
 
 ## Project Structure
 
 ```
-CIVILTAS/
-├── README.md
-├── index.html              # Interactive prototype / web preview
-├── docs/
-│   ├── secrets.md          # Order of the Compass teachings and dossiers
-│   └── monetization.md
-└── src/
-    └── secrets/
-        └── SecretsConstants.kt   # Android MVP UI string constants
+app/src/main/java/com/civiltas/app/
+  MainActivity.kt
+  data/
+    GameState.kt        # Data models: MiningState, SecretEntry, GameState
+    GameRepository.kt   # SharedPreferences persistence layer
+  game/
+    IdleEngine.kt       # Pure math: offline gain, OPS, upgrade cost
+    SecretsData.kt      # 12 secrets definitions (data-driven)
+  ui/
+    theme/              # Color, Type, Theme (dark — DeepNavy/Gold palette)
+    screens/
+      GameViewModel.kt  # Shared ViewModel, coroutine tick loop
+      HomeScreen.kt     # Mining, collect, upgrade, forecast meter
+      SecretsScreen.kt  # Filterable secrets library
+      StoreScreen.kt    # IAP stubs (coming soon)
+    navigation/
+      AppNavigation.kt  # BottomNavigation scaffold
 ```
 
-## Development
+---
 
-This MVP is built as a web prototype + Android Kotlin stubs.
+## Build & Run
 
-- **Web prototype**: open `index.html` in a browser
-- **Android**: see `src/secrets/SecretsConstants.kt` for UI string constants
+```bash
+# Prerequisites: Android SDK, JDK 17+
+./gradlew assembleDebug
+./gradlew test
+```
 
-## Theme
+Install on connected device/emulator:
+```bash
+./gradlew installDebug
+```
 
-The **CIVILTAS** name reflects a hybrid tone: grounded post-collapse engineering layered over esoteric knowledge and sacred geometry. The **Order of the Compass** bridges both — analytical in method, mystical in origin.
+---
+
+## Docs
+
+- [`docs/MVP_SCOPE.md`](docs/MVP_SCOPE.md) — MVP scope and guardrails
+- [`docs/MONETIZATION.md`](docs/MONETIZATION.md) — Monetization strategy
+- [`docs/SECRETS_DESIGN.md`](docs/SECRETS_DESIGN.md) — Secrets system design
+
+---
+
+## License
+
+Proprietary — CIVILTAS © 2024. All rights reserved.
