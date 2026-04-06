@@ -1,12 +1,34 @@
-# Add Android build artefacts to gitignore — never commit these
+# Local properties (contains SDK path - never commit)
+local.properties
+
+# Android build outputs
+*.iml
 .gradle/
 build/
 app/build/
-local.properties
-*.apk
-*.aab
-*.keystore
+
+# Signing keys
 *.jks
-*.iml
+*.keystore
+
+# IDE
 .idea/
+*.iws
+*.ipr
+
+# Captures & lint
 captures/
+lint/
+
+# Kotlin/Java generated
+*.class
+*.dex
+
+# Gradle wrapper jar (optional: some teams commit it)
+gradle/wrapper/gradle-wrapper.jar
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db

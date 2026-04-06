@@ -1,101 +1,148 @@
-# CIVILTAS — Android Idle Mining Game
+# CIVILTAS
 
-> **Civilization rebuilder. Earth-resource miner. Secret-society mystery.**
+> *Build. Survive. Ascend.*
 
-You are a survivor of a catastrophic event. Mine metals, gold, and oil. Gather knowledge.
-Unlock secrets from a hidden society that knows the *next* catastrophe is coming.
-The choice is yours: build for today, or hoard for tomorrow.
+CIVILTAS is an **offline-first idle mining & civilization game** for Android. You are a Sovereign forging a civilization from raw earth — mining ore, carving stone, accumulating knowledge, and racing against an ever-approaching catastrophe that threatens to reset everything you've built.
 
 ---
 
-## MVP Scope (what is in-scope for v0.1)
+## 🎮 Game Pitch
 
-| Feature | Status |
-|---------|--------|
-| Offline idle resource accumulation (metals, gold, oil) | ✅ Implemented |
-| XP / level-up system | ✅ Implemented |
-| Basic building progression (Mine → Refinery → Vault) | ✅ Stub — unlocked by level |
-| Persistent local save (SharedPreferences) | ✅ Implemented |
-| Single-screen Compose UI (resources + idle timer) | ✅ Implemented |
-| Catastrophe cycle countdown (UI teaser) | ✅ Implemented (display only) |
-| Secret Society teaser unlock at XP milestone | ✅ Stub behind interface |
+You wake up as the last Sovereign of a forgotten age. Your civilization lies in ruins. Armed only with a pickaxe and the memory of ancient knowledge, you must rebuild — one ore vein at a time.
 
-## Non-Goals for v0.1 (explicitly deferred — see [BACKLOG](docs/BACKLOG.md))
+- **Mine** resources passively, even while offline
+- **Upgrade** your extraction machinery to scale production exponentially  
+- **Unlock skills** across three trees: Miner, Builder, Scholar
+- **Complete quests** for bonus resources and skill points
+- **Survive the Catastrophe** — a seasonal threat that pressures you to grow faster
+- **Ascend** through Gnosis ranks to unlock deeper mechanics
 
-- DeNet / IPFS / decentralised cloud storage
-- Crypto / wallet payments (WalletConnect, cold wallet)
-- Card payment processing (Stripe / Play Billing)
-- Multiplayer, trading, shared world
-- Advanced analytics / crash-reporting SDK
-- Server-side game logic or anti-cheat
-- Season pass / IAP purchase flows
+---
+
+## 📦 Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Language | Kotlin |
+| UI | Jetpack Compose + Material3 |
+| Architecture | Clean Architecture (data / domain / ui) |
+| DI | Hilt |
+| Database | Room |
+| Preferences | DataStore |
+| Navigation | Navigation Compose |
+| Async | Coroutines + Flow |
+| Min SDK | 26 (Android 8.0) |
+| Target SDK | 34 (Android 14) |
+
+---
+
+## 🏗 Project Structure
+
+```
+app/src/main/java/com/sovereign/civiltas/
+├── CiviltasApplication.kt          # Hilt entry point
+├── MainActivity.kt
+├── account/                        # Auth abstraction (guest-first)
+│   ├── AccountModule.kt
+│   └── LocalGuestAccountModule.kt
+├── data/
+│   ├── local/db/                   # Room database
+│   │   ├── CiviltasDatabase.kt
+│   │   ├── dao/GameStateDao.kt
+│   │   └── entity/GameStateEntity.kt
+│   └── repository/GameRepository.kt
+├── di/AppModule.kt                 # Hilt DI bindings
+├── diagnostics/                    # In-game logging & bug reporting
+│   ├── CiviltasLogger.kt
+│   └── BugReporter.kt
+├── domain/
+│   ├── engine/                     # Pure game logic (no Android deps)
+│   │   ├── CatastropheEngine.kt
+│   │   ├── OfflineProgressEngine.kt
+│   │   ├── QuestEngine.kt
+│   │   └── ResourceEngine.kt
+│   └── model/                      # Domain data classes
+│       ├── GameState.kt
+│       ├── Quest.kt
+│       ├── Resource.kt
+│       ├── Skill.kt
+│       └── Upgrade.kt
+├── sync/                           # Online sync abstraction (NoOp by default)
+│   ├── NoOpSyncModule.kt
+│   └── SyncModule.kt
+└── ui/
+    ├── navigation/CiviltasNavGraph.kt
+    ├── screens/
+    │   ├── HomeScreen.kt
+    │   ├── QuestsScreen.kt
+    │   ├── SettingsScreen.kt
+    │   ├── SkillsScreen.kt
+    │   └── UpgradesScreen.kt
+    ├── theme/
+    │   ├── Color.kt
+    │   ├── Theme.kt
+    │   └── Type.kt
+    └── viewmodel/GameViewModel.kt
+```
+
+---
+
+## 🚀 MVP Scope (v0.1.0)
+
+- [x] Idle resource generation (ore, stone, knowledge, energy)
+- [x] Offline progress calculation with configurable cap
+- [x] Manual ore mining (tap to mine)
+- [x] Three upgradeable resource extractors
+- [x] Skill tree system (Miner / Builder / Scholar trees)
+- [x] Daily check-in with streak bonuses
+- [x] Daily + Rotating quest system
+- [x] Catastrophe seasonal cycle with threat meter
+- [x] Gnosis rank progression track
+- [x] XP + level system with skill point rewards
+- [x] Guest mode (no account required)
+- [x] Room persistence (save/load game state)
+- [x] In-game diagnostics + bug reporter
+- [x] Dark theme with CIVILTAS design language
+
+---
+
+## 🚫 Non-Goals (Phase 1)
+
+- Real-time multiplayer
+- Cloud save / account login (stubs exist, disabled by default)
+- In-app purchases / ads (flags exist in BuildConfig, disabled)
 - Push notifications
+- Social features
 
 ---
 
-## Credits / Cost Discipline
+## 💰 Monetization Philosophy
 
-This project follows a **lean-MVP discipline** to avoid burning agent/runtime credits on
-unnecessary back-and-forth, heavy generated assets, or over-engineering.
+CIVILTAS is designed to be **completely playable offline without spending**. Monetization is friction-free:
 
-### What is implemented now
-- `GameEngine` — pure-Kotlin offline idle tick; no network, no background service.
-- `SaveManager` — SharedPreferences wrapper; one class, no ORM.
-- `MainActivity` — single `@Composable` screen, no Navigation graph for MVP.
-
-### What is stubbed behind interfaces
-- `StorageBackend` interface — plug in Room / SQLite later without rewriting business logic.
-- `PaymentProvider` interface — plug in Google Play Billing or crypto later.
-- Building "unlock" checks — called but return static stubs until content is written.
-
-### What is explicitly postponed
-See [docs/BACKLOG.md](docs/BACKLOG.md) for the full prioritised backlog.
-
-### How to extend later without rewriting
-1. **Persistence**: replace `SharedPrefsStorageBackend` with `RoomStorageBackend` implementing `StorageBackend`.
-2. **Payments**: create `PlayBillingProvider : PaymentProvider` — no other code changes needed.
-3. **Online sync**: add a `SyncRepository` called only from a settings toggle; offline path is unchanged.
-4. **New resources**: add an entry to `Resource` enum + icon — the UI and engine pick it up automatically.
+- **No pay-to-win** — purchasable items are cosmetic or QoL, never game-breaking
+- **No forced ads** — ads are opt-in for resource boosts
+- **No energy gates** — energy is a resource, not a paywall
+- See [`docs/MONETIZATION.md`](docs/MONETIZATION.md) for full philosophy
 
 ---
 
-## Architecture (lean)
-
-```
-MainActivity (Compose UI)
-    └── GameEngine (idle tick, pure Kotlin, no Android deps)
-            └── SaveManager (SharedPreferences, injected via interface)
-```
-
-No Hilt. No Room. No Navigation graph. No heavy third-party SDKs.
-
----
-
-## Build
+## 🛠 Building
 
 ```bash
-# Debug APK (sideload on free app sites)
+# Requires Android SDK (set in local.properties)
 ./gradlew assembleDebug
 
-# Unit tests
+# Run unit tests
 ./gradlew test
 ```
 
-Minimum SDK: **24** (Android 7.0) — covers ~97% of active devices.
-Target SDK: **34**.
-
 ---
 
-## Monetisation Plan (v1+ roadmap)
+## 📚 Design Docs
 
-- **Rewarded ads only** — player-initiated, never forced.
-- **"Remove Ads" one-time IAP** — replaces ad prompts with small daily freebies.
-- **VIP subscription** — higher offline cap, cosmetic themes, queue slots (convenience, not power).
-- **Catastrophe Season Pass** — free + paid track per season cycle.
-- **No pay-to-win**: all core resources and progression are achievable for free.
-
----
-
-## Licence
-
-See [LICENCE](LICENCE) (to be added before Play Store release).
+- [Progression Design](docs/PROGRESSION.md)
+- [Economy Design](docs/ECONOMY.md)  
+- [Catastrophe Cycle](docs/CATASTROPHE_CYCLE.md)
+- [Monetization Philosophy](docs/MONETIZATION.md)
+- [Technical Architecture](docs/TECHNICAL_ARCHITECTURE.md)
