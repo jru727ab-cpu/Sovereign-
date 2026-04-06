@@ -1,626 +1,413 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CIVILTAS — Sovereign Command</title>
-    <style>
-        :root {
-            --bg:        #020617;
-            --surface:   #0f172a;
-            --card:      #1e293b;
-            --border:    #334155;
-            --gold:      #facc15;
-            --blue:      #38bdf8;
-            --green:     #10b981;
-            --purple:    #a855f7;
-            --red:       #ef4444;
-            --orange:    #f97316;
-            --muted:     #64748b;
-            --text:      #f1f5f9;
-            --text-dim:  #94a3b8;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CIVILTAS</title>
+  <style>
+    /* ── Base ──────────────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #020617;
+      color: #e2e8f0;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+    }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+    /* ── Top nav ────────────────────────────────────────────────────────────── */
+    .top-nav {
+      background: #0f172a;
+      border-bottom: 1px solid #1e293b;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-brand {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #facc15;
+      letter-spacing: 0.05em;
+      padding: 12px 8px 12px 0;
+      flex: 1;
+    }
+    .nav-tab {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      padding: 14px 12px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .nav-tab:hover { color: #e2e8f0; }
+    .nav-tab.active { color: #38bdf8; border-bottom-color: #38bdf8; }
 
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            min-height: 100vh;
-        }
+    /* ── Screen container ───────────────────────────────────────────────────── */
+    .screen { display: none; padding: 16px; max-width: 600px; margin: 0 auto; }
+    .screen.active { display: block; }
 
-        /* ── NAV ── */
-        nav {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        nav h1 { font-size: 1.1rem; color: var(--gold); letter-spacing: 2px; }
-        nav .nav-tabs { display: flex; gap: 8px; }
-        nav .tab-btn {
-            background: none;
-            border: 1px solid transparent;
-            color: var(--text-dim);
-            padding: 6px 14px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: all 0.2s;
-        }
-        nav .tab-btn.active {
-            background: var(--card);
-            border-color: var(--border);
-            color: var(--text);
-        }
+    /* ── Common card ─────────────────────────────────────────────────────────── */
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
 
-        /* ── FORECAST BANNER ── */
-        #forecast-banner {
-            background: linear-gradient(90deg, #1a0a00, #2d1200);
-            border-bottom: 2px solid var(--orange);
-            padding: 10px 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .forecast-label { font-size: 0.75rem; color: var(--orange); font-weight: 700; letter-spacing: 1px; }
-        .forecast-bar-track {
-            flex: 1;
-            height: 8px;
-            background: var(--border);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .forecast-bar-fill {
-            height: 100%;
-            border-radius: 4px;
-            background: linear-gradient(90deg, var(--gold), var(--orange), var(--red));
-            transition: width 0.8s ease;
-        }
-        .forecast-stage { font-size: 0.75rem; color: var(--text-dim); min-width: 80px; text-align: right; }
+    /* ── Buttons ─────────────────────────────────────────────────────────────── */
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn:hover { opacity: 0.85; }
+    .btn-primary   { background: #38bdf8; color: #020617; }
+    .btn-success   { background: #10b981; color: #fff; }
+    .btn-gold      { background: #facc15; color: #020617; }
+    .btn-outline   { background: transparent; border: 1px solid #38bdf8; color: #38bdf8; }
+    .btn-full      { width: 100%; }
 
-        /* ── SCREENS ── */
-        .screen { display: none; padding: 16px; max-width: 640px; margin: 0 auto; }
-        .screen.active { display: block; }
+    /* ── Home / Resource screen ──────────────────────────────────────────────── */
+    .resource-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; }
+    .resource-name { color: #94a3b8; font-size: 0.9rem; }
+    .resource-val  { color: #facc15; font-weight: 700; font-size: 1rem; }
+    .section-title { color: #38bdf8; font-size: 1rem; font-weight: 700; margin-bottom: 10px; }
 
-        /* ── CARDS ── */
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 14px;
-            margin-bottom: 10px;
-        }
-        .card h3 { font-size: 0.95rem; margin-bottom: 4px; }
-        .card p  { font-size: 0.8rem;  color: var(--text-dim); line-height: 1.5; }
+    /* ── Gnosis bar ──────────────────────────────────────────────────────────── */
+    .gnosis-track { margin-bottom: 6px; }
+    .gnosis-label { font-size: 0.8rem; color: #94a3b8; margin-bottom: 4px; }
+    .gnosis-bar-bg { background: #334155; border-radius: 4px; height: 8px; overflow: hidden; }
+    .gnosis-bar-fill { background: #a855f7; height: 100%; border-radius: 4px; transition: width 0.4s; }
+    .gnosis-rank-label { color: #a855f7; font-weight: 700; font-size: 0.85rem; }
 
-        /* ── SECRETS LIBRARY ── */
-        .library-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 14px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-        .library-header h2 { font-size: 1rem; color: var(--blue); }
+    /* ── Secrets Library ─────────────────────────────────────────────────────── */
+    .secrets-header { margin-bottom: 16px; }
+    .secrets-title  { font-size: 1.2rem; font-weight: 700; color: #facc15; margin-bottom: 4px; }
+    .secrets-subtitle { font-size: 0.85rem; color: #94a3b8; }
 
-        .filter-row {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-            margin-bottom: 12px;
-        }
-        .filter-chip {
-            font-size: 0.7rem;
-            padding: 4px 10px;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-            background: var(--surface);
-            color: var(--text-dim);
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-        .filter-chip.active {
-            background: var(--blue);
-            border-color: var(--blue);
-            color: var(--bg);
-            font-weight: 700;
-        }
+    .secrets-forecast {
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 20px;
+      border: 1px solid #334155;
+    }
+    .secrets-forecast--blind       { background: #1e293b; }
+    .secrets-forecast--vague       { background: #1c2a1e; border-color: #22c55e44; }
+    .secrets-forecast--approximate { background: #1c2820; border-color: #22c55e88; }
+    .secrets-forecast--precise     { background: #2a1c1c; border-color: #f97316; }
+    .secrets-forecast--pinpoint    { background: #2a1420; border-color: #ef4444; }
 
-        /* ── SECRET CARD ── */
-        .secret-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 14px;
-            margin-bottom: 10px;
-            transition: border-color 0.2s;
-            position: relative;
-            overflow: hidden;
-        }
-        .secret-card.unlocked { border-left: 4px solid var(--green); }
-        .secret-card.pending  { border-left: 4px solid var(--gold); }
-        .secret-card.locked   { border-left: 4px solid var(--border); }
+    .forecast-label { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 2px; }
+    .forecast-level { font-size: 1.1rem; font-weight: 700; color: #e2e8f0; }
+    .forecast-desc  { font-size: 0.85rem; color: #94a3b8; margin: 4px 0; }
+    .forecast-hint  { font-size: 0.8rem; color: #64748b; margin-top: 6px; }
 
-        .secret-card .tier-badge {
-            display: inline-block;
-            font-size: 0.6rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            padding: 2px 7px;
-            border-radius: 10px;
-            margin-bottom: 6px;
-        }
-        .tier-1 { background: #1e293b; color: #94a3b8; border: 1px solid #334155; }
-        .tier-2 { background: #052e16; color: #4ade80; border: 1px solid #166534; }
-        .tier-3 { background: #172554; color: var(--blue); border: 1px solid #1e40af; }
-        .tier-4 { background: #3b0764; color: #d8b4fe; border: 1px solid #6b21a8; }
-        .tier-5 { background: #451a03; color: var(--gold); border: 1px solid #92400e; }
+    .secrets-category-heading {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+    }
+    .secrets-section { margin-bottom: 24px; }
 
-        .cat-badge {
-            display: inline-block;
-            font-size: 0.6rem;
-            padding: 2px 7px;
-            border-radius: 10px;
-            margin-left: 4px;
-            background: var(--surface);
-            color: var(--text-dim);
-            border: 1px solid var(--border);
-        }
+    .secrets-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 10px;
+    }
 
-        .secret-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; }
-        .secret-hint  { font-size: 0.75rem; color: var(--text-dim); font-style: italic; margin-bottom: 6px; }
-        .secret-desc  { font-size: 0.8rem; color: var(--text); line-height: 1.5; margin-bottom: 8px; }
-        .secret-effect {
-            font-size: 0.72rem;
-            color: var(--green);
-            background: #052e1680;
-            border: 1px solid #166534;
-            padding: 4px 8px;
-            border-radius: 6px;
-            margin-bottom: 8px;
-        }
-        .secret-locked-overlay {
-            font-size: 0.8rem;
-            color: var(--muted);
-            font-style: italic;
-        }
+    .secret-card {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 14px 12px;
+      cursor: pointer;
+      transition: border-color 0.15s, transform 0.1s;
+      user-select: none;
+    }
+    .secret-card:hover { border-color: #38bdf8; transform: translateY(-2px); }
+    .secret-card:focus { outline: 2px solid #38bdf8; outline-offset: 2px; }
+    .secret-card--locked { opacity: 0.6; }
+    .secret-card--unlocked { border-color: #1e3a5f; }
 
-        .btn-sm {
-            font-size: 0.75rem;
-            padding: 6px 14px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            transition: opacity 0.15s;
-        }
-        .btn-sm:hover { opacity: 0.85; }
-        .btn-green  { background: var(--green); color: white; }
-        .btn-purple { background: var(--purple); color: white; }
-        .btn-gold   { background: var(--gold); color: var(--bg); }
-        .btn-muted  { background: var(--border); color: var(--text-dim); cursor: not-allowed; }
+    .secret-card-icon  { font-size: 1.4rem; margin-bottom: 6px; }
+    .secret-card-title { font-size: 0.85rem; font-weight: 600; color: #e2e8f0; margin-bottom: 4px; }
+    .secret-card-teaser { font-size: 0.75rem; color: #64748b; line-height: 1.4; }
 
-        .status-pill {
-            display: inline-block;
-            font-size: 0.65rem;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 10px;
-            margin-right: 8px;
-        }
-        .pill-unlocked { background: var(--green);  color: white; }
-        .pill-pending  { background: var(--gold);   color: var(--bg); }
-        .pill-locked   { background: var(--border); color: var(--text-dim); }
+    /* ── Secret Detail Panel ─────────────────────────────────────────────────── */
+    .secret-detail-panel {
+      background: #0f172a;
+      border: 1px solid #38bdf8;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 16px;
+      position: relative;
+    }
+    .detail-close {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      cursor: pointer;
+      color: #64748b;
+      font-size: 1rem;
+      padding: 4px;
+    }
+    .detail-close:hover { color: #e2e8f0; }
+    .detail-category { font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+    .detail-title    { font-size: 1.1rem; font-weight: 700; color: #facc15; margin-bottom: 12px; }
+    .detail-body     { font-size: 0.85rem; color: #cbd5e1; line-height: 1.65; margin-bottom: 12px; white-space: pre-line; }
+    .detail-teaser   { font-size: 0.9rem; color: #94a3b8; font-style: italic; margin-bottom: 12px; line-height: 1.5; }
+    .detail-earn     { font-size: 0.8rem; color: #64748b; margin-bottom: 12px; }
+    .detail-effects  { font-size: 0.8rem; color: #a3e635; margin-bottom: 12px; }
+    .detail-effects ul { padding-left: 16px; margin-top: 4px; }
+    .detail-effects li { margin-bottom: 3px; }
+    .detail-purchase { border-top: 1px solid #1e293b; padding-top: 12px; }
+    .purchase-note   { font-size: 0.8rem; color: #64748b; margin-bottom: 8px; }
+    .detail-buy-btn  { background: #facc15; color: #020617; }
 
-        /* ── STORE SCREEN ── */
-        .store-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 14px;
-            margin-bottom: 10px;
-        }
-        .store-card .price {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--gold);
-        }
-        .iap-badge {
-            font-size: 0.65rem;
-            background: #451a03;
-            color: var(--gold);
-            border: 1px solid #92400e;
-            padding: 2px 7px;
-            border-radius: 10px;
-            margin-left: 6px;
-        }
-
-        /* ── DAILY TASKS ── */
-        .task-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        .task-row:last-child { border-bottom: none; }
-        .task-row .task-label { font-size: 0.82rem; }
-        .task-row .task-reward { font-size: 0.75rem; color: var(--gold); }
-        .checkmark { color: var(--green); font-size: 1.1rem; }
-
-        /* ── UNLOCK ANIMATION ── */
-        @keyframes revealPulse {
-            0%   { transform: scale(0.95); opacity: 0; }
-            60%  { transform: scale(1.02); }
-            100% { transform: scale(1);   opacity: 1; }
-        }
-        .reveal-anim { animation: revealPulse 0.5s ease forwards; }
-
-        /* ── TOAST ── */
-        #toast {
-            position: fixed;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--surface);
-            border: 1px solid var(--green);
-            color: var(--green);
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            opacity: 0;
-            transition: opacity 0.3s;
-            z-index: 999;
-            pointer-events: none;
-        }
-        #toast.show { opacity: 1; }
-
-        /* ── COMMAND / HOME SCREEN ── */
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-        .stat-cell {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 12px;
-            text-align: center;
-        }
-        .stat-cell .val { font-size: 1.3rem; font-weight: 700; color: var(--gold); }
-        .stat-cell .lbl { font-size: 0.7rem; color: var(--text-dim); }
-    </style>
+    /* ── Toast notification ──────────────────────────────────────────────────── */
+    .secrets-toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      z-index: 999;
+      animation: fadeIn 0.2s ease;
+    }
+    .secrets-toast--info  { background: #1e40af; color: #fff; }
+    .secrets-toast--error { background: #7f1d1d; color: #fca5a5; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateX(-50%) translateY(8px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+  </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-    <h1>⚡ CIVILTAS</h1>
-    <div class="nav-tabs">
-        <button class="tab-btn active" onclick="showScreen('home')">Command</button>
-        <button class="tab-btn" onclick="showScreen('secrets')">Secrets</button>
-        <button class="tab-btn" onclick="showScreen('store')">Store</button>
-        <button class="tab-btn" onclick="showScreen('tasks')">Tasks</button>
-    </div>
-</nav>
+  <!-- ── Navigation ──────────────────────────────────────────────────────── -->
+  <nav class="top-nav">
+    <div class="nav-brand">CIVILTAS</div>
+    <button class="nav-tab active" data-screen="home">🏗️ Base</button>
+    <button class="nav-tab" data-screen="secrets">🔒 Secrets</button>
+  </nav>
 
-<!-- FORECAST BANNER -->
-<div id="forecast-banner">
-    <span class="forecast-label">⚠ FORECAST</span>
-    <div class="forecast-bar-track">
-        <div class="forecast-bar-fill" id="forecast-fill" style="width:30%"></div>
-    </div>
-    <span class="forecast-stage" id="forecast-stage-label">Tremors</span>
-</div>
+  <!-- ── Home / Base Screen ──────────────────────────────────────────────── -->
+  <main id="screen-home" class="screen active">
 
-<!-- ══════════════════════════════ HOME SCREEN ══════════════════════════════ -->
-<div id="screen-home" class="screen active">
-    <div class="stat-grid">
-        <div class="stat-cell"><div class="val" id="stat-secrets">3</div><div class="lbl">Secrets Unlocked</div></div>
-        <div class="stat-cell"><div class="val" id="stat-ore">1,240</div><div class="lbl">Ore Stored</div></div>
-        <div class="stat-cell"><div class="val" id="stat-day">12</div><div class="lbl">Day</div></div>
-        <div class="stat-cell"><div class="val" id="stat-forecast">Stage 1</div><div class="lbl">Forecast Stage</div></div>
-    </div>
-
+    <!-- Gnosis Track -->
     <div class="card">
-        <h3 style="color:var(--gold)">⛏ The Foundry</h3>
-        <p>Ore extraction running. +12 ore/min.</p>
-        <div style="margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;">
-            <button class="btn-sm btn-green" onclick="mine()">Mine (+50 ore)</button>
-            <button class="btn-sm btn-gold" onclick="sendExpedition()">Send Expedition</button>
+      <div class="section-title">Gnosis Track</div>
+      <div class="gnosis-rank-label" id="gnosis-rank-label">Rank 0 — Seeker</div>
+      <div style="margin: 6px 0 8px;">
+        <div class="gnosis-label">
+          XP: <span id="gnosis-xp">0</span> /
+          <span id="gnosis-next-threshold">100</span>
         </div>
-    </div>
-
-    <div class="card">
-        <h3 style="color:var(--blue)">📡 Catastrophe Forecast</h3>
-        <p>Environmental anomalies detected in the Eastern sectors. Resource fluctuations reported. Survival Intel secrets now available.</p>
-        <div style="margin-top:10px;">
-            <button class="btn-sm btn-purple" onclick="showScreen('secrets')">Open Secrets Library →</button>
+        <div class="gnosis-bar-bg">
+          <div class="gnosis-bar-fill" id="gnosis-bar" style="width:0%"></div>
         </div>
-    </div>
-
-    <div class="card">
-        <h3>🏛 Civilisation Status</h3>
-        <p>Population stable. Three buildings operational. Research queue: <em>Cold Extraction</em> (8h remaining).</p>
-    </div>
-</div>
-
-<!-- ══════════════════════════════ SECRETS SCREEN ══════════════════════════════ -->
-<div id="screen-secrets" class="screen">
-    <div class="library-header">
-        <h2>🔮 Secrets Library</h2>
-        <span style="font-size:0.75rem; color:var(--text-dim)"><span id="unlocked-count">3</span>/10 discovered</span>
-    </div>
-
-    <div class="filter-row" id="filter-row">
-        <button class="filter-chip active" data-filter="all" onclick="setFilter('all',this)">All</button>
-        <button class="filter-chip" data-filter="lore" onclick="setFilter('lore',this)">Lore</button>
-        <button class="filter-chip" data-filter="survival_intel" onclick="setFilter('survival_intel',this)">Survival</button>
-        <button class="filter-chip" data-filter="resource_intel" onclick="setFilter('resource_intel',this)">Resources</button>
-        <button class="filter-chip" data-filter="sacred_geometry" onclick="setFilter('sacred_geometry',this)">Sacred</button>
-        <button class="filter-chip" data-filter="society_ranks" onclick="setFilter('society_ranks',this)">Society</button>
-    </div>
-
-    <div id="secrets-list"></div>
-</div>
-
-<!-- ══════════════════════════════ STORE SCREEN ══════════════════════════════ -->
-<div id="screen-store" class="screen">
-    <div class="library-header">
-        <h2>🛒 Secrets Store</h2>
-        <span style="font-size:0.72rem; color:var(--muted)">IAP stubs — Play Billing integration pending</span>
-    </div>
-
-    <div style="background:#052e16; border:1px solid #166534; border-radius:10px; padding:12px; margin-bottom:14px; font-size:0.78rem; color:#4ade80;">
-        ✅ <strong>No pay-to-win.</strong> Every purchasable secret has a free earn path. You're only buying time, not power.
-    </div>
-
-    <div id="store-list"></div>
-</div>
-
-<!-- ══════════════════════════════ TASKS SCREEN ══════════════════════════════ -->
-<div id="screen-tasks" class="screen">
-    <div class="library-header">
-        <h2>📋 Daily Tasks</h2>
-        <span style="font-size:0.75rem; color:var(--gold)">Streak: 3 days 🔥</span>
-    </div>
-
-    <div class="card">
-        <h3 style="margin-bottom:8px;">Today's Objectives</h3>
-        <div class="task-row">
-            <span class="task-label">Mine 200 ore</span>
-            <span class="task-reward">+1 Common Secret <span class="checkmark">✓</span></span>
-        </div>
-        <div class="task-row">
-            <span class="task-label">Complete 1 expedition</span>
-            <span class="task-reward">+1 Uncommon Secret</span>
-        </div>
-        <div class="task-row">
-            <span class="task-label">Advance 1 research tier</span>
-            <span class="task-reward">+1 Rare Secret</span>
-        </div>
-        <div class="task-row">
-            <span class="task-label">7-Day Streak Bonus</span>
-            <span class="task-reward" style="color:var(--blue)">4 days remaining</span>
-        </div>
-    </div>
-
-    <div class="card">
-        <h3 style="margin-bottom:8px;">Active Expedition</h3>
-        <p>Eastern Cave Expedition — returns in <strong>3h 42m</strong>.</p>
-        <p style="margin-top:6px;">Estimated loot: Ore cache + chance of <em>Resource Intel</em> secret.</p>
-    </div>
-
-    <div class="card">
-        <h3 style="margin-bottom:8px;">Research Queue</h3>
-        <p><strong>Cold Extraction</strong> — unlocks SEC_004 (Cold Extraction secret) in 8h. Produces +15% ore/min.</p>
-        <div style="background:var(--border); border-radius:4px; height:8px; margin-top:8px; overflow:hidden;">
-            <div style="background:var(--blue); width:45%; height:100%; border-radius:4px;"></div>
-        </div>
-    </div>
-</div>
-
-<!-- TOAST -->
-<div id="toast"></div>
-
-<script>
-// ── Data ── (mirrors data/secrets.json)
-const SECRETS = [
-  { id:"SEC_001", tier:1, category:"lore",           title:"The First Signal",           hint:"A fragmented transmission recorded 72 hours before the event.",       desc:"A corrupted radio log recovered from a buried relay station. Someone was warned — and chose silence.",                                      effect:"Unlocks Codex entry: Event Origin",                  earn:"Daily Task",                    purchasable:false, price:null,    status:"unlocked" },
-  { id:"SEC_002", tier:1, category:"resource_intel",  title:"The Eastern Seam",           hint:"An old miner's note about deposits that 'shouldn't exist'.",          desc:"A handwritten map fragment pointing to a mineral-rich seam in the Eastern Wastes. Ore output +20%.",                                        effect:"+20% ore output from Eastern nodes",                 earn:"Quest",                         purchasable:false, price:null,    status:"unlocked" },
-  { id:"SEC_003", tier:2, category:"survival_intel",  title:"The Green Corridor",         hint:"A migration path used by those who made it out.",                     desc:"A route with measurably lower radiation. Expedition travel +25% speed along this corridor.",                                                effect:"+25% expedition speed (Green Corridor)",             earn:"Expedition",                    purchasable:false, price:null,    status:"unlocked" },
-  { id:"SEC_004", tier:2, category:"resource_intel",  title:"Cold Extraction",            hint:"A method that extracts ore without heat — and without detection.",    desc:"A pre-catastrophe industrial technique that reduces energy cost for ore extraction by 15%.",                                              effect:"+15% ore production rate",                           earn:"Research Milestone",            purchasable:false, price:null,    status:"pending"  },
-  { id:"SEC_005", tier:3, category:"lore",            title:"The Architect's Confession", hint:"Someone built the machine that ended everything — and wrote it down.", desc:"A sealed letter describing — in clinical detail — the device constructed to reset civilisation.",                                        effect:"Unlocks Story Chapter: The Architect",               earn:"Season Pass (Free)",             purchasable:true,  price:"$1.99", status:"locked"   },
-  { id:"SEC_006", tier:3, category:"sacred_geometry", title:"The Hexagonal Principle",    hint:"Structures built on this pattern are still standing.",                desc:"Ancient architectural mathematics. Buildings using this principle take 30% less catastrophe damage.",                                     effect:"Building resilience +30% vs catastrophe",            earn:"Research Milestone",            purchasable:true,  price:"$1.99", status:"locked"   },
-  { id:"SEC_007", tier:3, category:"survival_intel",  title:"Subsurface Cache Network",   hint:"They buried supplies in places that couldn't burn.",                  desc:"A network of underground caches. Retain 20% more resources when a catastrophe hits.",                                                    effect:"+20% resource retention during catastrophe events",  earn:"Expedition",                    purchasable:true,  price:"$1.99", status:"locked"   },
-  { id:"SEC_008", tier:4, category:"sacred_geometry", title:"Geomantic Anchor",           hint:"Buildings tied to ley lines survived what nothing else did.",         desc:"A complete blueprint for a geomantic foundation system. Near-total catastrophe resistance.",                                             effect:"Unlocks Blueprint: Geomantic Foundation",            earn:"Long Expedition",               purchasable:true,  price:"$3.99", status:"locked"   },
-  { id:"SEC_009", tier:4, category:"society_ranks",   title:"The Third Seal",             hint:"A symbol those who held real power would recognise.",                 desc:"The rank insignia of the Third Circle. Unlocks faction quests and elevated NPC trust (+50 rep).",                                        effect:"+50 Old Order faction standing + new quests",        earn:"Season Pass (Premium)",          purchasable:true,  price:"$3.99", status:"locked"   },
-  { id:"SEC_010", tier:5, category:"lore",            title:"The Complete Record",        hint:"One person documented everything. They did not survive.",             desc:"The full account of events leading to the catastrophe. Changes the ending of the current cycle.",                                       effect:"Unlocks True Ending (Cosmetic / Collector)",         earn:"Catastrophe Cycle Completion",  purchasable:true,  price:"$6.99", status:"locked"   }
-];
-
-const TIER_NAMES = ["","Common","Uncommon","Rare","Epic","Legendary"];
-const CAT_LABELS = { lore:"Lore", survival_intel:"Survival", resource_intel:"Resources", sacred_geometry:"Sacred", society_ranks:"Society" };
-const FORECAST_STAGES = ["Silence","Tremors","Signs","Warnings","Imminent"];
-let forecastIdx = 1;
-let currentFilter = "all";
-
-// ── Forecast ──
-function setForecast(idx) {
-  forecastIdx = Math.max(0, Math.min(4, idx));
-  const pct = (forecastIdx / 4) * 100;
-  document.getElementById('forecast-fill').style.width = pct + '%';
-  document.getElementById('forecast-stage-label').textContent = FORECAST_STAGES[forecastIdx];
-  document.getElementById('stat-forecast').textContent = 'Stage ' + forecastIdx;
-}
-setForecast(1);
-
-// ── Screens ──
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('screen-' + id).classList.add('active');
-  document.querySelectorAll('.tab-btn').forEach(b => {
-    if (b.getAttribute('onclick').includes("'" + id + "'")) b.classList.add('active');
-  });
-  if (id === 'secrets') renderSecrets();
-  if (id === 'store')   renderStore();
-}
-
-// ── Filter ──
-function setFilter(val, el) {
-  currentFilter = val;
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  renderSecrets();
-}
-
-// ── Render Secrets ──
-function renderSecrets() {
-  const list = document.getElementById('secrets-list');
-  const filtered = currentFilter === 'all' ? SECRETS : SECRETS.filter(s => s.category === currentFilter);
-  list.innerHTML = filtered.map(s => secretCardHTML(s)).join('');
-  document.getElementById('unlocked-count').textContent = SECRETS.filter(s => s.status === 'unlocked').length;
-  document.getElementById('stat-secrets').textContent = SECRETS.filter(s => s.status === 'unlocked').length;
-}
-
-function secretCardHTML(s) {
-  const tierClass = 'tier-' + s.tier;
-  const statusClass = s.status;
-  const isLocked = s.status === 'locked';
-  const isPending = s.status === 'pending';
-  const isUnlocked = s.status === 'unlocked';
-
-  const pilll = isUnlocked ? '<span class="status-pill pill-unlocked">&#10003; UNLOCKED</span>'
-               : isPending  ? '<span class="status-pill pill-pending">&#9203; DECRYPTING</span>'
-               :               '<span class="status-pill pill-locked">&#128274; LOCKED</span>';
-
-  const bodyHTML = isLocked
-    ? `<div class="secret-locked-overlay">&#128274; ${escHtml(s.hint)}</div>`
-    : `<div class="secret-desc">${escHtml(s.desc)}</div>
-       <div class="secret-effect">&#9889; ${escHtml(s.effect)}</div>`;
-
-  const actionBtn = isUnlocked ? ''
-    : isPending ? `<button class="btn-sm btn-muted" disabled>Decrypting&hellip;</button>`
-    : s.purchasable
-      ? `<button class="btn-sm btn-purple js-purchase" data-secret-id="${escAttr(s.id)}">Purchase ${escHtml(s.price)}</button>`
-      : `<button class="btn-sm btn-muted" disabled>Earn via ${escHtml(s.earn)}</button>`;
-
-  return `
-  <div class="secret-card ${statusClass}" id="card-${escAttr(s.id)}">
-    <div>
-      <span class="tier-badge ${tierClass}">${escHtml(TIER_NAMES[s.tier].toUpperCase())}</span>
-      <span class="cat-badge">${escHtml(CAT_LABELS[s.category])}</span>
-    </div>
-    ${pilll}
-    <div class="secret-title">${escHtml(s.title)}</div>
-    <div class="secret-hint">${escHtml(s.hint)}</div>
-    ${bodyHTML}
-    <div style="margin-top:8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-      ${actionBtn}
-      <span style="font-size:0.68rem; color:var(--muted)">Earn: ${escHtml(s.earn)}</span>
-    </div>
-  </div>`;
-}
-
-// ── Render Store ──
-function renderStore() {
-  const purchasable = SECRETS.filter(s => s.purchasable && s.status === 'locked');
-  const list = document.getElementById('store-list');
-
-  if (!purchasable.length) {
-    list.innerHTML = '<div class="card"><p>You\'ve unlocked everything purchasable so far. More secrets available as the catastrophe cycle progresses.</p></div>';
-    return;
-  }
-
-  list.innerHTML = purchasable.map(s => {
-    const tierClass = 'tier-' + s.tier;
-    return `
-    <div class="store-card">
-      <div style="display:flex; justify-content:space-between; align-items:start; flex-wrap:wrap; gap:8px;">
-        <div>
-          <span class="tier-badge ${tierClass}">${escHtml(TIER_NAMES[s.tier].toUpperCase())}</span>
-          <span class="cat-badge">${escHtml(CAT_LABELS[s.category])}</span>
-          <span class="iap-badge">IAP stub</span>
-        </div>
-        <span class="price">${escHtml(s.price)}</span>
       </div>
-      <div class="secret-title" style="margin-top:8px;">${escHtml(s.title)}</div>
-      <div class="secret-hint">${escHtml(s.hint)}</div>
-      <div style="font-size:0.75rem; color:var(--green); margin:6px 0;">&#9889; ${escHtml(s.effect)}</div>
-      <div style="font-size:0.7rem; color:var(--muted); margin-bottom:8px;">Free earn path: ${escHtml(s.earn)}</div>
-      <button class="btn-sm btn-gold js-purchase" data-secret-id="${escAttr(s.id)}">Unlock Now &mdash; ${escHtml(s.price)}</button>
-    </div>`;
-  }).join('');
-}
+      <button class="btn btn-outline" id="btn-study" style="font-size:0.8rem; padding:7px 14px;">
+        📖 Study (+10 Gnosis XP)
+      </button>
+    </div>
 
-// ── Purchase (stub) ──
-function purchaseSecret(id) {
-  const s = SECRETS.find(x => x.id === id);
-  if (!s || !s.purchasable) return;
+    <!-- Resources -->
+    <div class="card">
+      <div class="section-title">Resources</div>
+      <div class="resource-row">
+        <span class="resource-name">🪨 Stone</span>
+        <span class="resource-val" id="res-stone">0</span>
+      </div>
+      <div class="resource-row">
+        <span class="resource-name">🪵 Wood</span>
+        <span class="resource-val" id="res-wood">0</span>
+      </div>
+      <div class="resource-row">
+        <span class="resource-name">⛏️ Ore</span>
+        <span class="resource-val" id="res-ore">0</span>
+      </div>
+      <div style="display:flex; gap:8px; margin-top: 12px; flex-wrap:wrap;">
+        <button class="btn btn-success" id="btn-mine-stone" style="flex:1; min-width:80px;">Mine Stone</button>
+        <button class="btn btn-success" id="btn-mine-wood"  style="flex:1; min-width:80px;">Chop Wood</button>
+        <button class="btn btn-success" id="btn-mine-ore"   style="flex:1; min-width:80px;">Mine Ore</button>
+      </div>
+    </div>
 
-  // Stub: simulate IAP flow completing
-  s.status = 'unlocked';
-  renderSecrets();
-  renderStore();
+    <!-- Milestones (demo) -->
+    <div class="card">
+      <div class="section-title">Milestones</div>
+      <p style="font-size:0.82rem; color:#64748b; margin-bottom:10px;">
+        Complete milestones to earn Secrets for free.
+      </p>
+      <button class="btn btn-outline btn-full" id="btn-build-library" style="margin-bottom:6px;">
+        🏛️ Build Library (requires 50 Stone + 30 Wood)
+      </button>
+      <div style="font-size:0.75rem; color:#64748b;" id="milestone-status">
+        Library: not yet built
+      </div>
+    </div>
 
-  const card = document.getElementById('card-' + id);
-  if (card) card.classList.add('reveal-anim');
+    <!-- Catastrophe Forecast summary (links to Secrets tab) -->
+    <div class="card" id="home-forecast-card">
+      <div class="section-title">🌀 Catastrophe Forecast</div>
+      <div id="home-forecast-level" style="font-size:1rem; font-weight:700; margin-bottom:4px;">BLIND</div>
+      <div id="home-forecast-desc" style="font-size:0.82rem; color:#94a3b8; margin-bottom:10px;"></div>
+      <button class="btn btn-outline" id="btn-go-secrets" style="font-size:0.82rem; padding:7px 14px;">
+        Open Secrets Library →
+      </button>
+    </div>
 
-  showToast('\uD83D\uDD2E \u201C' + s.title + '\u201D unlocked!');
-}
+    <!-- Debug: simulate catastrophe -->
+    <div class="card" style="border-color:#334155;">
+      <div class="section-title" style="color:#ef4444;">⚠️ Debug Panel</div>
+      <button class="btn" style="background:#7f1d1d; color:#fca5a5; margin-right:8px; font-size:0.8rem; padding:7px 14px;" id="btn-catastrophe">
+        Simulate Catastrophe (–30% resources)
+      </button>
+      <button class="btn btn-outline" style="font-size:0.8rem; padding:7px 14px; border-color:#64748b; color:#64748b;" id="btn-reset">
+        Reset Save
+      </button>
+    </div>
 
-// ── Mine (home screen demo) ──
-let ore = 1240;
-function mine() {
-  ore += 50;
-  document.getElementById('stat-ore').textContent = ore.toLocaleString();
-  showToast('+50 ore mined');
-}
+  </main>
 
-// ── Expedition (demo) ──
-function sendExpedition() {
-  showToast('\u26F5 Expedition dispatched \u2014 returns in 4h');
-  setTimeout(() => {
-    const s = SECRETS.find(x => x.id === 'SEC_003' && x.status === 'locked');
-    if (s) { s.status = 'unlocked'; renderSecrets(); }
-  }, 2000);
-}
+  <!-- ── Secrets Screen ──────────────────────────────────────────────────── -->
+  <main id="screen-secrets" class="screen">
+    <div id="secrets-library-root"></div>
+  </main>
 
-// ── Toast — uses textContent (not innerHTML), so rendered text is always safe ──
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
-}
+  <!-- ── App bootstrap ───────────────────────────────────────────────────── -->
+  <script type="module">
+    import {
+      getState, awardGnosisXp, mineResource, completeMilestone,
+      applyCatastropheEvent, getGameSummary,
+    } from './js/game.js';
+    import { renderSecretsLibrary } from './js/secrets/library-ui.js';
+    import { SecretStore }          from './js/secrets/store.js';
 
-// ── Helpers ──
-function escHtml(str) {
-  return String(str)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-}
+    // ── Gnosis rank names ───────────────────────────────────────────────────
+    const RANK_NAMES = ['Seeker', 'Initiate', 'Adept', 'Archivist', 'Elder Scholar', 'Keeper'];
+    const RANK_THRESHOLDS = [0, 100, 300, 700, 1500, 3000];
 
-function escAttr(str) {
-  return String(str).replace(/[^a-zA-Z0-9_-]/g, '');
-}
+    // ── Tab navigation ──────────────────────────────────────────────────────
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const screen = tab.dataset.screen;
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(`screen-${screen}`).classList.add('active');
+        if (screen === 'secrets') renderSecretsLibrary(document.getElementById('secrets-library-root'));
+      });
+    });
 
-// ── Event delegation: purchase buttons (data-secret-id attribute, no inline JS) ──
-document.addEventListener('click', function(e) {
-  const btn = e.target.closest('.js-purchase');
-  if (!btn) return;
-  const id = btn.getAttribute('data-secret-id');
-  if (id) purchaseSecret(id);
-});
+    // ── Render helpers ──────────────────────────────────────────────────────
+    function refreshUI() {
+      const { state, forecast } = getGameSummary();
 
-// ── Init ──
-renderSecrets();
-</script>
+      // Resources
+      document.getElementById('res-stone').textContent = Math.floor(state.resources.stone);
+      document.getElementById('res-wood').textContent  = Math.floor(state.resources.wood);
+      document.getElementById('res-ore').textContent   = Math.floor(state.resources.ore);
+
+      // Gnosis
+      const rank      = state.gnosisRank;
+      const xp        = state.gnosisXp;
+      const threshold = RANK_THRESHOLDS[Math.min(rank + 1, RANK_THRESHOLDS.length - 1)];
+      const prevThreshold = RANK_THRESHOLDS[rank];
+      const pct = rank >= RANK_NAMES.length - 1 || threshold === prevThreshold
+        ? 100
+        : Math.min(100, ((xp - prevThreshold) / (threshold - prevThreshold)) * 100);
+
+      document.getElementById('gnosis-rank-label').textContent =
+        `Rank ${rank} — ${RANK_NAMES[rank] ?? 'Master'}`;
+      document.getElementById('gnosis-xp').textContent       = Math.floor(xp);
+      document.getElementById('gnosis-next-threshold').textContent = threshold;
+      document.getElementById('gnosis-bar').style.width       = `${pct}%`;
+
+      // Forecast
+      document.getElementById('home-forecast-level').textContent = forecast.level;
+      document.getElementById('home-forecast-desc').textContent  = forecast.description;
+
+      // Milestone status
+      const libraryBuilt = state.milestones.includes('library_built');
+      document.getElementById('milestone-status').textContent =
+        libraryBuilt ? '✅ Library: built' : 'Library: not yet built';
+      document.getElementById('btn-build-library').disabled = libraryBuilt;
+    }
+
+    // ── Button handlers ─────────────────────────────────────────────────────
+    document.getElementById('btn-study').addEventListener('click', () => {
+      awardGnosisXp(10);
+      refreshUI();
+    });
+
+    ['stone', 'wood', 'ore'].forEach(res => {
+      document.getElementById(`btn-mine-${res}`).addEventListener('click', () => {
+        mineResource(res, 10);
+        refreshUI();
+      });
+    });
+
+    document.getElementById('btn-build-library').addEventListener('click', () => {
+      const s = getState();
+      if (s.resources.stone < 50 || s.resources.wood < 30) {
+        alert('Not enough resources! Need 50 Stone + 30 Wood.');
+        return;
+      }
+      completeMilestone('library_built');
+      refreshUI();
+    });
+
+    document.getElementById('btn-go-secrets').addEventListener('click', () => {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.querySelector('[data-screen="secrets"]').classList.add('active');
+      document.getElementById('screen-secrets').classList.add('active');
+      renderSecretsLibrary(document.getElementById('secrets-library-root'));
+    });
+
+    document.getElementById('btn-catastrophe').addEventListener('click', () => {
+      applyCatastropheEvent(0.30);
+      refreshUI();
+      alert('⚠️ Catastrophe struck! Resources reduced.');
+    });
+
+    document.getElementById('btn-reset').addEventListener('click', () => {
+      if (!confirm('Reset all progress? This cannot be undone.')) return;
+      SecretStore._debugReset();
+      localStorage.removeItem('civiltas_game_state');
+      location.reload();
+    });
+
+    // ── React to secret unlocks ─────────────────────────────────────────────
+    window.addEventListener('secretUnlocked', ({ detail }) => {
+      const id = detail.secretId;
+      // Show a brief notification
+      const toast = document.createElement('div');
+      toast.className = 'secrets-toast secrets-toast--info';
+      toast.textContent = `🔓 Secret unlocked: ${id.replace(/_/g, ' ')}`;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 4000);
+      refreshUI();
+    });
+
+    // ── Initial render ──────────────────────────────────────────────────────
+    refreshUI();
+  </script>
 </body>
 </html>
