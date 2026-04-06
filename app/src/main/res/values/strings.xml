@@ -1,8 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">CIVILTAS</string>
-    <string name="tab_home">Home</string>
-    <string name="tab_mining">Mining</string>
-    <string name="tab_building">Build</string>
-    <string name="tab_tasks">Tasks</string>
-    <string name="tab_wallet">Wallet</string>
+    <string name="level_label">Level</string>
+    <string name="resources_label">Resources</string>
+    <string name="catastrophe_label">Catastrophe Countdown</string>
 </resources>
