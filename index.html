@@ -1,54 +1,118 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio Landing Page</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>CIVILTAS — Order of the Compass</title>
+    <style>
+        body { background: #020617; color: white; font-family: sans-serif; padding: 20px; }
+        .card { background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 12px; margin-bottom: 10px; }
+        .gold { color: #facc15; }
+        .blue { color: #38bdf8; }
+        .teal { color: #2dd4bf; }
+        .muted { color: #94a3b8; font-size: 0.85rem; }
+        .btn { width: 100%; padding: 15px; border-radius: 8px; border: none; font-weight: bold; margin-top: 10px; cursor: pointer; }
+        .badge { display: inline-block; font-size: 0.7rem; padding: 2px 8px; border-radius: 99px; font-weight: bold; margin-left: 6px; vertical-align: middle; }
+        .badge-locked { background: #334155; color: #94a3b8; }
+        .badge-new    { background: #facc15; color: #020617; }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>My Portfolio</h1>
-        <nav>
-            <ul>
-                <li><a href="#sovereign-command">Sovereign Command</a></li>
-                <li><a href="#analytics-hub">Analytics Hub</a></li>
-                <li><a href="#portfolio-builder">Portfolio Builder</a></li>
-                <li><a href="#task-management">Task Management</a></li>
-                <li><a href="#code-sandbox">Code Sandbox</a></li>
-                <li><a href="#api-management">API Management</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section id="sovereign-command">
-            <h2>Sovereign Command</h2>
-            <p>Description of the Sovereign Command project.</p>
-        </section>
-        <section id="analytics-hub">
-            <h2>Analytics Hub</h2>
-            <p>Description of the Analytics Hub project.</p>
-        </section>
-        <section id="portfolio-builder">
-            <h2>Portfolio Builder</h2>
-            <p>Description of the Portfolio Builder project.</p>
-        </section>
-        <section id="task-management">
-            <h2>Task Management</h2>
-            <p>Description of the Task Management project.</p>
-        </section>
-        <section id="code-sandbox">
-            <h2>Code Sandbox</h2>
-            <p>Description of the Code Sandbox project.</p>
-        </section>
-        <section id="api-management">
-            <h2>API Management</h2>
-            <p>Description of the API Management project.</p>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2026 My Portfolio</p>
-    </footer>
-    <script src="script.js"></script>
+
+    <!-- ── App header ─────────────────────────────────────────────────── -->
+    <h1 class="gold">CIVILTAS</h1>
+    <p class="muted">Order of the Compass — Prototype</p>
+
+    <!-- ── Compass Rank card ──────────────────────────────────────────── -->
+    <div class="card" style="border-left: 5px solid #facc15;">
+        <h3 class="gold">Compass Rank: <span id="rank-name">Seeker</span></h3>
+        <p class="muted">Gnosis: <span id="gnosis-val">0</span> &nbsp;|&nbsp; Secrets collected: <span id="secrets-count">0</span> / 5 to reach Initiate</p>
+        <p class="muted" style="font-style:italic;">"Every line drawn by a compass traces the boundary between what is known and what must never be forgotten."</p>
+    </div>
+
+    <!-- ── Catastrophe Forecast ───────────────────────────────────────── -->
+    <div class="card" style="border-left: 5px solid #ef4444;">
+        <h3 class="blue">Catastrophe Forecast</h3>
+        <p id="forecast-label" class="muted">Unknown — Collect Order Dossiers to increase confidence</p>
+        <div style="background:#0f172a; border-radius:6px; height:10px; margin-top:8px;">
+            <div id="forecast-bar" style="background:#ef4444; height:10px; border-radius:6px; width:0%; transition:width 0.4s;"></div>
+        </div>
+    </div>
+
+    <!-- ── Secrets Library ────────────────────────────────────────────── -->
+    <div class="card">
+        <h3 class="teal">Secrets Library</h3>
+        <p class="muted">Order of the Compass teachings and dossiers</p>
+
+        <div id="secret-s001" class="card" style="background:#0f172a; margin-top:10px;">
+            <b>The First Orientation</b>
+            <span class="badge badge-new">New</span>
+            <p class="muted">Teaching — Chapter I: Orientation</p>
+            <p class="muted">Foundational doctrine given to every Seeker of the Order.</p>
+        </div>
+
+        <div id="secret-s002" class="card" style="background:#0f172a; margin-top:6px;">
+            <b>Safe Corridor Map Fragment</b>
+            <span class="badge badge-locked">🔒 Initiate</span>
+            <p class="muted">Dossier — Chapter II: Survival Intel</p>
+            <p class="muted">Earn this from: Expedition</p>
+        </div>
+
+        <div id="secret-s003" class="card" style="background:#0f172a; margin-top:6px;">
+            <b>Hex Lattice Foundations</b>
+            <span class="badge badge-locked">🔒 Adept</span>
+            <p class="muted">Blueprint — Chapter IV: Sacred Geometry</p>
+            <p class="muted">Earn this from: Research Milestone</p>
+        </div>
+
+        <div id="secret-s004" class="card" style="background:#0f172a; margin-top:6px;">
+            <b>The First Signal</b>
+            <span class="badge badge-locked">🔒 Keeper</span>
+            <p class="muted">Dossier — Chapter V: Catastrophe Dossiers</p>
+            <p class="muted">Earn this from: Order Quest</p>
+        </div>
+
+        <button class="btn" style="background:#1e3a5f; color:#38bdf8;" onclick="alert('Order Archives Store coming soon.')">
+            Browse Order Archives Store
+        </button>
+    </div>
+
+    <!-- ── Resource loop ──────────────────────────────────────────────── -->
+    <div class="card" style="border-left: 5px solid #10b981;">
+        <h3 class="gold">The Foundry</h3>
+        <p>Gold: <span id="gold-val">0.0000</span></p>
+        <p>Materials: <span id="materials-val">0.0000</span></p>
+        <button class="btn" style="background:#10b981; color:white;" onclick="mine()">Mine Resources</button>
+    </div>
+
+    <!-- ── Navigation hint ────────────────────────────────────────────── -->
+    <div class="card" style="background:#0f172a; border: 1px solid #334155;">
+        <p class="muted"><b>MVP Prototype</b> — UI strings use Order of the Compass copy.<br>
+        See <code>src/secrets/SecretsConstants.kt</code> for Android string constants<br>
+        and <code>docs/secrets.md</code> for the full teachings catalogue.</p>
+    </div>
+
+    <script>
+        var gold = 0, materials = 0, gnosis = 0, secrets = 0;
+
+        function mine() {
+            gold      += (Math.random() * 0.5 + 0.1);
+            materials += (Math.random() * 0.3 + 0.05);
+            gnosis    += 1;
+            document.getElementById('gold-val').textContent      = gold.toFixed(4);
+            document.getElementById('materials-val').textContent = materials.toFixed(4);
+            document.getElementById('gnosis-val').textContent    = gnosis;
+            updateForecast();
+        }
+
+        function updateForecast() {
+            var pct = Math.min(Math.floor(gnosis * 1.5), 100);
+            document.getElementById('forecast-bar').style.width = pct + '%';
+            if (pct >= 100) {
+                document.getElementById('forecast-label').textContent = 'Forecast resolved — consult the Archon\'s Mandate';
+            } else if (pct > 0) {
+                document.getElementById('forecast-label').textContent = pct + ' % confidence';
+            }
+        }
+    </script>
 </body>
 </html>
