@@ -8,12 +8,12 @@ import androidx.navigation.compose.rememberNavController
 import com.sovereign.civiltas.ui.screens.*
 import com.sovereign.civiltas.ui.viewmodel.GameViewModel
 
-sealed class Screen(val route: String) {
-    object Home : Screen("home")
-    object Upgrades : Screen("upgrades")
-    object Skills : Screen("skills")
-    object Quests : Screen("quests")
-    object Settings : Screen("settings")
+sealed class AppScreen(val route: String) {
+    object Home : AppScreen("home")
+    object Upgrades : AppScreen("upgrades")
+    object Skills : AppScreen("skills")
+    object Quests : AppScreen("quests")
+    object Settings : AppScreen("settings")
 }
 
 @Composable
@@ -21,20 +21,20 @@ fun CiviltasNavGraph() {
     val navController = rememberNavController()
     val viewModel: GameViewModel = hiltViewModel()
 
-    NavHost(navController = navController, startDestination = Screen.Home.route) {
-        composable(Screen.Home.route) {
+    NavHost(navController = navController, startDestination = AppScreen.Home.route) {
+        composable(AppScreen.Home.route) {
             HomeScreen(viewModel = viewModel, navController = navController)
         }
-        composable(Screen.Upgrades.route) {
+        composable(AppScreen.Upgrades.route) {
             UpgradesScreen(viewModel = viewModel, navController = navController)
         }
-        composable(Screen.Skills.route) {
+        composable(AppScreen.Skills.route) {
             SkillsScreen(viewModel = viewModel, navController = navController)
         }
-        composable(Screen.Quests.route) {
+        composable(AppScreen.Quests.route) {
             QuestsScreen(viewModel = viewModel, navController = navController)
         }
-        composable(Screen.Settings.route) {
+        composable(AppScreen.Settings.route) {
             SettingsScreen(viewModel = viewModel, navController = navController)
         }
     }
