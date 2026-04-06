@@ -5,27 +5,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.civiltas.app.data.GameRepository
-import com.civiltas.app.ui.navigation.AppNavigation
-import com.civiltas.app.ui.theme.CiviltasTheme
+import com.civiltas.app.ui.MiningScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val repository = GameRepository(applicationContext)
         setContent {
-            CiviltasTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    AppNavigation(repository = repository)
-                }
-            }
+            MiningScreen(modifier = Modifier.fillMaxSize())
         }
     }
 }

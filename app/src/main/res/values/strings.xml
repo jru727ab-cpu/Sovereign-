@@ -1,4 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Civiltas</string>
+    <string name="app_name">CIVILTAS</string>
+
+    <!-- Mining screen -->
+    <string name="label_order_of_compass">Order of the Compass</string>
+    <string name="label_total_ore">Total Ore Extracted</string>
+    <string name="label_pending_ore">Pending Passive Ore</string>
+    <string name="label_tap_rate">Active: %1$s ore/tap</string>
+    <string name="label_passive_rate">Passive: %1$s ore/hr</string>
+    <string name="btn_mine">MINE</string>
+    <string name="btn_collect">COLLECT</string>
+    <string name="btn_upgrade">UPGRADE TAP (+%1$s ore/tap)</string>
+    <string name="cd_compass_spinning">Order of the Compass rotating — mining active</string>
+    <string name="cd_compass_idle">Order of the Compass — tap to begin mining</string>
+    <string name="cd_mine_button">Mine button — tap to extract ore</string>
+    <string name="cd_collect_button">Collect passive ore</string>
+    <string name="label_upgrade_cost">Costs %1$s ore</string>
+    <string name="label_session_taps">Taps this session: %1$s</string>
+    <string name="label_passive_progress">Passive collection: %1$s%%</string>
 </resources>
