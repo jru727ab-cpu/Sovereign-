@@ -55,11 +55,7 @@ fun CiviltasNavGraph(
         }
 
         composable(Routes.STORE) {
-            StoreScreen(
-                secretsRepository = secretsRepository,
-                forecastRepository = forecastRepository,
-                onBack = { navController.popBackStack() }
-            )
+            StoreScreen()
         }
     }
 }

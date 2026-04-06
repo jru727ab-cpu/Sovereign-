@@ -1,4 +1,4 @@
-# SOVEREIGN — Full Game Design Document
+# CIVILTAS — Full Game Design Document
 
 **Version:** 0.1 (MVP Scope)  
 **Platform:** Android (minSdk 26 / Android 8.0+)  
