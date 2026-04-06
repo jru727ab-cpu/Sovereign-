@@ -1,38 +1,54 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sovereign Command</title>
-    <style>
-        body { background: #020617; color: white; font-family: sans-serif; padding: 20px; }
-        .card { background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 12px; margin-bottom: 10px; }
-        .gold { color: #facc15; }
-        .blue { color: #38bdf8; }
-        .btn { width: 100%; padding: 15px; border-radius: 8px; border: none; font-weight: bold; margin-top: 10px; }
-    </style>
+    <title>Portfolio Landing Page</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Sovereign Command</h1>
-    <div class="card">
-        <h3 class="blue">Admin Status: ONLINE</h3>
-        <p id="genesis">Genesis Nodes: 1/1000</p>
-    </div>
-    
-    <div class="card" style="border-left: 5px solid #10b981;">
-        <h3 class="gold">The Foundry</h3>
-        <p>Gold: <span id="gold-val">0.0000</span></p>
-        <p>Diskon: <span id="diskon-val">0.0000</span></p>
-    </div>
-
-    <div class="card">
-        <h3>Private Vault</h3>
-        <code style="font-size: 0.7rem;">bc1q_SOVEREIGN_WALLET_ADDRESS</code>
-        <button class="btn" style="background:#10b981; color:white;">WITHDRAW PROFITS</button>
-    </div>
-
-    <div id="navigator" class="card" style="background:#0f172a; border: 1px solid #facc15;">
-        <p class="gold"><b>CEO NAVIGATOR:</b></p>
-        <p style="font-size:0.8rem;">1. Upload this file to GitHub.<br>2. Run 'engine.py' in Termux.<br>3. Watch your wealth grow.</p>
-    </div>
+    <header>
+        <h1>My Portfolio</h1>
+        <nav>
+            <ul>
+                <li><a href="#sovereign-command">Sovereign Command</a></li>
+                <li><a href="#analytics-hub">Analytics Hub</a></li>
+                <li><a href="#portfolio-builder">Portfolio Builder</a></li>
+                <li><a href="#task-management">Task Management</a></li>
+                <li><a href="#code-sandbox">Code Sandbox</a></li>
+                <li><a href="#api-management">API Management</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="sovereign-command">
+            <h2>Sovereign Command</h2>
+            <p>Description of the Sovereign Command project.</p>
+        </section>
+        <section id="analytics-hub">
+            <h2>Analytics Hub</h2>
+            <p>Description of the Analytics Hub project.</p>
+        </section>
+        <section id="portfolio-builder">
+            <h2>Portfolio Builder</h2>
+            <p>Description of the Portfolio Builder project.</p>
+        </section>
+        <section id="task-management">
+            <h2>Task Management</h2>
+            <p>Description of the Task Management project.</p>
+        </section>
+        <section id="code-sandbox">
+            <h2>Code Sandbox</h2>
+            <p>Description of the Code Sandbox project.</p>
+        </section>
+        <section id="api-management">
+            <h2>API Management</h2>
+            <p>Description of the API Management project.</p>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2026 My Portfolio</p>
+    </footer>
+    <script src="script.js"></script>
 </body>
 </html>
