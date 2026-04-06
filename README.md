@@ -1,106 +1,131 @@
 # CIVILTAS — Sovereign Command
 
-> *Rebuild. Discover. Survive what's coming.*
-
-CIVILTAS is an **offline-first idle/incremental civilisation game** for Android. You rise from the ashes of a destroyed world — mining resources, constructing buildings, researching lost technology, and piecing together the **Secrets** of what really happened. But another catastrophe is coming. The question is: will you be ready?
-
----
-
-## Core Pillars
-
-### ⛏️ Build & Progress
-An addictive hybrid loop: short actions (upgrades, expeditions, discoveries) every few minutes, long idle accumulation (1–8 hours) when you're away. Mine resources, refine them, construct buildings, unlock tech, and expand your civilisation.
-
-### 🔮 Secrets — Progression, Narrative & Monetization
-**Secrets** are the central mechanic for progression, storytelling, and optional monetization. They are fragments of hidden knowledge that survived the last catastrophe.
-
-Five categories of secrets await discovery:
-- **Lore** — What happened. Who caused it. The truth behind the catastrophe.
-- **Survival Intel** — Safe zones, evacuation routes, hazard avoidance.
-- **Resource Intel** — Hidden deposits, advanced extraction, lost trade routes.
-- **Sacred Geometry / Ancient Knowledge** — Blueprints and technology lost to history.
-- **Society Ranks** — Passwords, oaths, and rank insignia of pre-catastrophe factions.
-
-Secrets range from Common (earned via daily tasks) to Legendary (earned through full catastrophe cycles). They unlock new mechanics, story content, and strategic advantages — **but are always earnable through gameplay**. See [`docs/secrets.md`](docs/secrets.md) for the full system design.
-
-#### Monetization Guardrails
-- Paid secrets = **information, convenience, or cosmetic unlocks** — never raw power
-- Every purchasable secret has a **free earn path** through quests, expeditions, or research
-- No pay-to-win: a strategic free player out-prepares a careless paying player
-- Billing is abstracted behind `BillingProvider` — stub for offline, swappable for Play Billing or Stripe
-
-### ⚠️ Catastrophe Cycle — The Clock You Can't Read
-History doesn't repeat — it **reloads**. You know another catastrophe is coming. You don't know when. A **Forecast Meter** gives you signals, but the timing is uncertain by design.
-
-This creates genuine strategic tension:
-- **Build now** or **prepare for later**?
-- **Hoard resources** or **invest in knowledge**?
-- **Keep secrets** or **share them** with your community?
-
-See [`docs/catastrophe-cycle.md`](docs/catastrophe-cycle.md) for the full cycle design.
+> *"The Archive does not fear the coming storm. It has already survived the last one."*
+> — Directorate Communiqué, Cycle 7
 
 ---
 
-## Project Structure
+## What is CIVILTAS?
+
+**CIVILTAS** is a hybrid idle/incremental strategy game set in the aftermath of a catastrophic collapse. You are a curator of survival — managing resource extraction, civilisation infrastructure, and the sacred knowledge of a secret society working to outlast the **next** catastrophe before it arrives.
+
+The tone is **hybrid**: grounded sci-fi meets esoteric mysticism. The Directorate of Archivists catalogues cold hard data; the Order of the Eternal Compass interprets the geometry beneath reality. Both know the same truth: *something is coming again, and the only question is whether you'll be ready.*
+
+---
+
+## Core Gameplay Loop
 
 ```
-/
-├── index.html              # Interactive web prototype (Secrets Library + core UI)
+Mine → Collect → Refine → Build → Unlock Secrets → Survive → Repeat
+```
+
+**Two progression tracks run in parallel:**
+
+| Track | Focus | Flavour |
+|---|---|---|
+| **Civilisation Track** | Buildings, production chains, logistics | "Build the infrastructure to endure." |
+| **Gnosis Track** | Secrets, knowledge unlocks, society rank | "Understand why so you can survive the how." |
+
+---
+
+## The Catastrophe Cycle (Retention Engine)
+
+A **Forecast Meter** tracks the probability of the next catastrophe. It is never a perfect timer — it is uncertainty made visible. Players who collect **Secrets** increase their forecast confidence, narrowing the uncertainty window and giving themselves more time to prepare.
+
+When the catastrophe strikes:
+- **Archivists** (knowledge-focused) unlock hidden survival options
+- **Hoarders** (resource-focused) weather shortages better
+- **Builders** (output-focused) recover fastest — if they survive at all
+
+There is no wrong path. Each philosophy changes *how* the catastrophe hits you and *what* options you have coming out the other side.
+
+---
+
+## The Secrets System
+
+**Secrets** are collectible knowledge cards unlocking lore, strategic intelligence, resource efficiency, and sacred geometry blueprints. They sit at the intersection of narrative, progression, and monetisation.
+
+### Categories
+
+| Category | Flavour | Effect |
+|---|---|---|
+| **Directorate Intel** | Cold-case data files from the Archivists | Forecast confidence, resource maps |
+| **Order Geometry** | Sacred diagrams and encoded glyphs | Blueprint unlocks, hidden building layouts |
+| **Survivor Testimony** | Fragmented accounts from the last collapse | Lore reveals, morale bonuses |
+| **Continuity Protocols** | Pre-collapse contingency plans | Disaster mitigation, evacuation options |
+
+### Earning Secrets (free paths)
+
+- Complete **daily task milestones** (streak-based)
+- Reach **expedition milestones** (explore regions)
+- Advance through **Gnosis research** branches
+- Unlock via **society rank-ups**
+
+### Accelerating via Store (optional, ethical)
+
+- **Secrets packs** — lore bundles, intel dossiers (story + light utility)
+- **Season Pass** — premium track per catastrophe cycle (cosmetics + early access)
+- **VIP Subscription** — convenience + cosmetics + better offline cap
+- **Optional rewarded ads** — player-initiated only, no forced interstitials
+
+> **Guardrail:** Every meaningful progression path is earnable for free. Paid purchases provide faster access, cosmetics, extra story depth, and convenience — never an exclusive hard gate on survival.
+
+---
+
+## Monetisation at a Glance
+
+```
+Season Pass (per cycle) ← strongest long-term revenue
+VIP Subscription        ← recurring
+IAP Secrets Packs       ← one-time / repeatable
+Remove Ads              ← one-time
+Rewarded Ads            ← player-choice only
+```
+
+Payment processing is **stubbed** in the MVP. The `StoreRepository` interface is ready for Google Play Billing (Play Store release) or Stripe/crypto (direct APK distribution). Swap the implementation without touching game logic.
+
+---
+
+## Architecture (Android MVP)
+
+- **Language:** Kotlin
+- **UI:** Jetpack Compose + Material 3
+- **Persistence:** SharedPreferences (simple local saves; no server dependency)
+- **Min SDK:** 26 | **Target SDK:** 34
+- **No heavy DI framework** — manual injection kept simple for MVP
+
+### Key packages
+
+```
+com.civiltas.app
 ├── data/
-│   └── secrets.json        # Data-driven secrets catalogue (10 MVP secrets)
-├── src/
-│   └── secrets/
-│       ├── SecretsData.kt       # Kotlin data classes for Android/Compose
-│       ├── SecretsViewModel.kt  # ViewModel: earn/unlock/purchase logic
-│       └── SecretsBillingStub.kt# Offline-friendly billing stub
-└── docs/
-    ├── secrets.md           # Secrets system design
-    └── catastrophe-cycle.md # Catastrophe cycle design
+│   ├── model/         # Secret, StoreItem, ForecastState
+│   ├── SecretsCatalog # 15 built-in secrets
+│   ├── SecretsRepository  # unlock persistence
+│   ├── ForecastRepository # confidence meter
+│   └── EarningEngine      # milestone tracking
+├── ui/
+│   ├── screens/       # SecretsLibraryScreen, SecretDetailScreen, StoreScreen
+│   ├── theme/         # CIVILTAS dark theme
+│   └── navigation/    # NavGraph
+└── MainActivity
 ```
 
 ---
 
-## Running the Prototype
+## Quick Start (Dev)
 
-Open `index.html` in any browser. No build step required. The Secrets Library prototype demonstrates:
-- Browsing discovered/locked secrets
-- Filtering by category and tier
-- Unlock animations
-- Purchase stub UI
-- Catastrophe Forecast Meter
+```bash
+# Build debug APK
+./gradlew assembleDebug
 
----
-
-## Android / Kotlin (Future)
-
-The `src/secrets/` directory contains Kotlin data classes and ViewModel stubs ready to drop into an Android/Compose project. The architecture follows:
-
-- **Data layer**: `SecretsRepository` loads from bundled JSON or remote config
-- **Domain layer**: `SecretsViewModel` handles earn/unlock/pacing logic
-- **Billing layer**: `BillingProvider` interface with `StubBillingProvider` (offline) — swap for Play Billing when distributing on Google Play
-
-Build target: minSdk 24, targetSdk 34, Kotlin + Compose + Material3.
+# Run unit tests
+./gradlew test
+```
 
 ---
 
-## Monetization Model (Summary)
+## Docs
 
-| Revenue Source | Type | Available |
-|---------------|------|-----------|
-| Season Pass (Catastrophe Cycle) | Cosmetic + premium narrative | Planned |
-| VIP Subscription | Convenience + cosmetics | Planned |
-| IAP Packs (Starter, Convenience, Cosmetic) | One-time / repeatable | Stub ready |
-| Rewarded Ads (optional) | Player-chosen | Planned |
-| Remove Ads (one-time) | Removes ad prompts | Planned |
-
-All monetization is **optional** and **non-pay-to-win** by design.
-
----
-
-## Design Philosophy
-
-1. **Offline-first**: fully playable without a network connection
-2. **Optional sync**: account/backup is a stub — disabled until you choose a provider
-3. **No pay-to-win**: secrets bought = secrets earnable; only timing differs
-4. **Lean codebase**: minimal dependencies, data-driven design, stubs for everything unbuilt
-5. **Suspense through uncertainty**: the catastrophe clock never shows an exact time
+- [`docs/secrets.md`](docs/secrets.md) — full Secrets system reference
+- [`docs/catastrophe-cycle.md`](docs/catastrophe-cycle.md) — forecast mechanics and cycle design

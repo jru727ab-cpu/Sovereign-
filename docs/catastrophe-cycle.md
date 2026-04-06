@@ -1,173 +1,150 @@
-# CIVILTAS — Catastrophe Cycle
+# Catastrophe Cycle — CIVILTAS
 
-> *"History doesn't repeat. It reloads."*
+> *"The first collapse was not predicted. The second one will be. Whether you survive it depends entirely on what you know before it arrives."*
+> — Directorate Communiqué, Cycle 7, Opening Statement
 
 ---
 
 ## Overview
 
-The **Catastrophe Cycle** is the heartbeat of CIVILTAS. The world was already reshaped by one catastrophic event — a disaster so complete that civilisations collapsed, knowledge was lost, and survival became the only goal. But fragments of truth survive in **Secrets**: evidence that the last event was not random, and that another is coming.
-
-Players do not know *when* the next catastrophe will arrive. They only know it is coming. This creates the core strategic tension of the game:
-
-> **Build for now, or prepare for what comes?**
+The **Catastrophe Cycle** is CIVILTAS's core retention and tension engine. Unlike a simple countdown timer, the catastrophe is **probabilistic** — players know something is coming, but not exactly when. This uncertainty is deliberate: it mirrors the game's narrative (even the Directorate doesn't know), creates genuine strategic tension, and gives the Secrets system meaningful gameplay purpose.
 
 ---
 
 ## The Forecast Meter
 
-A persistent UI element — the **Catastrophe Forecast Meter** — represents the collective intelligence players have gathered about the incoming event. It has five stages:
+The Forecast Meter is a UI element displaying two values:
 
-| Stage | Name | Description | Secrets Unlocked |
-|-------|------|-------------|-----------------|
-| 0 | **Silence** | No signals. Normal gameplay. | Common / Uncommon only |
-| 1 | **Tremors** | Environmental anomalies begin. Slight resource fluctuations. | Uncommon / Rare Survival Intel |
-| 2 | **Signs** | Fractures in the sky. Strange migrations. Narrative secrets revealed. | Rare Lore + Survival Intel |
-| 3 | **Warnings** | Clear signals. Major resource disruption. Trade routes destabilise. | Epic all-category secrets |
-| 4 | **Imminent** | Final countdown window. Catastrophe can arrive any time. | Legendary secrets (last chance) |
+```
+[████████░░░░░░░░░░░░]  Confidence: 42 / 100
+Estimated arrival window:  ~18–60 days
+```
 
-The meter advances based on:
-- In-game time elapsed
-- Player research progress (discovering more secrets accelerates the meter)
-- Collective player activity (in future multiplayer mode)
-- Random event triggers (to prevent predictability)
+### Confidence Score (0–100)
 
----
+Confidence measures how well the player (and their society) understands the coming catastrophe. It is **not** a damage reduction stat — it is **information quality**.
 
-## How Secrets Interact with Preparation
+Higher confidence means:
+- The arrival window narrows (less uncertainty)
+- Special preparation actions become available
+- Certain Secrets can only be interpreted when confidence is high enough
+- The player can make *informed* strategic decisions (hoard vs build now vs spread knowledge)
 
-Secrets are the **primary tool for catastrophe preparation** — but only if used wisely.
+Low confidence means:
+- Wide uncertainty window — the catastrophe could arrive next week or next year
+- Forced reactive play — building for now because you don't know when "later" is
+- Higher chance of being caught underprepared
 
-### Survival Intel Secrets — Evacuation & Refuge
+### How Confidence Is Gained
 
-These secrets reveal safe zones, underground bunkers, and migration routes. A player with Survival Intel secrets before a catastrophe:
-- Takes 50–80% less damage to their base
-- Retains a larger percentage of stockpiled resources
-- Gets a head start in the post-catastrophe recovery phase
+| Source | Confidence Added |
+|---|---|
+| Unlock `arc_001` Zone 7 Survey | +5 |
+| Unlock `arc_006` Collapse Chronology | +10 |
+| Unlock `arc_007` The Initiating Event | +20 |
+| Unlock `arc_008` Secondary Wave Model | +15 |
+| Unlock `arc_009` Order 0: Who Started It | +30 |
+| Complete a Forecast Expedition | +3–8 (variable) |
+| Reach Society Rank III | +5 |
 
-**Without these secrets**: the catastrophe is survivable but painful. Bases take heavy damage, resources are partially destroyed, and rebuilding takes longer.
+### Confidence Thresholds
 
-### Resource Intel Secrets — Post-Catastrophe Recovery
-
-After a catastrophe, the map changes. Standard resource nodes may be depleted or destroyed. Resource Intel secrets reveal:
-- Hidden caches that survive catastrophes intact
-- New deposits exposed by geological events
-- Emergency rationing techniques (reduces consumption during chaos)
-
-**Strategic choice**: hoard this knowledge and recover faster than others, or share it to stabilise the wider society faster (multiplayer mode).
-
-### Sacred Geometry / Ancient Knowledge — Building for Resilience
-
-Standard buildings are vulnerable to catastrophe damage. Ancient Knowledge secrets unlock:
-- **Reinforced structures** (reduce catastrophe damage by 30–60%)
-- **Underground expansion** (buildings moved below-ground survive fully)
-- **Geomantic anchoring** (ancient technique that ties buildings to ley lines, making them near-indestructible)
-
-These are the highest-value secrets for catastrophe prep and are deliberately hard to earn — they require both research milestones and expedition discoveries.
-
-### Lore Secrets — Understanding Causality
-
-Lore secrets don't help you survive directly, but they reveal *why* catastrophes happen. A player who pieces together the full Lore chain discovers:
-- The original catastrophe was deliberate (or was it?)
-- Specific factions or individuals who triggered it
-- Whether the next catastrophe is natural, manufactured, or both
-- A hidden mechanic: if enough players collectively piece together the truth, a special **Intervention** event triggers (future multiplayer)
+| Confidence | Effect |
+|---|---|
+| 0–29 | Wide window (18–180 days). No preparation actions. |
+| 30–59 | Narrowing window (18–90 days). Basic preparations available. |
+| 60–79 | Focused window (18–45 days). Contingency actions unlock. |
+| 80–99 | Tight window (18–28 days). Advanced preparations + special builds unlock. |
+| 100 | Exact window known. All preparations available. End-game milestone. |
 
 ---
 
-## The Three Strategic Tensions
+## Cycle Structure
 
-The Catastrophe Cycle creates three persistent strategic choices. None is objectively correct — they are balanced.
+Each catastrophe cycle follows this structure:
 
-### 1. Knowledge vs Secrecy
-*Do you share secrets with your community, or hoard them for personal advantage?*
+```
+[Build Phase] → [Warning Phase] → [Impact Phase] → [Recovery Phase] → [New Build Phase]
+```
 
-- **Sharing**: raises collective preparation level, unlocks society rank rewards, earns reputation with NPCs, accelerates group intel (multiplayer future feature)
-- **Hoarding**: personal survival advantage, faster solo recovery, potential for trading secrets at a premium
+### Build Phase (majority of a cycle)
+- Normal gameplay: mine, refine, build, collect Secrets
+- Forecast meter is visible but the window is wide
+- Players pursue whichever philosophy suits them (Archivists / Hoarders / Builders)
+- Secrets can be earned or purchased to increase confidence
 
-### 2. Build Now vs Prepare for Later
-*Do you invest in current production, or spend resources on catastrophe-proof infrastructure?*
+### Warning Phase (triggered when cycle approaches)
+- Forecast window narrows regardless of confidence (story progression)
+- Special warning events fire (tremors, supply chain disruptions, strange readings)
+- Players who ignored the forecast face harder choices under time pressure
+- Players with high confidence get early warning indicators
 
-- **Build now**: higher output before the catastrophe, more resources stockpiled — but potentially lost in the event
-- **Prepare**: lower current output, but much higher retention of what you've built
+### Impact Phase
+- The catastrophe strikes — the exact form depends on the cycle type (seismic, resource scarcity, electromagnetic collapse, social fracture)
+- Players with high confidence unlock special **Contingency responses**
+- Archivists access hidden solutions; Hoarders draw from stockpiles; Builders use redundant infrastructure
+- Unprepared players suffer heavier consequences but are never completely eliminated (the game continues)
 
-The timing uncertainty (you never know exactly when the catastrophe arrives) makes this genuinely hard. A catastrophe that comes late rewards builders; one that comes early rewards preparers.
-
-### 3. Resources Now vs Knowledge Investment
-*Do you mine and stockpile, or invest in research to unlock secrets?*
-
-- **Resources**: immediate, tangible, tradeable (future multiplayer)
-- **Knowledge**: slower to acquire, non-depletable, enables tech that multiplies future resource yield
-
----
-
-## Cycle Phases
-
-### Phase 1: Reconstruction
-*Post-catastrophe. Start (or restart) the civilisation. Core loop: mine, build, stabilise.*
-
-- Secrets: Common/Uncommon available
-- Forecast Meter: Stage 0
-- Focus: establish resource chains, unlock basic tech
-
-### Phase 2: Growth
-*Civilisation stabilising. First signs of the next cycle appear.*
-
-- Secrets: Uncommon/Rare available; first Survival Intel unlockable
-- Forecast Meter: Stage 1 possible
-- Focus: expand, research, first expeditions
-
-### Phase 3: Discovery
-*Players begin uncovering history. Narrative secrets deepen.*
-
-- Secrets: Rare/Epic unlockable; Lore chain begins
-- Forecast Meter: Stage 2–3
-- Focus: balance production vs knowledge investment; first strategic tension peaks
-
-### Phase 4: The Warning
-*Catastrophe is clearly coming. Final preparation window.*
-
-- Secrets: Epic/Legendary available (limited time)
-- Forecast Meter: Stage 4
-- Focus: last-chance preparation, Ancient Knowledge most valuable here
-
-### Phase 5: The Event
-*The catastrophe arrives. Duration: minutes to hours of real time.*
-
-- Damage calculated from preparation: secrets held, buildings built, resources cached
-- Survival score recorded
-- Some secrets permanently lost (unless backed up — optional account feature)
-
-### Phase 6: Aftermath
-*New cycle begins. World changed. Secrets partially reset.*
-
-- Tier 1–2 secrets reset (history repeats, knowledge re-discovered)
-- Tier 3–5 secrets persist (deep knowledge survives)
-- New cycle introduces 1–2 never-seen-before secrets (fresh mystery)
+### Recovery Phase
+- Assess damage, rebuild critical systems
+- "Post-collapse secrets" unlock — testimony, forensic analysis of the event
+- Lore reveals about what just happened and hints at the *next* cycle
+- Season Pass premium track delivers its climax rewards here
 
 ---
 
-## Monetization Touchpoints (Non-P2W)
+## Three Preparation Philosophies
 
-The catastrophe cycle creates natural, ethical monetization moments:
+Players are never forced into one strategy, but each has distinct risk/reward during cycles:
 
-| Moment | Offer | Type |
-|--------|-------|------|
-| Stage 2 Forecast | "Reveal 1 Survival Intel secret now" | Convenience (same secret, early access) |
-| Stage 4 Warning | "Unlock the full Lore chain before the event" | Lore/narrative pack |
-| Post-catastrophe | "Recover with Ancient Knowledge starter bundle" | Recovery pack (not power, just speed) |
-| New cycle start | Premium Season Pass for the new cycle | Season pass (cosmetic + premium narrative track) |
+### Archivists (Pass on Knowledge)
+- **Build**: Gnosis labs, libraries, society ranks, expedition teams
+- **Benefit**: Unlock hidden contingency options during catastrophe; better post-collapse recovery bonuses; higher forecast confidence growth
+- **Risk**: Slower raw output; may have less material stockpile at impact
 
-All offers are **optional**. A skilled free player who has invested in research and expeditions enters every catastrophe better prepared than a paying player who bought convenience but neglected strategy.
+### Hoarders (Stockpile Resources)
+- **Build**: Expanded storage, extraction upgrades, supply chains
+- **Benefit**: Best survival rate during resource scarcity catastrophes; fastest material rebuild
+- **Risk**: May not understand *why* the catastrophe happened; no special Contingency options
+
+### Builders (Thrive Now)
+- **Build**: Infrastructure, population, output chains
+- **Benefit**: Highest current production; fastest pre-catastrophe point accumulation
+- **Risk**: Highest exposure if catastrophe strikes before defensive measures are in place
 
 ---
 
-## Future Multiplayer Extension
+## Cycle Types (v1 — Planned)
 
-In a future multiplayer mode, the Catastrophe Cycle becomes a **shared event**:
-- All players on a server share the Forecast Meter
-- Collective secret-sharing accelerates preparation for everyone
-- Factions form around knowledge-hoarding vs sharing philosophies
-- A global **Intervention** mechanic activates only if enough collective Lore secrets are discovered and shared
+| Cycle Name | Primary Threat | Benefit to Archivists | Benefit to Hoarders | Benefit to Builders |
+|---|---|---|---|---|
+| **The Tremor** | Infrastructure damage | Predicted safe zones avoid damage | Stored materials speed rebuild | Redundant buildings survive |
+| **The Scarcity** | Resource depletion | Secret intel reveals hidden deposits | Stockpile bridges the gap | High production slows depletion |
+| **The Signal** | Electronic/comms collapse | Geometric comm methods still work | Manual systems unaffected | Redundant relay grid survives |
+| **The Fracture** | Social/population collapse | Testimony secrets provide morale | Morale sustained by full stores | Large population buffers losses |
 
-This is designed but not implemented in the MVP. All current hooks (faction standing, share/hoard choice, Society Rank secrets) are forward-compatible with this design.
+---
+
+## Season Pass Integration
+
+Each catastrophe cycle maps to one **season**:
+
+```
+Build Phase → Warning Phase → Impact Phase → Recovery Phase
+     = Season Track Free tier + Premium tier
+```
+
+- **Free track**: basic cycle rewards (resources, common secrets, building tokens)
+- **Premium track (Season Pass)**: rare/classified secrets, cosmetic cycle-exclusive rewards, early intel on next cycle type, special Contingency action during Impact Phase
+
+The Season Pass is the **cleanest long-term monetisation vehicle**: it requires no surprise purchases, the player knows what they're buying, and it feels like a TV season — self-contained with a satisfying arc.
+
+---
+
+## Design Principles
+
+1. **Uncertainty is the game.** A perfect countdown timer removes tension. The Forecast Meter is deliberately noisy.
+2. **Secrets are the answer to uncertainty.** Earning/buying secrets is the only way to narrow the window. This gives them genuine gameplay value, not just cosmetic appeal.
+3. **Catastrophes are survivable, not punishing.** Even a completely unprepared player continues the game — they just face harder recovery. The catastrophe should feel dramatic, not unfair.
+4. **No cycle is identical.** Cycle types rotate. Players cannot simply optimise once and coast — each cycle may demand a different preparation mix.
+5. **The "why" is never fully resolved.** Lore reveals escalate the mystery. By Cycle 3–4, players understand enough to be unsettled. Full truth is reserved for long-term play and classified secrets.

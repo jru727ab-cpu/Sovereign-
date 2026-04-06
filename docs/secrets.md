@@ -1,154 +1,176 @@
-# CIVILTAS — Secrets System
+# Secrets System — CIVILTAS
 
-> *"Knowledge is the only currency that survives a catastrophe."*
+> *"A secret held by one is power. A secret shared with many is a civilisation."*
+> — Order of the Eternal Compass, Inscription IV
 
 ---
 
 ## Overview
 
-**Secrets** are the narrative and progression backbone of CIVILTAS. They represent fragments of hidden knowledge that civilizations fought to protect — or bury — before the last catastrophe. Players discover, earn, and optionally purchase these fragments to gain strategic advantages, unlock new mechanics, and piece together the story of what really happened.
+Secrets are collectible **knowledge artefacts** that sit at the heart of the CIVILTAS progression loop. Each Secret is a data card combining:
 
-Secrets are **never pay-to-win**. Paid secrets offer information, narrative context, convenience, or cosmetic unlocks — never raw power that a free player cannot eventually earn through gameplay.
+- **Narrative**: world-building, lore reveals, society history
+- **Strategic value**: information that improves player decision-making
+- **Mechanical effect**: small but meaningful boosts or unlocks
 
----
-
-## Categories
-
-### 1. Lore Secrets
-*What happened. Who did it. Why it was hidden.*
-
-Fragments of the historical record surrounding the catastrophic event. These tell the human story: political decisions, cover-ups, martyrs, and the factions who knew. They deepen narrative immersion and unlock special dialogue or story chapters.
-
-| Effect | Notes |
-|--------|-------|
-| Unlock story chapter | New cutscene / text log |
-| Reveal faction background | Affects NPC trust ratings |
-| Unlock Codex entry | Permanent collectible |
-
-### 2. Survival Intel Secrets
-*Where to go. What to avoid. How long you have.*
-
-Tactical knowledge about the environment: safe migration corridors, contamination zones, weather patterns, underground aquifers. Survival Intel secrets give real in-game advantages while remaining earnable through play.
-
-| Effect | Notes |
-|--------|-------|
-| Reveal safe zone on map | Reduces hazard penalty |
-| Unlock migration route | Faster expedition travel |
-| Reduce hazard damage % | Passive modifier |
-
-### 3. Resource Intel Secrets
-*Where the best deposits are. Which methods actually work.*
-
-Knowledge of resource-rich locations, extraction techniques, and trade routes that survived the catastrophe. These directly improve gathering efficiency.
-
-| Effect | Notes |
-|--------|-------|
-| Reveal high-yield deposit | Map icon + bonus output |
-| Unlock advanced extraction method | Production rate bonus |
-| Discover lost trade route | Unlock rare resource node |
-
-### 4. Sacred Geometry / Ancient Knowledge Secrets
-*How to build things that shouldn't be buildable. Forgotten science.*
-
-The most powerful category — these unlock entirely new building blueprints, advanced tech tiers, and crafting recipes that pre-date current understanding. Cannot be reverse-engineered without this knowledge.
-
-| Effect | Notes |
-|--------|-------|
-| Unlock advanced building blueprint | New structure type |
-| Unlock tech tier | Gates a research branch |
-| Unlock crafting recipe | New item or module |
-
-### 5. Society Rank Secrets
-*Who you are. What you are allowed to know.*
-
-Secrets tied to social standing — passwords, oaths, symbols, and rank insignia of pre-catastrophe organisations. These gate high-level NPC interactions, faction quests, and multiplayer features like guilds/alliances.
-
-| Effect | Notes |
-|--------|-------|
-| Unlock NPC faction dialogue | New quests available |
-| Raise faction standing | Permanent rep gain |
-| Unlock alliance feature | Multiplayer/social gate |
+Secrets are not pay-to-win upgrades. They are **lore you can act on**.
 
 ---
 
-## Rarity / Tiers
+## The Two Pillars of the Secret Society
 
-| Tier | Name | Description | Earn path | Purchasable? |
-|------|------|-------------|-----------|-------------|
-| 1 | **Common** | Basic historical fragments; minimal gameplay impact | Daily tasks, quests | No (earn only) |
-| 2 | **Uncommon** | Practical intel with noticeable bonuses | Expeditions, research | No (earn only) |
-| 3 | **Rare** | Significant mechanic unlocks; moderate gameplay effect | Research milestones, season pass (free track) | Convenience purchase (faster unlock, same secret) |
-| 4 | **Epic** | Major blueprint/tech unlocks; strong narrative beats | Long expeditions, season pass (premium track) | Yes (info/convenience, not raw power) |
-| 5 | **Legendary** | Unique story-changing secrets; game-altering knowledge | End-game, catastrophe cycle completion | Cosmetic/collector purchase only |
+### The Directorate of Archivists
+A cold, methodical intelligence network that catalogued the collapse with clinical precision. Their Secrets are filed under operational codenames: asset assessments, zone surveys, probability matrices, evacuation protocols.
 
-> **Guardrail**: Tiers 4–5 purchased via IAP are **identical** to the earnable versions — the purchase skips wait time or grind, it does not grant a superior secret.
+- **Tone**: grounded, analytical, redacted government documents
+- **Effect type**: forecast confidence, resource maps, efficiency bonuses
+- **Colour**: deep blue / slate
 
----
+### The Order of the Eternal Compass
+An ancient esoteric tradition that pre-dates the collapse by centuries. The Order studies sacred geometry encoded into surviving architecture, natural formations, and pre-collapse blueprints.
 
-## Earning Secrets (Free Paths)
+- **Tone**: mystical, symbolic, encoded in glyphs and diagrams
+- **Effect type**: blueprint unlocks, hidden building layouts, morale bonuses
+- **Colour**: gold / amber
 
-All secrets have a free earn path. Paid access is always a **convenience shortcut**, never an exclusive advantage.
-
-### Quests / Daily Tasks
-- Complete daily objectives → earn Common/Uncommon secrets
-- Complete story quests → earn narrative Lore and Survival Intel secrets
-- Streak bonus (7-day streak) → guaranteed Rare secret
-
-### Expeditions
-- Short expeditions (1–4h): chance of Uncommon/Rare secrets
-- Long expeditions (8–24h): higher chance, includes Epic tier
-- Expedition type affects secret category (e.g., Cave Expedition → Resource Intel)
-
-### Research Milestones
-- Complete a full research branch → unlock a thematically relevant Secret
-- Sacred Geometry unlocks gate Ancient Knowledge secrets specifically
-- Research cannot be purchased; only time/resource investment earns these
-
-### Catastrophe Cycle Events
-- Mini-events during the catastrophe forecast window → emergency Intel secrets
-- Completing a full cycle (surviving a catastrophe) → Legendary secret
+Both pillars are **factions within the same society**. Players do not choose one — they collect Secrets from both, and the tension between cold data and sacred geometry creates the game's narrative spine.
 
 ---
 
-## Purchasing Secrets (Monetization — Non-P2W)
+## Secret Anatomy
 
-### What you can buy
-| Purchase type | What you get | What you don't get |
-|---------------|-------------|-------------------|
-| **Early unlock** | Access a Rare/Epic secret now instead of in 48h | A stronger secret than earnable |
-| **Season Pass (Premium)** | Premium track secrets (cosmetic + narrative) earlier | Raw power over free players |
-| **Cosmetic bundle** | Visual skin for your Secrets Library, animated unlock effects | Any gameplay advantage |
-| **Lore pack** | Full story chapter + linked secrets revealed | Gameplay advantage |
-| **Convenience pack** | 3-day expedition cooldown removed for 1 secret | More secrets than earnable limit |
+```kotlin
+data class Secret(
+    val id: String,
+    val title: String,
+    val category: SecretCategory,
+    val tier: SecretTier,
+    val lore: String,          // 2–4 sentence flavour text
+    val effectDescription: String,
+    val effect: SecretEffect,
+    val unlockSource: UnlockSource,
+    val storeSkuId: String?    // null = earn-only; non-null = also purchasable
+)
+```
 
-### What you cannot buy
-- A higher-tier secret than is currently earnable
-- Bypassing research milestones (research is always time/resource)
-- Society Rank secrets without meeting the in-game rank prerequisite
+### Categories
 
-### Billing Integration (Stub)
-Purchases are routed through a `BillingProvider` interface. The current implementation is a local-receipt stub (offline-friendly). When ready, swap `StubBillingProvider` for `PlayBillingProvider` (Google Play) or `StripeBillingProvider` (direct APK). See `src/secrets/SecretsBillingStub.kt`.
+| Category | Pillar | Description |
+|---|---|---|
+| `DIRECTORATE_INTEL` | Archivists | Cold-case intelligence files, probability assessments |
+| `CONTINUITY_PROTOCOL` | Archivists | Pre-collapse evacuation and resilience protocols |
+| `ORDER_GEOMETRY` | Order | Sacred geometry diagrams and encoded building layouts |
+| `SURVIVOR_TESTIMONY` | Mixed | Fragmented accounts; bridge lore between pillars |
+
+### Tiers
+
+| Tier | Unlock Difficulty | Effect Magnitude | Purchasable? |
+|---|---|---|---|
+| `COMMON` | Early game / low milestone | Flavour + tiny boost | Optional pack |
+| `UNCOMMON` | Mid-game milestone | Small mechanic unlock | Optional pack |
+| `RARE` | Expedition or high milestone | Meaningful unlock | Premium pack |
+| `CLASSIFIED` | Society rank or Season Pass | Significant story + effect | Season Pass / Premium |
+
+### Effect Types
+
+| Effect | Description |
+|---|---|
+| `FORECAST_CONFIDENCE` | Adds `+N` points to the Forecast confidence meter |
+| `RESOURCE_EFFICIENCY` | Reduces resource cost or increases yield by a percentage |
+| `BLUEPRINT_UNLOCK` | Unlocks a building type that cannot otherwise be built |
+| `EXPEDITION_BONUS` | Improves expedition success rate or loot quality |
+| `MORALE_BOOST` | Increases population morale, improving task completion speed |
+| `OFFLINE_BONUS` | Improves resources earned while app is closed |
+| `LORE_ONLY` | No mechanical effect; pure story reveal |
 
 ---
 
-## Pacing & Drip-Feed Design
+## Full Secrets Catalog (v1 — 15 entries)
 
-To prevent boredom and maintain suspense:
+### Tier: COMMON
 
-1. **Daily limit**: No more than 3 secrets unlocked per day from any source (prevents binge and maintains mystery)
-2. **Discovery delay**: Epic and Legendary secrets take 24–48h to "decrypt" after being found (real-time, offline-friendly)
-3. **Catastrophe window tension**: As the next catastrophe forecast rises, certain secrets become temporarily locked ("data corrupted — atmospheric interference"), creating urgency
-4. **Rotating spotlight**: Each week, 1–2 secrets are highlighted as "rumoured" (visible but locked), creating FOMO and discovery goals
+| ID | Title | Category | Effect |
+|---|---|---|---|
+| `arc_001` | Zone 7 Contamination Survey | DIRECTORATE_INTEL | FORECAST_CONFIDENCE +5 |
+| `arc_002` | Pre-Collapse Population Density Map | DIRECTORATE_INTEL | EXPEDITION_BONUS +3% |
+| `arc_003` | The Pulse Anomaly (Fragmented Log) | SURVIVOR_TESTIMONY | LORE_ONLY |
+| `ord_001` | The Fibonacci Stockpile Arrangement | ORDER_GEOMETRY | RESOURCE_EFFICIENCY +2% |
+| `ord_002` | First Glyph: The Anchor | ORDER_GEOMETRY | LORE_ONLY |
+
+### Tier: UNCOMMON
+
+| ID | Title | Category | Effect |
+|---|---|---|---|
+| `arc_004` | Evacuation Protocol Delta-7 | CONTINUITY_PROTOCOL | OFFLINE_BONUS +5% |
+| `arc_005` | Asset Recovery Codex, Vol. I | DIRECTORATE_INTEL | RESOURCE_EFFICIENCY +5% |
+| `arc_006` | Collapse Chronology: First 72 Hours | DIRECTORATE_INTEL | FORECAST_CONFIDENCE +10 |
+| `ord_003` | Sacred Geometry: The Resilient Arch | ORDER_GEOMETRY | BLUEPRINT_UNLOCK (Reinforced Shelter) |
+| `sur_001` | Testimony of Archivist Vael | SURVIVOR_TESTIMONY | MORALE_BOOST +5% |
+
+### Tier: RARE
+
+| ID | Title | Category | Effect |
+|---|---|---|---|
+| `arc_007` | Classified: The Initiating Event | DIRECTORATE_INTEL | FORECAST_CONFIDENCE +20 |
+| `arc_008` | The Secondary Wave Model | CONTINUITY_PROTOCOL | FORECAST_CONFIDENCE +15 |
+| `ord_004` | The Harmonic Lattice Blueprint | ORDER_GEOMETRY | BLUEPRINT_UNLOCK (Resonance Forge) |
+| `sur_002` | The Last Broadcast (Reconstructed) | SURVIVOR_TESTIMONY | MORALE_BOOST +10%, LORE_ONLY |
+
+### Tier: CLASSIFIED
+
+| ID | Title | Category | Effect |
+|---|---|---|---|
+| `arc_009` | Order 0: Who Started It | DIRECTORATE_INTEL | FORECAST_CONFIDENCE +30, LORE_ONLY |
 
 ---
 
-## Secrets Library UI
+## Unlock Sources
 
-The Secrets Library is a dedicated screen in the app where players:
-- Browse discovered secrets (filterable by category and tier)
-- See locked secrets as silhouettes with a hint ("A map fragment hinting at safety…")
-- Unlock earned secrets with a reveal animation
-- View purchase options for convenience/early unlocks
-- Track their progress toward earning each secret
+### Earnable (Free)
 
-See `index.html` for the interactive prototype and `src/secrets/` for the Kotlin implementation stubs.
+| Source | How | Example Secret |
+|---|---|---|
+| **Daily Task Milestone** | Complete 7-day streak | `arc_001` (Common) |
+| **Expedition Milestone** | Reach Expedition tier 3 | `arc_004` (Uncommon) |
+| **Gnosis Research** | Unlock Society Rank II | `ord_003` (Uncommon) |
+| **Deep Expedition** | Complete special region | `arc_007` (Rare) |
+
+### Purchasable (Store)
+
+| SKU | Contents | Tier |
+|---|---|---|
+| `secrets_pack_archivist_common` | 3 Common Directorate secrets | Common |
+| `secrets_pack_order_common` | 3 Common Order secrets | Common |
+| `secrets_pack_intel_vol1` | 2 Uncommon + 1 Rare Directorate | Uncommon–Rare |
+| `secrets_pack_geometry_vol1` | 2 Uncommon + 1 Rare Order | Uncommon–Rare |
+| `secrets_pack_classified_bundle` | The 1 Classified secret | Classified |
+| `season_pass` | Full premium track for current cycle | All tiers |
+
+---
+
+## Forecast Confidence Integration
+
+The **Forecast Meter** runs from 0–100 confidence. Certain Secrets contribute directly:
+
+| Secret | Confidence Added |
+|---|---|
+| `arc_001` Zone 7 Survey | +5 |
+| `arc_006` Collapse Chronology | +10 |
+| `arc_007` The Initiating Event | +20 |
+| `arc_008` Secondary Wave Model | +15 |
+| `arc_009` Order 0 | +30 |
+
+At **60+ confidence**: the forecast window narrows (fewer false alarms, better prep time).  
+At **80+ confidence**: players unlock special "Contingency" preparation actions.  
+At **100 confidence**: the exact catastrophe arrival window is known (rare/end-game achievement).
+
+See [`docs/catastrophe-cycle.md`](catastrophe-cycle.md) for full mechanics.
+
+---
+
+## Design Guardrails
+
+1. **No secret gates survival entirely behind a paywall.** Every confidence-boosting secret has at least one earnable path.
+2. **Purchased secrets accelerate access** — they do not provide exclusive permanent stat advantages unavailable by playing.
+3. **Lore secrets are a safe monetisation zone** — players buy story, not unfair power.
+4. **CLASSIFIED tier** is the one high-investment purchase/unlock; it is a story climax, not a mechanical hard wall.
