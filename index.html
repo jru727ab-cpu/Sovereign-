@@ -1,54 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio Landing Page</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Alday.work – AI agent, bug finder, secure storage, XP system, and more.">
+  <title>Alday.work</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-    <header>
-        <h1>My Portfolio</h1>
-        <nav>
-            <ul>
-                <li><a href="#sovereign-command">Sovereign Command</a></li>
-                <li><a href="#analytics-hub">Analytics Hub</a></li>
-                <li><a href="#portfolio-builder">Portfolio Builder</a></li>
-                <li><a href="#task-management">Task Management</a></li>
-                <li><a href="#code-sandbox">Code Sandbox</a></li>
-                <li><a href="#api-management">API Management</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <section id="sovereign-command">
-            <h2>Sovereign Command</h2>
-            <p>Description of the Sovereign Command project.</p>
-        </section>
-        <section id="analytics-hub">
-            <h2>Analytics Hub</h2>
-            <p>Description of the Analytics Hub project.</p>
-        </section>
-        <section id="portfolio-builder">
-            <h2>Portfolio Builder</h2>
-            <p>Description of the Portfolio Builder project.</p>
-        </section>
-        <section id="task-management">
-            <h2>Task Management</h2>
-            <p>Description of the Task Management project.</p>
-        </section>
-        <section id="code-sandbox">
-            <h2>Code Sandbox</h2>
-            <p>Description of the Code Sandbox project.</p>
-        </section>
-        <section id="api-management">
-            <h2>API Management</h2>
-            <p>Description of the API Management project.</p>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2026 My Portfolio</p>
-    </footer>
-    <script src="script.js"></script>
+<body class="landing">
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-brand">⚡ Alday.work</div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <button class="btn btn-outline" id="loginBtn">Log In</button>
+      <button class="btn btn-primary" id="signupBtn">Sign Up</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <h1>Your All-In-One<br><span class="accent">Dev Platform</span></h1>
+    <p class="hero-sub">AI Agent · Bug Finder · Secure Storage · XP Gamification · Stripe Billing</p>
+    <div class="hero-actions">
+      <button class="btn btn-primary btn-lg" id="heroSignup">Get Started Free</button>
+      <a href="#features" class="btn btn-ghost btn-lg">See Features</a>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <h2>Everything you need</h2>
+    <div class="grid-3">
+      <div class="card">
+        <span class="card-icon">🤖</span>
+        <h3>Personal AI Agent</h3>
+        <p>GPT-4o-mini powered assistant with full chat history. Optimized API calls – no credit waste.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">🐛</span>
+        <h3>Bug Finder / Crusher</h3>
+        <p>Paste your code and get instant AI-powered bug detection with suggested fixes by severity.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">📁</span>
+        <h3>Secure Storage</h3>
+        <p>Upload, manage, and download files. 100MB free – up to 50GB on Enterprise.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">🏆</span>
+        <h3>XP &amp; Gamification</h3>
+        <p>Earn XP for every action. Level up, unlock achievements, and climb the leaderboard.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">💳</span>
+        <h3>Flexible Plans</h3>
+        <p>Free forever. Upgrade to Pro or Enterprise for more AI, storage, and features via Stripe.</p>
+      </div>
+      <div class="card">
+        <span class="card-icon">🔒</span>
+        <h3>Secure Auth</h3>
+        <p>JWT-based authentication, bcrypt password hashing, and role-based access control.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="pricing" id="pricing">
+    <h2>Simple Pricing</h2>
+    <div class="grid-3" id="pricingGrid">
+      <!-- Loaded dynamically from /api/payments/plans -->
+      <div class="card plan-card">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">$0<span>/mo</span></div>
+        <ul class="plan-features">
+          <li>AI Agent (20/day)</li>
+          <li>100MB Storage</li>
+          <li>Bug Finder (5/day)</li>
+        </ul>
+        <button class="btn btn-outline" id="freePlanBtn">Get Started</button>
+      </div>
+      <div class="card plan-card featured">
+        <div class="plan-badge">Most Popular</div>
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">$19<span>/mo</span></div>
+        <ul class="plan-features">
+          <li>AI Agent (500/day)</li>
+          <li>5GB Storage</li>
+          <li>Unlimited Bug Finder</li>
+          <li>Priority Support</li>
+          <li>XP Boost x2</li>
+        </ul>
+        <button class="btn btn-primary" id="proPlanBtn">Upgrade to Pro</button>
+      </div>
+      <div class="card plan-card">
+        <div class="plan-name">Enterprise</div>
+        <div class="plan-price">$99<span>/mo</span></div>
+        <ul class="plan-features">
+          <li>Unlimited AI Agent</li>
+          <li>50GB Storage</li>
+          <li>Unlimited Bug Finder</li>
+          <li>Dedicated Support</li>
+          <li>XP Boost x5</li>
+          <li>Custom Integrations</li>
+        </ul>
+        <button class="btn btn-outline" id="enterprisePlanBtn">Contact Us</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>⚡ Alday.work &copy; 2026 · Built for developers</p>
+  </footer>
+
+  <!-- AUTH MODAL -->
+  <div class="modal-overlay hidden" id="authModal">
+    <div class="modal">
+      <button class="modal-close" id="modalClose">✕</button>
+      <div class="modal-tabs">
+        <button class="tab-btn active" data-tab="login">Log In</button>
+        <button class="tab-btn" data-tab="signup">Sign Up</button>
+      </div>
+
+      <!-- Login form -->
+      <form id="loginForm" class="auth-form">
+        <h2>Welcome back</h2>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="loginEmail" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" required>
+        </div>
+        <div class="form-error hidden" id="loginError"></div>
+        <button type="submit" class="btn btn-primary w-full">Log In</button>
+      </form>
+
+      <!-- Signup form -->
+      <form id="signupForm" class="auth-form hidden">
+        <h2>Create account</h2>
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="signupUsername" placeholder="cool_username" required minlength="3" maxlength="50">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="signupEmail" placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="signupPassword" placeholder="Min. 8 characters" required minlength="8">
+        </div>
+        <div class="form-error hidden" id="signupError"></div>
+        <button type="submit" class="btn btn-primary w-full">Create Account</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

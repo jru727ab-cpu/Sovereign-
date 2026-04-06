@@ -1,0 +1,12 @@
+# Node.js
+backend/node_modules/
+backend/.env
+backend/uploads/
+
+# Build artifacts
+dist/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

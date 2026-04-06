@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard – Alday.work</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">⚡ Alday.work</div>
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-view="home">🏠 Dashboard</a>
+      <a href="#" class="nav-item" data-view="ai">🤖 AI Agent</a>
+      <a href="#" class="nav-item" data-view="bugs">🐛 Bug Finder</a>
+      <a href="#" class="nav-item" data-view="storage">📁 Storage</a>
+      <a href="#" class="nav-item" data-view="xp">🏆 XP &amp; Achievements</a>
+      <a href="#" class="nav-item" data-view="billing">💳 Billing</a>
+      <a href="#" class="nav-item" data-view="settings">⚙️ Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-chip" id="userChip">
+        <span class="user-avatar" id="sidebarAvatar">?</span>
+        <span id="sidebarUsername">Loading...</span>
+      </div>
+      <button class="btn btn-ghost btn-sm" id="logoutBtn">Logout</button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content" id="mainContent">
+
+    <!-- HOME VIEW -->
+    <div class="view active" id="view-home">
+      <h1>Dashboard</h1>
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card"><span class="stat-icon">⭐</span><div><div class="stat-value" id="statXP">–</div><div class="stat-label">Total XP</div></div></div>
+        <div class="stat-card"><span class="stat-icon">📊</span><div><div class="stat-value" id="statLevel">–</div><div class="stat-label">Level</div></div></div>
+        <div class="stat-card"><span class="stat-icon">🤖</span><div><div class="stat-value" id="statAI">–</div><div class="stat-label">AI Messages</div></div></div>
+        <div class="stat-card"><span class="stat-icon">🐛</span><div><div class="stat-value" id="statBugs">–</div><div class="stat-label">Bugs Found</div></div></div>
+        <div class="stat-card"><span class="stat-icon">📁</span><div><div class="stat-value" id="statFiles">–</div><div class="stat-label">Files</div></div></div>
+        <div class="stat-card"><span class="stat-icon">🏅</span><div><div class="stat-value" id="statAch">–</div><div class="stat-label">Achievements</div></div></div>
+      </div>
+      <div class="xp-bar-container">
+        <div class="xp-bar-label">Level <span id="xpLevel">1</span> – <span id="xpProgress">0</span>% to next</div>
+        <div class="xp-bar"><div class="xp-bar-fill" id="xpBarFill" style="width:0%"></div></div>
+      </div>
+      <h2>Recent Activity</h2>
+      <div id="activityFeed" class="activity-feed">
+        <div class="loading">Loading activity...</div>
+      </div>
+    </div>
+
+    <!-- AI AGENT VIEW -->
+    <div class="view hidden" id="view-ai">
+      <div class="ai-layout">
+        <div class="ai-sidebar">
+          <div class="ai-sidebar-header">
+            <h3>Conversations</h3>
+            <button class="btn btn-primary btn-sm" id="newConvBtn">+ New</button>
+          </div>
+          <div id="convList" class="conv-list"></div>
+        </div>
+        <div class="ai-chat">
+          <div class="chat-header">
+            <span id="chatTitle">Select or start a conversation</span>
+          </div>
+          <div class="chat-messages" id="chatMessages">
+            <div class="chat-empty">Start a conversation with your AI agent</div>
+          </div>
+          <div class="chat-input-row">
+            <textarea id="chatInput" placeholder="Ask me anything..." rows="2"></textarea>
+            <button class="btn btn-primary" id="sendMsgBtn">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BUG FINDER VIEW -->
+    <div class="view hidden" id="view-bugs">
+      <h1>Bug Finder / Crusher</h1>
+      <div class="bug-layout">
+        <div class="bug-input-panel">
+          <div class="form-group">
+            <label>Title (optional)</label>
+            <input type="text" id="bugTitle" placeholder="e.g. Auth module review">
+          </div>
+          <div class="form-group">
+            <label>Language</label>
+            <select id="bugLang">
+              <option value="">Auto-detect</option>
+              <option>JavaScript</option>
+              <option>TypeScript</option>
+              <option>Python</option>
+              <option>Rust</option>
+              <option>Go</option>
+              <option>Java</option>
+              <option>C</option>
+              <option>C++</option>
+              <option>SQL</option>
+              <option>Ruby</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Code <span class="label-hint">(max 10,000 chars)</span></label>
+            <textarea id="bugCode" rows="14" placeholder="Paste your code here..."></textarea>
+          </div>
+          <button class="btn btn-primary" id="analyzeBtn">Analyze Code 🔍</button>
+        </div>
+        <div class="bug-results-panel">
+          <div id="bugResults">
+            <div class="empty-state">Paste code and click Analyze to detect bugs.</div>
+          </div>
+        </div>
+      </div>
+      <h2>Previous Reports</h2>
+      <div id="bugReportsList"></div>
+    </div>
+
+    <!-- STORAGE VIEW -->
+    <div class="view hidden" id="view-storage">
+      <h1>File Storage</h1>
+      <div class="storage-header">
+        <div class="storage-quota" id="storageQuota">Loading storage info...</div>
+        <label class="btn btn-primary" for="fileUploadInput">Upload File</label>
+        <input type="file" id="fileUploadInput" class="hidden" multiple>
+      </div>
+      <div class="quota-bar"><div class="quota-bar-fill" id="quotaFill" style="width:0%"></div></div>
+      <div id="filesList" class="files-grid">
+        <div class="loading">Loading files...</div>
+      </div>
+    </div>
+
+    <!-- XP VIEW -->
+    <div class="view hidden" id="view-xp">
+      <h1>XP &amp; Achievements</h1>
+      <div class="xp-layout">
+        <div>
+          <h2>Your Progress</h2>
+          <div class="stat-card wide" id="xpCard">
+            <div class="xp-big-level" id="xpBigLevel">1</div>
+            <div class="xp-details">
+              <div id="xpBigTotal">0 XP</div>
+              <div class="xp-bar"><div class="xp-bar-fill" id="xpBigFill" style="width:0%"></div></div>
+              <div id="xpBigNext">Next level: –</div>
+            </div>
+          </div>
+          <h2>Leaderboard 🏆</h2>
+          <table class="leaderboard-table" id="leaderboardTable">
+            <thead><tr><th>#</th><th>User</th><th>Level</th><th>XP</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div>
+          <h2>Achievements 🏅</h2>
+          <div class="achievements-grid" id="achievementsGrid">
+            <div class="loading">Loading achievements...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BILLING VIEW -->
+    <div class="view hidden" id="view-billing">
+      <h1>Billing &amp; Subscription</h1>
+      <div class="current-plan" id="currentPlan">
+        <div class="loading">Loading subscription...</div>
+      </div>
+      <h2>Plans</h2>
+      <div class="grid-3" id="billingPlans"></div>
+    </div>
+
+    <!-- SETTINGS VIEW -->
+    <div class="view hidden" id="view-settings">
+      <h1>Settings</h1>
+      <div class="settings-card">
+        <h2>Profile</h2>
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="settingsUsername" placeholder="Your username">
+        </div>
+        <div class="form-group">
+          <label>Avatar URL</label>
+          <input type="url" id="settingsAvatar" placeholder="https://...">
+        </div>
+        <div class="form-error hidden" id="settingsError"></div>
+        <div class="form-success hidden" id="settingsSuccess"></div>
+        <button class="btn btn-primary" id="saveProfileBtn">Save Changes</button>
+      </div>
+      <div class="settings-card danger-zone">
+        <h2>Danger Zone</h2>
+        <p>Cancel your subscription or manage your account.</p>
+        <button class="btn btn-danger" id="cancelSubBtn">Cancel Subscription</button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Mobile sidebar toggle -->
+  <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/ai-agent.js"></script>
+  <script src="js/bug-finder.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/xp.js"></script>
+  <script src="js/payments.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
