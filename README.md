@@ -1,131 +1,81 @@
-# CIVILTAS — Sovereign Command
+# CIVILTAS
 
-> *"The Archive does not fear the coming storm. It has already survived the last one."*
-> — Directorate Communiqué, Cycle 7
+**CIVILTAS** is a hybrid idle/strategy survival game set in the aftermath of a catastrophic collapse. Players rebuild civilization while uncovering the hidden truths held by the **Order of the Compass** — a secret society that preserved forbidden knowledge before the fall.
 
----
+## Core Concept
 
-## What is CIVILTAS?
+> *"The compass does not point north. It points toward what must be preserved."*
 
-**CIVILTAS** is a hybrid idle/incremental strategy game set in the aftermath of a catastrophic collapse. You are a curator of survival — managing resource extraction, civilisation infrastructure, and the sacred knowledge of a secret society working to outlast the **next** catastrophe before it arrives.
+The world has suffered a catastrophic event. Another is coming — and only the Order of the Compass knows the signs.
 
-The tone is **hybrid**: grounded sci-fi meets esoteric mysticism. The Directorate of Archivists catalogues cold hard data; the Order of the Eternal Compass interprets the geometry beneath reality. Both know the same truth: *something is coming again, and the only question is whether you'll be ready.*
+Players must choose their path:
 
----
+| Path | Focus | Benefit |
+|------|-------|---------|
+| **Archivist** | Knowledge, gnosis, Order ranks | Unlock hidden solutions during catastrophe |
+| **Hoarder** | Resources, storage, supply chains | Survive scarcity, rebuild faster |
+| **Builder** | Expansion, infrastructure, population | High current output (higher risk if unprepared) |
 
-## Core Gameplay Loop
+## Gameplay Pillars
 
-```
-Mine → Collect → Refine → Build → Unlock Secrets → Survive → Repeat
-```
+1. **Idle Resource Loop** — Mine → Collect → Refine → Build → Unlock → Repeat
+2. **Gnosis / Secrets Track** — Collect Order teachings to unlock new mechanics and buildings
+3. **Catastrophe Forecast** — A meter of uncertainty; the right Secrets increase your confidence
+4. **Daily/Weekly Objectives** — Rotating tasks and streaks to keep the world alive
 
-**Two progression tracks run in parallel:**
+## The Order of the Compass
 
-| Track | Focus | Flavour |
-|---|---|---|
-| **Civilisation Track** | Buildings, production chains, logistics | "Build the infrastructure to endure." |
-| **Gnosis Track** | Secrets, knowledge unlocks, society rank | "Understand why so you can survive the how." |
+The Order of the Compass is a clandestine society that survived the first catastrophe by preserving knowledge across three pillars:
 
----
+- **Sacred Geometry** — blueprints, layouts, and structural formulas lost to history
+- **Survival Intel** — maps of safe corridors, resource strata, and early-warning signs
+- **Lore Dossiers** — accounts of what really happened, who caused it, and what is coming
 
-## The Catastrophe Cycle (Retention Engine)
+Players earn **Compass Rank** by collecting Secrets. Higher ranks unlock advanced teachings and exclusive Order ceremonies.
 
-A **Forecast Meter** tracks the probability of the next catastrophe. It is never a perfect timer — it is uncertainty made visible. Players who collect **Secrets** increase their forecast confidence, narrowing the uncertainty window and giving themselves more time to prepare.
+### Compass Ranks
 
-When the catastrophe strikes:
-- **Archivists** (knowledge-focused) unlock hidden survival options
-- **Hoarders** (resource-focused) weather shortages better
-- **Builders** (output-focused) recover fastest — if they survive at all
+| Rank | Name | Requirement |
+|------|------|-------------|
+| 0 | Seeker | Join the Order |
+| 1 | Initiate | Collect 5 Secrets |
+| 2 | Candidate | Collect 15 Secrets |
+| 3 | Adept | Collect 30 Secrets |
+| 4 | Keeper | Collect 50 Secrets |
+| 5 | Guardian | Collect 75 Secrets + complete Catastrophe Forecast |
+| 6 | Archon | Collect all Secrets |
 
-There is no wrong path. Each philosophy changes *how* the catastrophe hits you and *what* options you have coming out the other side.
+## Monetization
 
----
+Monetization is designed to be fair — free players can always progress:
 
-## The Secrets System
+- **Secrets Packs** — lore bundles, sacred geometry sets, survival intel dossiers
+- **Season Pass** — each catastrophe cycle is a season (free + premium tracks)
+- **VIP Subscription** — convenience + cosmetics + extended offline cap
+- **Optional Rewarded Ads** — player-chosen boosts (no forced ads)
+- **One-time "Remove Ads"** — replaces ad prompts with small daily bonuses
 
-**Secrets** are collectible knowledge cards unlocking lore, strategic intelligence, resource efficiency, and sacred geometry blueprints. They sit at the intersection of narrative, progression, and monetisation.
-
-### Categories
-
-| Category | Flavour | Effect |
-|---|---|---|
-| **Directorate Intel** | Cold-case data files from the Archivists | Forecast confidence, resource maps |
-| **Order Geometry** | Sacred diagrams and encoded glyphs | Blueprint unlocks, hidden building layouts |
-| **Survivor Testimony** | Fragmented accounts from the last collapse | Lore reveals, morale bonuses |
-| **Continuity Protocols** | Pre-collapse contingency plans | Disaster mitigation, evacuation options |
-
-### Earning Secrets (free paths)
-
-- Complete **daily task milestones** (streak-based)
-- Reach **expedition milestones** (explore regions)
-- Advance through **Gnosis research** branches
-- Unlock via **society rank-ups**
-
-### Accelerating via Store (optional, ethical)
-
-- **Secrets packs** — lore bundles, intel dossiers (story + light utility)
-- **Season Pass** — premium track per catastrophe cycle (cosmetics + early access)
-- **VIP Subscription** — convenience + cosmetics + better offline cap
-- **Optional rewarded ads** — player-initiated only, no forced interstitials
-
-> **Guardrail:** Every meaningful progression path is earnable for free. Paid purchases provide faster access, cosmetics, extra story depth, and convenience — never an exclusive hard gate on survival.
-
----
-
-## Monetisation at a Glance
+## Project Structure
 
 ```
-Season Pass (per cycle) ← strongest long-term revenue
-VIP Subscription        ← recurring
-IAP Secrets Packs       ← one-time / repeatable
-Remove Ads              ← one-time
-Rewarded Ads            ← player-choice only
+CIVILTAS/
+├── README.md
+├── index.html              # Interactive prototype / web preview
+├── docs/
+│   ├── secrets.md          # Order of the Compass teachings and dossiers
+│   └── monetization.md
+└── src/
+    └── secrets/
+        └── SecretsConstants.kt   # Android MVP UI string constants
 ```
 
-Payment processing is **stubbed** in the MVP. The `StoreRepository` interface is ready for Google Play Billing (Play Store release) or Stripe/crypto (direct APK distribution). Swap the implementation without touching game logic.
+## Development
 
----
+This MVP is built as a web prototype + Android Kotlin stubs.
 
-## Architecture (Android MVP)
+- **Web prototype**: open `index.html` in a browser
+- **Android**: see `src/secrets/SecretsConstants.kt` for UI string constants
 
-- **Language:** Kotlin
-- **UI:** Jetpack Compose + Material 3
-- **Persistence:** SharedPreferences (simple local saves; no server dependency)
-- **Min SDK:** 26 | **Target SDK:** 34
-- **No heavy DI framework** — manual injection kept simple for MVP
+## Theme
 
-### Key packages
-
-```
-com.civiltas.app
-├── data/
-│   ├── model/         # Secret, StoreItem, ForecastState
-│   ├── SecretsCatalog # 15 built-in secrets
-│   ├── SecretsRepository  # unlock persistence
-│   ├── ForecastRepository # confidence meter
-│   └── EarningEngine      # milestone tracking
-├── ui/
-│   ├── screens/       # SecretsLibraryScreen, SecretDetailScreen, StoreScreen
-│   ├── theme/         # CIVILTAS dark theme
-│   └── navigation/    # NavGraph
-└── MainActivity
-```
-
----
-
-## Quick Start (Dev)
-
-```bash
-# Build debug APK
-./gradlew assembleDebug
-
-# Run unit tests
-./gradlew test
-```
-
----
-
-## Docs
-
-- [`docs/secrets.md`](docs/secrets.md) — full Secrets system reference
-- [`docs/catastrophe-cycle.md`](docs/catastrophe-cycle.md) — forecast mechanics and cycle design
+The **CIVILTAS** name reflects a hybrid tone: grounded post-collapse engineering layered over esoteric knowledge and sacred geometry. The **Order of the Compass** bridges both — analytical in method, mystical in origin.

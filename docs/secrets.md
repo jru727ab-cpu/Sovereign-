@@ -1,176 +1,153 @@
-# Secrets System — CIVILTAS
+# Order of the Compass — Secrets & Teachings
 
-> *"A secret held by one is power. A secret shared with many is a civilisation."*
-> — Order of the Eternal Compass, Inscription IV
+> *"Every line drawn by a compass traces the boundary between what is known and what must never be forgotten."*
 
----
-
-## Overview
-
-Secrets are collectible **knowledge artefacts** that sit at the heart of the CIVILTAS progression loop. Each Secret is a data card combining:
-
-- **Narrative**: world-building, lore reveals, society history
-- **Strategic value**: information that improves player decision-making
-- **Mechanical effect**: small but meaningful boosts or unlocks
-
-Secrets are not pay-to-win upgrades. They are **lore you can act on**.
+This document defines the **Secrets** system for CIVILTAS. Secrets are collectible knowledge entries granted by — or recovered from — the **Order of the Compass**. Each Secret functions as a teaching or dossier, advancing the player's understanding of the catastrophe, the world, and the sacred formulas the Order preserved.
 
 ---
 
-## The Two Pillars of the Secret Society
+## What Is a Secret?
 
-### The Directorate of Archivists
-A cold, methodical intelligence network that catalogued the collapse with clinical precision. Their Secrets are filed under operational codenames: asset assessments, zone surveys, probability matrices, evacuation protocols.
+A **Secret** is a piece of Order knowledge. It may be:
 
-- **Tone**: grounded, analytical, redacted government documents
-- **Effect type**: forecast confidence, resource maps, efficiency bonuses
-- **Colour**: deep blue / slate
+- A **Teaching** — doctrine, ritual, or principle passed down through Order ranks
+- A **Dossier** — documented intelligence: event records, field reports, recovered evidence
+- A **Blueprint** — sacred geometry formula that unlocks a new building or layout
+- A **Fragment** — an incomplete piece that hints at a larger truth; may combine with others
 
-### The Order of the Eternal Compass
-An ancient esoteric tradition that pre-dates the collapse by centuries. The Order studies sacred geometry encoded into surviving architecture, natural formations, and pre-collapse blueprints.
-
-- **Tone**: mystical, symbolic, encoded in glyphs and diagrams
-- **Effect type**: blueprint unlocks, hidden building layouts, morale bonuses
-- **Colour**: gold / amber
-
-Both pillars are **factions within the same society**. Players do not choose one — they collect Secrets from both, and the tension between cold data and sacred geometry creates the game's narrative spine.
+Secrets are organised into **Chapters**. Each Chapter maps to a branch of Order knowledge.
 
 ---
 
-## Secret Anatomy
+## Compass Ranks
 
-```kotlin
-data class Secret(
-    val id: String,
-    val title: String,
-    val category: SecretCategory,
-    val tier: SecretTier,
-    val lore: String,          // 2–4 sentence flavour text
-    val effectDescription: String,
-    val effect: SecretEffect,
-    val unlockSource: UnlockSource,
-    val storeSkuId: String?    // null = earn-only; non-null = also purchasable
-)
-```
+Players earn rank within the Order as they collect Secrets. Higher ranks open restricted Chapters.
 
-### Categories
-
-| Category | Pillar | Description |
-|---|---|---|
-| `DIRECTORATE_INTEL` | Archivists | Cold-case intelligence files, probability assessments |
-| `CONTINUITY_PROTOCOL` | Archivists | Pre-collapse evacuation and resilience protocols |
-| `ORDER_GEOMETRY` | Order | Sacred geometry diagrams and encoded building layouts |
-| `SURVIVOR_TESTIMONY` | Mixed | Fragmented accounts; bridge lore between pillars |
-
-### Tiers
-
-| Tier | Unlock Difficulty | Effect Magnitude | Purchasable? |
-|---|---|---|---|
-| `COMMON` | Early game / low milestone | Flavour + tiny boost | Optional pack |
-| `UNCOMMON` | Mid-game milestone | Small mechanic unlock | Optional pack |
-| `RARE` | Expedition or high milestone | Meaningful unlock | Premium pack |
-| `CLASSIFIED` | Society rank or Season Pass | Significant story + effect | Season Pass / Premium |
-
-### Effect Types
-
-| Effect | Description |
-|---|---|
-| `FORECAST_CONFIDENCE` | Adds `+N` points to the Forecast confidence meter |
-| `RESOURCE_EFFICIENCY` | Reduces resource cost or increases yield by a percentage |
-| `BLUEPRINT_UNLOCK` | Unlocks a building type that cannot otherwise be built |
-| `EXPEDITION_BONUS` | Improves expedition success rate or loot quality |
-| `MORALE_BOOST` | Increases population morale, improving task completion speed |
-| `OFFLINE_BONUS` | Improves resources earned while app is closed |
-| `LORE_ONLY` | No mechanical effect; pure story reveal |
+| Rank | Name | Unlock |
+|------|------|--------|
+| 0 | **Seeker** | Access to Chapter I (Orientation) |
+| 1 | **Initiate** | Chapter II (Survival Intel) |
+| 2 | **Candidate** | Chapter III (Resource Strata) |
+| 3 | **Adept** | Chapter IV (Sacred Geometry) |
+| 4 | **Keeper** | Chapter V (Catastrophe Dossiers) |
+| 5 | **Guardian** | Chapter VI (The Second Signal) |
+| 6 | **Archon** | Full access; Order Ceremony unlocked |
 
 ---
 
-## Full Secrets Catalog (v1 — 15 entries)
+## Chapters & Secrets Catalogue
 
-### Tier: COMMON
+### Chapter I — Orientation *(Seeker)*
 
-| ID | Title | Category | Effect |
-|---|---|---|---|
-| `arc_001` | Zone 7 Contamination Survey | DIRECTORATE_INTEL | FORECAST_CONFIDENCE +5 |
-| `arc_002` | Pre-Collapse Population Density Map | DIRECTORATE_INTEL | EXPEDITION_BONUS +3% |
-| `arc_003` | The Pulse Anomaly (Fragmented Log) | SURVIVOR_TESTIMONY | LORE_ONLY |
-| `ord_001` | The Fibonacci Stockpile Arrangement | ORDER_GEOMETRY | RESOURCE_EFFICIENCY +2% |
-| `ord_002` | First Glyph: The Anchor | ORDER_GEOMETRY | LORE_ONLY |
+Foundational teachings given to every new member of the Order.
 
-### Tier: UNCOMMON
-
-| ID | Title | Category | Effect |
-|---|---|---|---|
-| `arc_004` | Evacuation Protocol Delta-7 | CONTINUITY_PROTOCOL | OFFLINE_BONUS +5% |
-| `arc_005` | Asset Recovery Codex, Vol. I | DIRECTORATE_INTEL | RESOURCE_EFFICIENCY +5% |
-| `arc_006` | Collapse Chronology: First 72 Hours | DIRECTORATE_INTEL | FORECAST_CONFIDENCE +10 |
-| `ord_003` | Sacred Geometry: The Resilient Arch | ORDER_GEOMETRY | BLUEPRINT_UNLOCK (Reinforced Shelter) |
-| `sur_001` | Testimony of Archivist Vael | SURVIVOR_TESTIMONY | MORALE_BOOST +5% |
-
-### Tier: RARE
-
-| ID | Title | Category | Effect |
-|---|---|---|---|
-| `arc_007` | Classified: The Initiating Event | DIRECTORATE_INTEL | FORECAST_CONFIDENCE +20 |
-| `arc_008` | The Secondary Wave Model | CONTINUITY_PROTOCOL | FORECAST_CONFIDENCE +15 |
-| `ord_004` | The Harmonic Lattice Blueprint | ORDER_GEOMETRY | BLUEPRINT_UNLOCK (Resonance Forge) |
-| `sur_002` | The Last Broadcast (Reconstructed) | SURVIVOR_TESTIMONY | MORALE_BOOST +10%, LORE_ONLY |
-
-### Tier: CLASSIFIED
-
-| ID | Title | Category | Effect |
-|---|---|---|---|
-| `arc_009` | Order 0: Who Started It | DIRECTORATE_INTEL | FORECAST_CONFIDENCE +30, LORE_ONLY |
+| ID | Title | Type | Effect |
+|----|-------|------|--------|
+| S-001 | The First Orientation | Teaching | Unlocks the Secrets Library UI |
+| S-002 | The Compass Doctrine | Teaching | Reveals the Forecast Meter |
+| S-003 | Signs of Collapse | Dossier | +5 % accuracy on Forecast confidence |
+| S-004 | The Three Paths | Teaching | Unlocks path selection (Archivist / Hoarder / Builder) |
 
 ---
 
-## Unlock Sources
+### Chapter II — Survival Intel *(Initiate)*
 
-### Earnable (Free)
+Field intelligence on safe zones, migration routes, and early-warning indicators.
 
-| Source | How | Example Secret |
-|---|---|---|
-| **Daily Task Milestone** | Complete 7-day streak | `arc_001` (Common) |
-| **Expedition Milestone** | Reach Expedition tier 3 | `arc_004` (Uncommon) |
-| **Gnosis Research** | Unlock Society Rank II | `ord_003` (Uncommon) |
-| **Deep Expedition** | Complete special region | `arc_007` (Rare) |
-
-### Purchasable (Store)
-
-| SKU | Contents | Tier |
-|---|---|---|
-| `secrets_pack_archivist_common` | 3 Common Directorate secrets | Common |
-| `secrets_pack_order_common` | 3 Common Order secrets | Common |
-| `secrets_pack_intel_vol1` | 2 Uncommon + 1 Rare Directorate | Uncommon–Rare |
-| `secrets_pack_geometry_vol1` | 2 Uncommon + 1 Rare Order | Uncommon–Rare |
-| `secrets_pack_classified_bundle` | The 1 Classified secret | Classified |
-| `season_pass` | Full premium track for current cycle | All tiers |
+| ID | Title | Type | Effect |
+|----|-------|------|--------|
+| S-010 | Safe Corridor Map Fragment | Dossier | Reduces expedition risk by 10 % |
+| S-011 | Contamination Markers | Dossier | Reveals hazardous zones on map |
+| S-012 | Migration Patterns I | Dossier | Unlocks faster relocation of population units |
+| S-013 | The Stillwater Protocol | Teaching | Reduces catastrophe damage to water infrastructure |
 
 ---
 
-## Forecast Confidence Integration
+### Chapter III — Resource Strata *(Candidate)*
 
-The **Forecast Meter** runs from 0–100 confidence. Certain Secrets contribute directly:
+Knowledge of mineral deposits, extraction methods, and refining secrets encoded in Order records.
 
-| Secret | Confidence Added |
-|---|---|
-| `arc_001` Zone 7 Survey | +5 |
-| `arc_006` Collapse Chronology | +10 |
-| `arc_007` The Initiating Event | +20 |
-| `arc_008` Secondary Wave Model | +15 |
-| `arc_009` Order 0 | +30 |
-
-At **60+ confidence**: the forecast window narrows (fewer false alarms, better prep time).  
-At **80+ confidence**: players unlock special "Contingency" preparation actions.  
-At **100 confidence**: the exact catastrophe arrival window is known (rare/end-game achievement).
-
-See [`docs/catastrophe-cycle.md`](catastrophe-cycle.md) for full mechanics.
+| ID | Title | Type | Effect |
+|----|-------|------|--------|
+| S-020 | Ore Stratum Reading | Teaching | Improves ore yield consistency by 8 % |
+| S-021 | The Vein Cipher | Dossier | Reveals hidden deposit in one zone |
+| S-022 | Thermal Extraction Notes | Teaching | Unlocks advanced smelting queue slot |
+| S-023 | Deep Cache Protocol | Dossier | Locates a buried resource cache (one-time reward) |
 
 ---
 
-## Design Guardrails
+### Chapter IV — Sacred Geometry *(Adept)*
 
-1. **No secret gates survival entirely behind a paywall.** Every confidence-boosting secret has at least one earnable path.
-2. **Purchased secrets accelerate access** — they do not provide exclusive permanent stat advantages unavailable by playing.
-3. **Lore secrets are a safe monetisation zone** — players buy story, not unfair power.
-4. **CLASSIFIED tier** is the one high-investment purchase/unlock; it is a story climax, not a mechanical hard wall.
+Architectural and structural formulas preserved in Order archives — the sacred science of building.
+
+| ID | Title | Type | Effect |
+|----|-------|------|--------|
+| S-030 | Hex Lattice Foundations | Blueprint | Unlocks hexagonal building layout (+12 % structural efficiency) |
+| S-031 | The Golden Ratio Granary | Blueprint | Granary upgrade: +20 % storage capacity |
+| S-032 | Spiral Conduit Routing | Blueprint | Unlocks an optimised logistics route tier |
+| S-033 | Vesica Fortifications | Blueprint | Wall upgrade: increased catastrophe resilience |
+| S-034 | The Compass Rose Layout | Blueprint | Unlocks the Order Settlement template (rare) |
+
+---
+
+### Chapter V — Catastrophe Dossiers *(Keeper)*
+
+Classified Order records on the first catastrophe: causes, actors, aftermath, and projected recurrence.
+
+| ID | Title | Type | Effect |
+|----|-------|------|--------|
+| S-040 | The First Signal | Dossier | Lore reveal: what caused the collapse; unlocks Forecast UI detail |
+| S-041 | The Architect's Record | Dossier | Lore reveal: who initiated the event |
+| S-042 | Recurrence Analysis | Dossier | +15 % Forecast confidence; reveals next-event probability window |
+| S-043 | The Directorate Files | Dossier | Lore reveal: what the Order knew before the first collapse |
+| S-044 | Casualty Zone Map | Dossier | Reveals aftermath regions and safe settlement pockets |
+
+---
+
+### Chapter VI — The Second Signal *(Guardian)*
+
+The Order's most restricted knowledge. Only Guardians may read these teachings.
+
+| ID | Title | Type | Effect |
+|----|-------|------|--------|
+| S-050 | The Second Signal | Dossier | Lore reveal: first confirmation of the next catastrophe |
+| S-051 | The Archon's Mandate | Teaching | Unlocks Order Ceremony + Archon rank progress |
+| S-052 | Final Geometry | Blueprint | Unlocks the most advanced building in the game |
+| S-053 | The Complete Compass | Teaching | Full Forecast resolved; player makes final preparation choice |
+
+---
+
+## Obtaining Secrets
+
+| Method | Description |
+|--------|-------------|
+| **Quests** | Complete Order-issued missions |
+| **Expeditions** | Send scouts to explore ruins and recover Fragments |
+| **Research Milestones** | Unlock Secrets passively through the research tree |
+| **Daily / Weekly Tasks** | Rotating Order assignments |
+| **Secrets Packs (IAP)** | Purchase Chapter bundles (lore + convenience; no pay-to-win) |
+
+---
+
+## Monetization Guidelines
+
+- Every Secret has at least one **earnable path** (quests, expeditions, milestones).
+- Paid packs provide **faster access, story depth, variety, and cosmetics** — not unbeatable power.
+- No Secret gives a mandatory permanent multiplier that free players cannot reach through gameplay.
+
+---
+
+## Terminology Reference
+
+| Term | Meaning |
+|------|---------|
+| **Gnosis** | Accumulated Order knowledge; a measure of rank progress |
+| **Compass Rank** | Player's standing within the Order of the Compass |
+| **Teaching** | Doctrine or ritual knowledge passed down through Order ranks |
+| **Dossier** | Intelligence record: event documentation, field reports, evidence |
+| **Blueprint** | Sacred geometry formula that unlocks a building or layout |
+| **Fragment** | Incomplete Secret; may combine with others for a full reveal |
+| **Forecast Meter** | Probabilistic gauge of the next catastrophe's imminence |
+| **The Archon** | Highest Order rank; holder of the complete Compass |
+| **Order Ceremony** | Ritual event unlocked at Guardian rank; grants unique cosmetics |
+| **Sacred Geometry** | Architectural and structural formulas preserved by the Order |
