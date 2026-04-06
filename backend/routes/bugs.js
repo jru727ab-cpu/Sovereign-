@@ -140,17 +140,23 @@ router.put('/reports/:id/status', authMiddleware, async (req, res) => {
 });
 
 async function awardXP(userId, amount, action, description) {
+  const client = await require('../db').pool.connect();
   try {
-    await db.query(
+    await client.query('BEGIN');
+    await client.query(
       'INSERT INTO xp_transactions (user_id, amount, action, description) VALUES ($1, $2, $3, $4)',
       [userId, amount, action, description]
     );
-    await db.query(
+    await client.query(
       'UPDATE user_xp SET total_xp = total_xp + $1, level = GREATEST(1, FLOOR(SQRT((total_xp + $1) / 100.0))::int + 1) WHERE user_id = $2',
       [amount, userId]
     );
+    await client.query('COMMIT');
   } catch (err) {
+    await client.query('ROLLBACK');
     console.error('XP award error:', err);
+  } finally {
+    client.release();
   }
 }
 

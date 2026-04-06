@@ -1,6 +1,4 @@
 const jwt = require('jsonwebtoken');
-const db = require('../db');
-const crypto = require('crypto');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 

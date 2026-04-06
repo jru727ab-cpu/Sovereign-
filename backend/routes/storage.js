@@ -129,14 +129,19 @@ router.get('/files/:id/download', authMiddleware, async (req, res) => {
     if (result.rows.length === 0) return res.status(404).json({ error: 'File not found' });
 
     const file = result.rows[0];
-    if (!fs.existsSync(file.storage_path)) {
+    const resolvedPath = path.resolve(file.storage_path);
+    const resolvedUploadDir = path.resolve(UPLOAD_DIR);
+    if (!resolvedPath.startsWith(resolvedUploadDir + path.sep)) {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+    if (!fs.existsSync(resolvedPath)) {
       return res.status(404).json({ error: 'File no longer exists on disk' });
     }
 
     await db.query('UPDATE user_files SET download_count = download_count + 1 WHERE id = $1', [file.id]);
     res.setHeader('Content-Disposition', `attachment; filename="${file.original_name}"`);
     res.setHeader('Content-Type', file.mime_type || 'application/octet-stream');
-    res.sendFile(path.resolve(file.storage_path));
+    res.sendFile(resolvedPath);
   } catch (err) {
     res.status(500).json({ error: 'Download failed' });
   }
@@ -152,8 +157,10 @@ router.delete('/files/:id', authMiddleware, async (req, res) => {
     if (result.rows.length === 0) return res.status(404).json({ error: 'File not found' });
 
     const filePath = result.rows[0].storage_path;
-    if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath);
+    const resolvedPath = path.resolve(filePath);
+    const resolvedUploadDir = path.resolve(UPLOAD_DIR);
+    if (resolvedPath.startsWith(resolvedUploadDir + path.sep) && fs.existsSync(resolvedPath)) {
+      fs.unlinkSync(resolvedPath);
     }
     res.json({ message: 'File deleted' });
   } catch (err) {
@@ -162,17 +169,23 @@ router.delete('/files/:id', authMiddleware, async (req, res) => {
 });
 
 async function awardXP(userId, amount, action, description) {
+  const client = await require('../db').pool.connect();
   try {
-    await db.query(
+    await client.query('BEGIN');
+    await client.query(
       'INSERT INTO xp_transactions (user_id, amount, action, description) VALUES ($1, $2, $3, $4)',
       [userId, amount, action, description]
     );
-    await db.query(
+    await client.query(
       'UPDATE user_xp SET total_xp = total_xp + $1, level = GREATEST(1, FLOOR(SQRT((total_xp + $1) / 100.0))::int + 1) WHERE user_id = $2',
       [amount, userId]
     );
+    await client.query('COMMIT');
   } catch (err) {
+    await client.query('ROLLBACK');
     console.error('XP award error:', err);
+  } finally {
+    client.release();
   }
 }
 

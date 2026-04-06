@@ -22,7 +22,7 @@ router.get('/me', authMiddleware, async (req, res) => {
     const currentLevelXp = xpForLevel(level);
     const nextLevelXp = xpForLevel(level + 1);
     const progress = nextLevelXp > currentLevelXp
-      ? Math.round(((total_xp - currentLevelXp) / (nextLevelXp - currentLevelXp)) * 100)
+      ? Math.max(0, Math.min(100, Math.round(((total_xp - currentLevelXp) / (nextLevelXp - currentLevelXp)) * 100)))
       : 100;
 
     res.json({ total_xp, level, current_level_xp: currentLevelXp, next_level_xp: nextLevelXp, progress_pct: progress });

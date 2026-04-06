@@ -47,6 +47,7 @@ const Payments = (() => {
   }
 
   async function startCheckout(plan, btn) {
+    const planName = PLANS[plan]?.name || plan;
     btn.disabled = true; btn.textContent = 'Redirecting...';
     try {
       const res = await Auth.apiFetch('/api/payments/create-checkout', {
@@ -56,7 +57,7 @@ const Payments = (() => {
       if (!res.ok) { alert(data.error || 'Failed to start checkout'); return; }
       window.location.href = data.checkout_url;
     } catch { alert('Network error'); }
-    finally { btn.disabled = false; btn.textContent = `Upgrade to ${plan}`; }
+    finally { btn.disabled = false; btn.textContent = `Upgrade to ${planName}`; }
   }
 
   function escapeHtml(str) {
