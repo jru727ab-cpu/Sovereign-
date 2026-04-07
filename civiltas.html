@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIVILTAS</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: #020617;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', sans-serif;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        h1 { color: #facc15; font-size: 2rem; margin-bottom: 4px; }
+        .subtitle { color: #94a3b8; font-size: 0.9rem; margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 700px; }
+        .card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 16px;
+        }
+        .card h3 { font-size: 1rem; margin-bottom: 10px; color: #38bdf8; }
+        .resource { font-size: 1.5rem; font-weight: bold; color: #facc15; margin: 4px 0; }
+        .resource-label { font-size: 0.75rem; color: #94a3b8; }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+        .btn:active { transform: scale(0.97); }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .btn-green  { background: #10b981; color: #fff; }
+        .btn-yellow { background: #eab308; color: #000; }
+        .btn-squash { background: #7c3aed; color: #fff; }
+        .btn-squash:hover:not(:disabled) { background: #6d28d9; }
+        .log-card { grid-column: 1 / -1; max-height: 140px; overflow-y: auto; }
+        .log-card h3 { margin-bottom: 6px; }
+        #log { font-size: 0.8rem; color: #94a3b8; }
+        #log p { padding: 2px 0; border-bottom: 1px solid #1e293b; }
+        #log p:first-child { color: #e2e8f0; }
+        .squash-info {
+            font-size: 0.78rem;
+            color: #a78bfa;
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+        .cooldown-bar {
+            height: 4px;
+            background: #334155;
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .cooldown-fill {
+            height: 100%;
+            background: #7c3aed;
+            border-radius: 2px;
+            transition: width 0.1s linear;
+        }
+        a.back { color: #38bdf8; text-decoration: none; font-size: 0.85rem; display: inline-block; margin-bottom: 16px; }
+        a.back:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <a class="back" href="index.html">← Back to Portfolio</a>
+    <h1>CIVILTAS</h1>
+    <p class="subtitle">Build your civilization. Use <strong>Squash</strong> to combine stacked resources for a burst of Gold.</p>
+
+    <div class="grid">
+        <!-- Resources -->
+        <div class="card">
+            <h3>Resources</h3>
+            <div class="resource-label">Gold</div>
+            <div class="resource" id="gold-val">0</div>
+            <div class="resource-label" style="margin-top:10px;">Ore</div>
+            <div class="resource" id="ore-val">0</div>
+            <div class="resource-label" style="margin-top:10px;">Population</div>
+            <div class="resource" id="pop-val">1</div>
+        </div>
+
+        <!-- Actions -->
+        <div class="card">
+            <h3>Actions</h3>
+            <button class="btn btn-green" id="btn-mine" onclick="mine()">⛏ Mine Ore (+1)</button>
+            <button class="btn btn-yellow" id="btn-smelt" onclick="smelt()">🔥 Smelt Ore → Gold</button>
+            <button class="btn btn-squash" id="btn-squash" onclick="squash()">💥 Squash</button>
+            <div class="squash-info" id="squash-info">
+                Squash combines all stacked Ore into Gold at a <strong>2×</strong> rate. Requires ≥5 Ore. Cooldown: 10s.
+            </div>
+            <div class="cooldown-bar">
+                <div class="cooldown-fill" id="cooldown-fill" style="width:100%;"></div>
+            </div>
+        </div>
+
+        <!-- Event log -->
+        <div class="card log-card">
+            <h3>Event Log</h3>
+            <div id="log"><p>Game started. Start mining!</p></div>
+        </div>
+    </div>
+
+    <script>
+        const state = {
+            gold: 0,
+            ore: 0,
+            pop: 1,
+            squashCooldown: 0,   // seconds remaining (decremented 0.1 s per 100 ms interval)
+            squashMax: 10,        // total cooldown in seconds
+            ticks: 0
+        };
+
+        const SQUASH_ORE_MIN = 5;
+        const SQUASH_RATE = 2;   // ore → gold multiplier when squashing
+
+        function fmt(n) { return Math.floor(n).toLocaleString(); }
+
+        function updateUI() {
+            document.getElementById('gold-val').textContent = fmt(state.gold);
+            document.getElementById('ore-val').textContent  = fmt(state.ore);
+            document.getElementById('pop-val').textContent  = fmt(state.pop);
+
+            const ready = state.squashCooldown <= 0 && state.ore >= SQUASH_ORE_MIN;
+            document.getElementById('btn-squash').disabled = !ready;
+
+            const pct = state.squashCooldown <= 0
+                ? 100
+                : Math.round((1 - state.squashCooldown / state.squashMax) * 100);
+            document.getElementById('cooldown-fill').style.width = pct + '%';
+
+            if (state.squashCooldown > 0) {
+                document.getElementById('squash-info').textContent =
+                    `Squash cooling down… ${state.squashCooldown.toFixed(1)}s remaining.`;
+            } else if (state.ore < SQUASH_ORE_MIN) {
+                document.getElementById('squash-info').textContent =
+                    `Squash ready — need at least ${SQUASH_ORE_MIN} Ore (you have ${fmt(state.ore)}).`;
+            } else {
+                document.getElementById('squash-info').textContent =
+                    `Squash ready! Converts ${fmt(state.ore)} Ore → ${fmt(state.ore * SQUASH_RATE)} Gold at 2× rate.`;
+            }
+        }
+
+        function addLog(msg) {
+            const log = document.getElementById('log');
+            const p = document.createElement('p');
+            p.textContent = msg;
+            log.insertBefore(p, log.firstChild);
+            // keep log short
+            while (log.children.length > 30) log.removeChild(log.lastChild);
+        }
+
+        function mine() {
+            const gained = state.pop;
+            state.ore += gained;
+            addLog(`⛏ Mined ${gained} Ore. (Total: ${fmt(state.ore)})`);
+            updateUI();
+        }
+
+        function smelt() {
+            if (state.ore < 1) { addLog('⚠ No Ore to smelt!'); return; }
+            const goldGained = state.ore;
+            state.gold += goldGained;
+            state.ore = 0;
+            addLog(`🔥 Smelted ${fmt(goldGained)} Ore → ${fmt(goldGained)} Gold.`);
+            updateUI();
+        }
+
+        // Squash: combines ALL current Ore into Gold at 2× rate, then starts cooldown.
+        function squash() {
+            if (state.ore < SQUASH_ORE_MIN) {
+                addLog(`⚠ Need at least ${SQUASH_ORE_MIN} Ore to Squash.`);
+                return;
+            }
+            if (state.squashCooldown > 0) {
+                addLog(`⏳ Squash is on cooldown (${state.squashCooldown.toFixed(1)}s left).`);
+                return;
+            }
+
+            const oreUsed  = state.ore;
+            const goldGained = oreUsed * SQUASH_RATE;
+            state.ore = 0;
+            state.gold += goldGained;
+            state.squashCooldown = state.squashMax;
+
+            addLog(`💥 SQUASH! Combined ${fmt(oreUsed)} Ore → ${fmt(goldGained)} Gold (2× rate). Cooldown: ${state.squashMax}s.`);
+
+            // Every 3rd squash, population grows (ticks increments before check)
+            state.ticks++;
+            if (state.ticks % 3 === 0) {
+                state.pop++;
+                addLog(`🏙 Population grew to ${state.pop}!`);
+            }
+
+            updateUI();
+        }
+
+        // Tick every 100 ms to count down squash cooldown
+        setInterval(() => {
+            if (state.squashCooldown > 0) {
+                state.squashCooldown = Math.max(0, state.squashCooldown - 0.1);
+                updateUI();
+            }
+        }, 100);
+
+        updateUI();
+    </script>
+</body>
+</html>
