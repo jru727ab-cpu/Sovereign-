@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CIVILTAS — Build Your Civilization</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .civ-header { text-align: center; margin-bottom: 24px; }
+    .civ-header h1 { font-size: 2rem; color: var(--gold); margin-bottom: 4px; }
+    .civ-header p  { color: var(--muted); font-size: 0.9rem; }
+
+    .era-badge {
+      display: inline-block;
+      padding: 3px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: rgba(250,204,21,0.12);
+      color: var(--gold);
+      margin-top: 6px;
+    }
+
+    .squash-info {
+      font-size: 0.78rem;
+      color: #a78bfa;
+      margin-top: 6px;
+      line-height: 1.4;
+    }
+
+    .cooldown-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+
+    .cooldown-fill {
+      height: 100%;
+      background: var(--purple);
+      border-radius: 2px;
+      transition: width 0.1s linear;
+    }
+
+    .btn-squash { background: var(--purple); color: #fff; }
+    .btn-squash:hover:not(:disabled) { background: #6d28d9; }
+    .btn-yellow { background: #eab308; color: #000; }
+
+    .tech-tree {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .tech-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    .tech-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .tech-info { flex: 1; }
+    .tech-info .name { font-weight: 600; font-size: 0.9rem; }
+    .tech-info .desc { font-size: 0.76rem; color: var(--muted); }
+    .tech-btn { flex-shrink: 0; padding: 5px 12px; width: auto; margin-top: 0; white-space: nowrap; }
+
+    .era-progress {
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+
+    <!-- Header -->
+    <header class="app-header">
+      <h1>🏛 CIVILTAS</h1>
+      <nav class="app-nav">
+        <a href="#resources">Resources</a>
+        <a href="#actions">Actions</a>
+        <a href="#tech">Tech</a>
+        <a href="index.html">⚡ Sovereign Command</a>
+      </nav>
+    </header>
+
+    <!-- Civilization header -->
+    <div class="civ-header">
+      <div class="badge badge-green">● CIVILIZATION ACTIVE</div>
+      <div style="margin-top:8px;">
+        Era: <span id="era-name" class="era-badge">Stone Age</span>
+      </div>
+      <div class="era-progress" id="era-progress">Advance your civilization to unlock new eras.</div>
+    </div>
+
+    <!-- Resources -->
+    <div class="grid-3" id="resources">
+      <div class="card">
+        <div class="resource-label">Gold</div>
+        <div class="resource-val" id="gold-val">0</div>
+        <div class="resource-rate" id="gold-rate">+0/click</div>
+      </div>
+      <div class="card">
+        <div class="resource-label">Ore</div>
+        <div class="resource-val" id="ore-val">0</div>
+        <div class="resource-rate" id="ore-rate">+0/click</div>
+      </div>
+      <div class="card">
+        <div class="resource-label">Population</div>
+        <div class="resource-val" id="pop-val">1</div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:2px;">grows every 3 Squashes</div>
+      </div>
+    </div>
+
+    <!-- Actions + Log -->
+    <div class="grid-2">
+      <div class="card" id="actions">
+        <h3>Actions</h3>
+        <button class="btn btn-green"  id="btn-mine"   onclick="mine()">⛏ Mine Ore</button>
+        <button class="btn btn-yellow" id="btn-smelt"  onclick="smelt()">🔥 Smelt Ore → Gold</button>
+        <button class="btn btn-squash" id="btn-squash" onclick="squash()">💥 Squash</button>
+        <div class="squash-info" id="squash-info">
+          Squash combines all Ore into Gold at a <strong>2×</strong> rate. Requires ≥5 Ore. Cooldown: 10s.
+        </div>
+        <div class="cooldown-bar">
+          <div class="cooldown-fill" id="cooldown-fill" style="width:100%;"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Event Log</h3>
+        <div class="log-box" id="log">
+          <p>🏛 CIVILTAS started. Begin mining to build your civilization!</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Technology Tree -->
+    <div class="card" id="tech">
+      <h3>🔬 Technology</h3>
+      <div class="tech-tree" id="tech-tree"></div>
+    </div>
+
+    <!-- Passive income indicator -->
+    <div class="card">
+      <h3>📊 Statistics</h3>
+      <div class="grid-2" style="gap:10px;">
+        <div>
+          <div class="resource-label">Total Mines</div>
+          <div style="font-size:1.2rem;font-weight:700;" id="stat-mines">0</div>
+        </div>
+        <div>
+          <div class="resource-label">Total Squashes</div>
+          <div style="font-size:1.2rem;font-weight:700;" id="stat-squashes">0</div>
+        </div>
+        <div>
+          <div class="resource-label">Total Gold Earned</div>
+          <div style="font-size:1.2rem;font-weight:700;" id="stat-total-gold">0</div>
+        </div>
+        <div>
+          <div class="resource-label">Squash Multiplier</div>
+          <div style="font-size:1.2rem;font-weight:700;color:var(--purple);" id="stat-squash-mult">2×</div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="app-footer">
+      🏛 CIVILTAS · Auto-saved · <a href="index.html">Back to Sovereign Command</a> · v2.0
+    </footer>
+
+  </div><!-- /app-shell -->
+
+  <script>
+    'use strict';
+
+    const SAVE_KEY_CV    = 'civiltas_save_v2';
+    const SQUASH_ORE_MIN = 5;
+    const SQUASH_MAX_CD  = 10;  // seconds
+
+    // ── Technologies ──────────────────────────────────────────────
+    const TECHS = [
+      {
+        id: 'iron_tools',
+        icon: '🪓',
+        name: 'Iron Tools',
+        desc: 'Mine +1 extra Ore per click.',
+        cost: 50,
+        currency: 'gold',
+        effect: s => { s.mineBonus += 1; },
+        purchased: false,
+      },
+      {
+        id: 'blast_furnace',
+        icon: '⚙️',
+        name: 'Blast Furnace',
+        desc: 'Smelt gives 1.5× more Gold.',
+        cost: 120,
+        currency: 'gold',
+        effect: s => { s.smeltBonus *= 1.5; },
+        purchased: false,
+      },
+      {
+        id: 'hydraulic_press',
+        icon: '🔩',
+        name: 'Hydraulic Press',
+        desc: 'Squash multiplier becomes 3×.',
+        cost: 200,
+        currency: 'gold',
+        effect: s => { s.squashRate = 3; },
+        purchased: false,
+      },
+      {
+        id: 'civilization_hall',
+        icon: '🏛️',
+        name: 'Civilization Hall',
+        desc: 'Population grows every 2nd Squash instead of 3rd.',
+        cost: 350,
+        currency: 'gold',
+        effect: s => { s.popSquashInterval = 2; },
+        purchased: false,
+      },
+      {
+        id: 'auto_miner',
+        icon: '🤖',
+        name: 'Auto Miner',
+        desc: 'Passively mine 1 Ore every 2 seconds.',
+        cost: 500,
+        currency: 'gold',
+        effect: s => { s.autoMineEnabled = true; },
+        purchased: false,
+      },
+    ];
+
+    // ── Eras ──────────────────────────────────────────────────────
+    const ERAS = [
+      { name: 'Stone Age',   goldThreshold: 0    },
+      { name: 'Bronze Age',  goldThreshold: 100  },
+      { name: 'Iron Age',    goldThreshold: 500  },
+      { name: 'Medieval',    goldThreshold: 2000 },
+      { name: 'Renaissance', goldThreshold: 8000 },
+      { name: 'Industrial',  goldThreshold: 25000 },
+      { name: 'Modern',      goldThreshold: 100000 },
+    ];
+
+    // ── Default state ─────────────────────────────────────────────
+    function defaultState() {
+      return {
+        gold: 0, ore: 0, pop: 1,
+        squashCooldown: 0,
+        squashRate: 2,
+        smeltBonus: 1.0,
+        mineBonus: 1,
+        autoMineEnabled: false,
+        popSquashInterval: 3,
+        ticks: 0,
+        totalMines: 0,
+        totalSquashes: 0,
+        totalGoldEarned: 0,
+        lastAutoMine: 0,
+        techs: {},
+      };
+    }
+
+    let state = defaultState();
+
+    // ── Save / Load ───────────────────────────────────────────────
+    function saveGame() {
+      try { localStorage.setItem(SAVE_KEY_CV, JSON.stringify(state)); } catch (_) {}
+    }
+
+    function loadGame() {
+      try {
+        const raw = localStorage.getItem(SAVE_KEY_CV);
+        if (!raw) return;
+        const saved = JSON.parse(raw);
+        state = Object.assign(defaultState(), saved);
+        TECHS.forEach(t => { if (state.techs[t.id]) t.effect(state); });
+        addLog('💾 Save loaded.');
+      } catch (_) {}
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────
+    function fmt(n) {
+      if (n >= 1e6) return (n / 1e6).toFixed(2) + 'M';
+      if (n >= 1e3) return (n / 1e3).toFixed(1) + 'k';
+      return Math.floor(n).toLocaleString();
+    }
+
+    function addLog(msg) {
+      const log = document.getElementById('log');
+      if (!log) return;
+      const p = document.createElement('p');
+      p.textContent = msg;
+      log.insertBefore(p, log.firstChild);
+      while (log.children.length > 40) log.removeChild(log.lastChild);
+    }
+
+    function currentEra() {
+      let era = ERAS[0];
+      for (const e of ERAS) {
+        if (state.totalGoldEarned >= e.goldThreshold) era = e;
+      }
+      return era;
+    }
+
+    // ── Actions ───────────────────────────────────────────────────
+    function mine() {
+      const gained = state.pop * state.mineBonus;
+      state.ore += gained;
+      state.totalMines++;
+      addLog(`⛏ Mined ${gained} Ore. (Total: ${fmt(state.ore)})`);
+      updateUI();
+    }
+
+    function smelt() {
+      if (state.ore < 1) { addLog('⚠ No Ore to smelt!'); return; }
+      const goldGained = Math.floor(state.ore * state.smeltBonus);
+      state.gold += goldGained;
+      state.totalGoldEarned += goldGained;
+      state.ore = 0;
+      addLog(`🔥 Smelted → ${fmt(goldGained)} Gold.`);
+      updateUI();
+    }
+
+    function squash() {
+      if (state.ore < SQUASH_ORE_MIN) {
+        addLog(`⚠ Need at least ${SQUASH_ORE_MIN} Ore to Squash.`);
+        return;
+      }
+      if (state.squashCooldown > 0) {
+        addLog(`⏳ Squash cooling (${state.squashCooldown.toFixed(1)}s left).`);
+        return;
+      }
+
+      const oreUsed    = state.ore;
+      const goldGained = Math.floor(oreUsed * state.squashRate);
+      state.ore        = 0;
+      state.gold      += goldGained;
+      state.totalGoldEarned += goldGained;
+      state.squashCooldown  = SQUASH_MAX_CD;
+      state.ticks++;
+      state.totalSquashes++;
+
+      addLog(`💥 SQUASH! ${fmt(oreUsed)} Ore → ${fmt(goldGained)} Gold (${state.squashRate}×).`);
+
+      if (state.ticks % state.popSquashInterval === 0) {
+        state.pop++;
+        addLog(`🏙 Population grew to ${state.pop}!`);
+      }
+
+      updateUI();
+    }
+
+    // ── Tech tree ─────────────────────────────────────────────────
+    function renderTechTree() {
+      const tree = document.getElementById('tech-tree');
+      if (!tree) return;
+      tree.innerHTML = '';
+
+      TECHS.forEach(t => {
+        const purchased = !!state.techs[t.id];
+        const item = document.createElement('div');
+        item.className = 'tech-item';
+        item.innerHTML = `
+          <div class="tech-icon">${t.icon}</div>
+          <div class="tech-info">
+            <div class="name">${t.name} ${purchased ? '<span style="color:var(--green);font-size:0.73rem;">✓ Researched</span>' : ''}</div>
+            <div class="desc">${t.desc} — Cost: ${fmt(t.cost)} 🪙</div>
+          </div>
+          <button class="btn btn-outline tech-btn" id="tech-btn-${t.id}" ${purchased ? 'disabled' : ''}
+            onclick="buyTech('${t.id}')">
+            ${purchased ? 'Done' : 'Research'}
+          </button>
+        `;
+        tree.appendChild(item);
+      });
+    }
+
+    function buyTech(id) {
+      const t = TECHS.find(x => x.id === id);
+      if (!t || state.techs[t.id]) return;
+      if (state.gold < t.cost) { addLog(`⚠ Need ${fmt(t.cost)} Gold for "${t.name}".`); return; }
+      state.gold -= t.cost;
+      state.techs[t.id] = true;
+      t.effect(state);
+      addLog(`🔬 Researched: ${t.name}`);
+      renderTechTree();
+      updateUI();
+    }
+
+    // ── UI ────────────────────────────────────────────────────────
+    function updateUI() {
+      document.getElementById('gold-val').textContent = fmt(state.gold);
+      document.getElementById('ore-val').textContent  = fmt(state.ore);
+      document.getElementById('pop-val').textContent  = fmt(state.pop);
+
+      document.getElementById('gold-rate').textContent = `smelt: ${fmt(Math.floor(state.ore * state.smeltBonus))} Gold`;
+      document.getElementById('ore-rate').textContent  = `+${state.pop * state.mineBonus}/click`;
+
+      // Squash button state
+      const ready = state.squashCooldown <= 0 && state.ore >= SQUASH_ORE_MIN;
+      document.getElementById('btn-squash').disabled = !ready;
+
+      const pct = state.squashCooldown <= 0
+        ? 100
+        : Math.round((1 - state.squashCooldown / SQUASH_MAX_CD) * 100);
+      document.getElementById('cooldown-fill').style.width = pct + '%';
+
+      if (state.squashCooldown > 0) {
+        document.getElementById('squash-info').innerHTML =
+          `Squash cooling… <strong>${state.squashCooldown.toFixed(1)}s</strong> remaining.`;
+      } else if (state.ore < SQUASH_ORE_MIN) {
+        document.getElementById('squash-info').innerHTML =
+          `Squash ready — need ≥${SQUASH_ORE_MIN} Ore (you have ${fmt(state.ore)}).`;
+      } else {
+        document.getElementById('squash-info').innerHTML =
+          `Squash ready! ${fmt(state.ore)} Ore → <strong>${fmt(Math.floor(state.ore * state.squashRate))} Gold</strong> (${state.squashRate}×).`;
+      }
+
+      // Era
+      const era = currentEra();
+      document.getElementById('era-name').textContent = era.name;
+      const nextEra = ERAS.find(e => e.goldThreshold > state.totalGoldEarned);
+      document.getElementById('era-progress').textContent = nextEra
+        ? `Next era (${nextEra.name}) at ${fmt(nextEra.goldThreshold)} Gold earned.`
+        : '🏆 Maximum era reached!';
+
+      // Stats
+      document.getElementById('stat-mines').textContent      = fmt(state.totalMines);
+      document.getElementById('stat-squashes').textContent   = fmt(state.totalSquashes);
+      document.getElementById('stat-total-gold').textContent = fmt(state.totalGoldEarned);
+      document.getElementById('stat-squash-mult').textContent = state.squashRate + '×';
+
+      // Tech button affordability
+      TECHS.forEach(t => {
+        const btn = document.getElementById(`tech-btn-${t.id}`);
+        if (!btn || state.techs[t.id]) return;
+        btn.disabled = state.gold < t.cost;
+      });
+    }
+
+    // ── Auto-mine ticker ──────────────────────────────────────────
+    setInterval(() => {
+      if (state.squashCooldown > 0) {
+        state.squashCooldown = Math.max(0, state.squashCooldown - 0.1);
+        updateUI();
+      }
+
+      if (state.autoMineEnabled) {
+        const now = Date.now();
+        if (now - state.lastAutoMine >= 2000) {
+          state.ore += state.pop;
+          state.lastAutoMine = now;
+          // silent auto-mine — don't spam the log
+          updateUI();
+        }
+      }
+    }, 100);
+
+    setInterval(saveGame, 5000);
+
+    // ── Init ──────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+      loadGame();
+      renderTechTree();
+      updateUI();
+      addLog('🏛 CIVILTAS v2 online.');
+    });
+  </script>
+</body>
+</html>

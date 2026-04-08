@@ -1,38 +1,144 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sovereign Command</title>
-    <style>
-        body { background: #020617; color: white; font-family: sans-serif; padding: 20px; }
-        .card { background: #1e293b; border: 1px solid #334155; padding: 15px; border-radius: 12px; margin-bottom: 10px; }
-        .gold { color: #facc15; }
-        .blue { color: #38bdf8; }
-        .btn { width: 100%; padding: 15px; border-radius: 8px; border: none; font-weight: bold; margin-top: 10px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sovereign Command</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .node-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(28px, 1fr));
+      gap: 4px;
+      margin-top: 10px;
+    }
+    .node-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: background 0.4s;
+    }
+    .node-dot.active { background: var(--green); box-shadow: 0 0 6px var(--green); }
+    .node-dot.pulse  { animation: pulse 0.6s ease-out; }
+    @keyframes pulse {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.4); }
+      100% { transform: scale(1); }
+    }
+    .vault-address {
+      font-family: monospace;
+      font-size: 0.72rem;
+      color: var(--muted);
+      word-break: break-all;
+      margin: 6px 0;
+    }
+    .status-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+    }
+    .prestige-glow { color: var(--gold); text-shadow: 0 0 10px var(--gold); }
+  </style>
 </head>
 <body>
-    <h1>Sovereign Command</h1>
-    <div class="card">
-        <h3 class="blue">Admin Status: ONLINE</h3>
-        <p id="genesis">Genesis Nodes: 1/1000</p>
-    </div>
-    
-    <div class="card" style="border-left: 5px solid #10b981;">
-        <h3 class="gold">The Foundry</h3>
-        <p>Gold: <span id="gold-val">0.0000</span></p>
-        <p>Diskon: <span id="diskon-val">0.0000</span></p>
+  <div class="app-shell">
+
+    <!-- Header -->
+    <header class="app-header">
+      <h1>⚡ Sovereign Command</h1>
+      <nav class="app-nav">
+        <a href="#foundry">Foundry</a>
+        <a href="#nodes">Nodes</a>
+        <a href="#upgrades">Upgrades</a>
+        <a href="#vault">Vault</a>
+        <a href="civiltas.html">🏛 CIVILTAS</a>
+      </nav>
+    </header>
+
+    <!-- Status bar -->
+    <div class="card" style="padding:12px 18px;">
+      <div class="status-row">
+        <span class="badge badge-green">● ONLINE</span>
+        <span id="status-text" style="color:var(--muted);font-size:0.82rem;">Initializing network…</span>
+        <span style="margin-left:auto;font-size:0.78rem;color:var(--muted);">Prestige: <span id="prestige-count" class="prestige-glow">0</span></span>
+      </div>
     </div>
 
-    <div class="card">
-        <h3>Private Vault</h3>
-        <code style="font-size: 0.7rem;">bc1q_SOVEREIGN_WALLET_ADDRESS</code>
-        <button class="btn" style="background:#10b981; color:white;">WITHDRAW PROFITS</button>
+    <!-- Resources row -->
+    <div class="grid-3" id="foundry">
+      <div class="card">
+        <div class="resource-label">Gold</div>
+        <div class="resource-val" id="gold-val">0</div>
+        <div class="resource-rate" id="gold-rate">+0.0/s</div>
+      </div>
+      <div class="card">
+        <div class="resource-label">Diskon</div>
+        <div class="resource-val" id="diskon-val">0</div>
+        <div class="resource-rate" id="diskon-rate">+0.0/s</div>
+      </div>
+      <div class="card">
+        <div class="resource-label">Genesis Nodes</div>
+        <div class="resource-val"><span id="node-count">1</span><span style="font-size:1rem;color:var(--muted);">/1000</span></div>
+        <div class="progress-bar" style="margin-top:6px;">
+          <div class="progress-fill" id="node-progress" style="background:var(--green);width:0.1%;"></div>
+        </div>
+      </div>
     </div>
 
-    <div id="navigator" class="card" style="background:#0f172a; border: 1px solid #facc15;">
-        <p class="gold"><b>CEO NAVIGATOR:</b></p>
-        <p style="font-size:0.8rem;">1. Upload this file to GitHub.<br>2. Run 'engine.py' in Termux.<br>3. Start the API server: <code>node artifacts/api-server/dist/index.js</code><br>4. Watch your wealth grow.</p>
+    <!-- Actions + Log -->
+    <div class="grid-2">
+      <!-- Actions -->
+      <div class="card">
+        <h3>Actions</h3>
+        <button class="btn btn-green" id="btn-mine" onclick="mine()">⛏ Mine Gold</button>
+        <button class="btn btn-blue"  id="btn-forge" onclick="forge()">🔥 Forge Diskon</button>
+        <button class="btn btn-purple" id="btn-expand" onclick="expandNode()">🌐 Expand Node</button>
+        <div class="progress-bar" style="margin-top:12px;">
+          <div class="progress-fill" id="forge-cooldown" style="background:var(--blue);width:100%;"></div>
+        </div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;" id="forge-hint">Forge converts Gold → Diskon. Cooldown: 8s.</div>
+      </div>
+
+      <!-- Event Log -->
+      <div class="card">
+        <h3>Event Log</h3>
+        <div class="log-box" id="log">
+          <p>⚡ Sovereign Command online. Begin mining to grow your empire.</p>
+        </div>
+      </div>
     </div>
+
+    <!-- Upgrades -->
+    <div class="card" id="upgrades">
+      <h3>🔧 Upgrades</h3>
+      <div id="upgrade-list"></div>
+    </div>
+
+    <!-- Genesis Node Visualizer -->
+    <div class="card" id="nodes">
+      <h3>🌐 Genesis Node Network <span id="node-label" style="font-size:0.8rem;color:var(--muted);font-weight:400;"></span></h3>
+      <div class="node-grid" id="node-grid"></div>
+    </div>
+
+    <!-- Vault -->
+    <div class="card" id="vault">
+      <h3>🏦 Sovereign Vault</h3>
+      <p style="color:var(--muted);font-size:0.85rem;">Accumulated reserves available for conversion.</p>
+      <div class="vault-address" id="vault-address">SVLT-0000-0000-0000</div>
+      <div style="display:flex;gap:8px;margin-top:4px;">
+        <button class="btn btn-gold" style="flex:1" onclick="convertToGold()">💰 Convert Diskon → Gold</button>
+        <button class="btn btn-purple" style="flex:1;margin-top:0;" onclick="prestige()" id="btn-prestige">✨ Prestige (need 500 Gold)</button>
+      </div>
+    </div>
+
+    <footer class="app-footer">
+      ⚡ Sovereign Command · Auto-saved · <a href="civiltas.html">Play CIVILTAS</a> · v2.0
+    </footer>
+
+  </div><!-- /app-shell -->
+
+  <script src="script.js"></script>
 </body>
 </html>

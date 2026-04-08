@@ -1,0 +1,61 @@
+name: Background Agent
+
+# Scheduled background agent — runs hourly to maintain game state,
+# generate game events, and keep the deployment healthy.
+on:
+  schedule:
+    - cron: '0 * * * *'   # every hour
+  workflow_dispatch:        # manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  heartbeat:
+    name: Heartbeat & Game Events
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate game event log
+        run: |
+          node - <<'EOF'
+          const fs   = require('fs');
+          const path = require('path');
+
+          const logFile = path.join(process.cwd(), 'game-events.json');
+
+          let events = [];
+          try { events = JSON.parse(fs.readFileSync(logFile, 'utf8')); } catch (_) {}
+
+          const eventTypes = [
+            'Genesis node pulsed.',
+            'Foundry output increased by 2%.',
+            'A distant empire collapsed — resources redistributed.',
+            'Ore vein discovered in sector 7.',
+            'Sovereign network stable.',
+            'Background sync complete.',
+            'Diskon reserves replenished.',
+            'New civilization rose from the ruins.',
+          ];
+
+          const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+
+          events.unshift({
+            timestamp: new Date().toISOString(),
+            event: pick(eventTypes),
+            nodeCount: Math.floor(Math.random() * 50) + 1,
+          });
+
+          // Keep last 100 events
+          events = events.slice(0, 100);
+          fs.writeFileSync(logFile, JSON.stringify(events, null, 2));
+          console.log('Event logged:', events[0].event);
+          EOF
+
+      - name: Commit event log
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: background agent heartbeat [skip ci]"
+          file_pattern: game-events.json
