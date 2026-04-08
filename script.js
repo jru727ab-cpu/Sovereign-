@@ -7,11 +7,15 @@
 'use strict';
 
 // ── Constants ────────────────────────────────────────────────────
-const SAVE_KEY       = 'sovereign_save_v2';
-const TICK_MS        = 200;   // physics tick interval
-const SAVE_INTERVAL  = 5000;  // auto-save every 5 s
-const FORGE_COOLDOWN = 8;     // seconds
-const NODE_MAX       = 1000;
+const SAVE_KEY          = 'sovereign_save_v2';
+const TICK_MS           = 200;    // physics tick interval
+const SAVE_INTERVAL     = 5000;   // auto-save every 5 s
+const FORGE_COOLDOWN    = 8;      // seconds
+const NODE_MAX          = 1000;
+const HEX_MAX_VALUE     = 0x10000; // 65536 — range for 4-digit hex vault ID segments
+const MILLION_THRESHOLD = 1e6;
+const THOUSAND_THRESHOLD = 1e3;
+const STATUS_ROTATION_MS = 4000;  // how often the status bar message rotates
 
 // ── Upgrades catalogue ───────────────────────────────────────────
 const UPGRADES = [
@@ -82,7 +86,7 @@ function defaultState() {
 }
 
 function generateVaultId() {
-  const hex = () => Math.floor(Math.random() * 65536).toString(16).padStart(4, '0').toUpperCase();
+  const hex = () => Math.floor(Math.random() * HEX_MAX_VALUE).toString(16).padStart(4, '0').toUpperCase();
   return `SVLT-${hex()}-${hex()}-${hex()}`;
 }
 
@@ -114,8 +118,8 @@ function loadGame() {
 
 // ── Helpers ──────────────────────────────────────────────────────
 function fmt(n) {
-  if (n >= 1e6) return (n / 1e6).toFixed(2) + 'M';
-  if (n >= 1e3) return (n / 1e3).toFixed(2) + 'k';
+  if (n >= MILLION_THRESHOLD)  return (n / MILLION_THRESHOLD).toFixed(2) + 'M';
+  if (n >= THOUSAND_THRESHOLD) return (n / THOUSAND_THRESHOLD).toFixed(2) + 'k';
   return Math.floor(n).toLocaleString();
 }
 
@@ -324,7 +328,7 @@ function updateUI() {
     `${state.totalMines} mines · ${state.totalForges} forges completed.`,
     `Prestige level ${state.prestige} — empire ever stronger.`,
   ];
-  const idx = Math.floor(Date.now() / 4000) % statusMessages.length;
+  const idx = Math.floor(Date.now() / STATUS_ROTATION_MS) % statusMessages.length;
   document.getElementById('status-text').textContent = statusMessages[idx];
 
   // Update upgrade buttons

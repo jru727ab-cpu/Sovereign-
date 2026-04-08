@@ -449,7 +449,7 @@
     }
 
     // ── Auto-mine ticker ──────────────────────────────────────────
-    setInterval(() => {
+    function gameTick() {
       if (state.squashCooldown > 0) {
         state.squashCooldown = Math.max(0, state.squashCooldown - 0.1);
         updateUI();
@@ -464,7 +464,9 @@
           updateUI();
         }
       }
-    }, 100);
+    }
+
+    setInterval(gameTick, 100);
 
     setInterval(saveGame, 5000);
 
