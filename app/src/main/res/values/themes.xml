@@ -1,0 +1,13 @@
+<resources>
+    <!-- Base application theme -->
+    <style name="Theme.Sovereign" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <!-- Splash screen theme -->
+    <style name="Theme.Sovereign.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#0D0D0D</item>
+        <item name="postSplashScreenTheme">@style/Theme.Sovereign</item>
+    </style>
+</resources>
