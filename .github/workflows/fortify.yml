@@ -37,8 +37,24 @@ jobs:
       # pull-requests: write     # Required if DO_PR_COMMENT is set to true
 
     steps:
+      # Check whether any Fortify credentials are configured; skip remaining steps if not.
+      - name: Check Fortify credentials
+        id: check-creds
+        env:
+          FOD_TENANT: ${{ secrets.FOD_TENANT }}
+          FOD_USER: ${{ secrets.FOD_USER }}
+          SSC_TOKEN: ${{ secrets.SSC_TOKEN }}
+        run: |
+          if [[ -z "$FOD_TENANT" && -z "$FOD_USER" && -z "$SSC_TOKEN" ]]; then
+            echo "No Fortify credentials configured. Skipping scan."
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
       # Check out source code
       - name: Check Out Source Code
+        if: steps.check-creds.outputs.skip != 'true'
         uses: actions/checkout@v4
 
       # Perform SAST and/or SCA scan via Fortify on Demand/Fortify Hosted/ScanCentral SAST/Debricked. Based on
@@ -50,6 +66,7 @@ jobs:
       # documentation at https://github.com/fortify/github-action#readme for more information on the various
       # configuration options and available sub-actions.
       - name: Run Fortify Scan
+        if: steps.check-creds.outputs.skip != 'true'
         # Specify Fortify GitHub Action version to run. As per GitHub starter workflow requirements, this example
         # uses the commit id corresponding to version 1.6.2. It is recommended to check whether any later releases
         # are available at https://github.com/fortify/github-action/releases. Depending on the amount of stability
